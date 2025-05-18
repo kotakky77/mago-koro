@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  card_type: MyString
+  cost: 1
+  effect: MyText
+
+two:
+  name: MyString
+  card_type: MyString
+  cost: 1
+  effect: MyText

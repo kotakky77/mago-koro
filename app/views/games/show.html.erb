@@ -1,0 +1,117 @@
+<% provide(:title, @game.title) %>
+<h1><%= @game.title %></h1>
+
+<div class="game-status">
+  <p>ステータス: 
+    <span class="status-badge <%= @game.status %>">
+      <%= @game.status == 'waiting' ? '待機中' : (@game.status == 'in_progress' ? '進行中' : '終了') %>
+    </span>
+  </p>
+  <p>プレイヤー数: <%= @game.game_players.count %>/<%= @game.max_players %></p>
+</div>
+
+<div class="game-actions">
+  <% if @game.status == 'waiting' %>
+    <% if @game.game_players.exists?(user_id: current_user.id) %>
+      <% if @game.game_players.first.user == current_user && @game.can_start? %>
+        <%= button_to "ゲームを開始", start_game_path(@game), method: :post, class: "btn btn-success" %>
+      <% end %>
+    <% elsif @game.can_join? %>
+      <%= button_to "ゲームに参加", join_game_path(@game), method: :post, class: "btn btn-primary" %>
+    <% end %>
+  <% end %>
+  <%= link_to "ゲーム一覧に戻る", games_path, class: "btn btn-secondary" %>
+</div>
+
+<div class="players-list">
+  <h2>参加プレイヤー</h2>
+  <ul>
+    <% @players.each do |player| %>
+      <li>
+        <%= player.user.name %>
+        <% if @game.game_players.first.user == player.user %>
+          <span class="host-badge">ホスト</span>
+        <% end %>
+        <% if @game.status != 'waiting' %>
+          <span class="points"><%= player.points %>ポイント</span>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+<% if @game.status == 'in_progress' && @game.game_players.exists?(user_id: current_user.id) %>
+  <div class="game-board">
+    <h2>ゲームボード</h2>
+    <p>ゲームの進行状況がここに表示されます。</p>
+    <!-- ゲームの状態によって表示内容を変える -->
+  </div>
+<% end %>
+
+<% if @game.status == 'completed' %>
+  <div class="game-result">
+    <h2>ゲーム結果</h2>
+    <% winner = @game.game_players.order(points: :desc).first %>
+    <p>勝者: <%= winner.user.name %> (<%= winner.points %>ポイント)</p>
+    
+    <h3>最終順位</h3>
+    <ol>
+      <% @game.game_players.order(points: :desc).each do |player| %>
+        <li><%= player.user.name %> - <%= player.points %>ポイント</li>
+      <% end %>
+    </ol>
+  </div>
+<% end %>
+
+<style>
+  .game-status, .game-actions, .players-list, .game-board, .game-result {
+    margin-bottom: 30px;
+  }
+  
+  .status-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+  
+  .status-badge.waiting {
+    background-color: #ffc107;
+    color: #212529;
+  }
+  
+  .status-badge.in_progress {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .status-badge.completed {
+    background-color: #6c757d;
+    color: white;
+  }
+  
+  .host-badge {
+    display: inline-block;
+    padding: 2px 5px;
+    border-radius: 3px;
+    background-color: #007bff;
+    color: white;
+    font-size: 0.8rem;
+    margin-left: 10px;
+  }
+  
+  .points {
+    margin-left: 10px;
+    font-weight: bold;
+  }
+  
+  .players-list ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .players-list li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+</style>

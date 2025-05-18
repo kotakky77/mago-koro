@@ -21,7 +21,7 @@ services:
 
   web:
     build: .
-    command: bash -c "/usr/bin/wait-for-it.sh db:3306 -t 120 -- /usr/bin/entrypoint.sh bash -c 'bundle install && bundle exec rails s -p 3000 -b \"0.0.0.0\"'"
+    command: bash -c "/usr/bin/wait-for-it.sh db:3306 -t 120 -- /usr/bin/entrypoint.sh bundle exec rails s -p 3000 -b '0.0.0.0'"
     volumes:
       - .:/app
       - bundle:/usr/local/bundle

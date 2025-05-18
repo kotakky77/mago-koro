@@ -81,6 +81,7 @@ GEM
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
     base64 (0.2.0)
+    bcrypt (3.1.20)
     benchmark (0.4.0)
     bigdecimal (3.1.9)
     bindex (0.8.1)
@@ -149,9 +150,19 @@ GEM
     nio4r (2.7.4)
     nokogiri (1.18.8-aarch64-linux-gnu)
       racc (~> 1.4)
+    nokogiri (1.18.8-aarch64-linux-musl)
+      racc (~> 1.4)
+    nokogiri (1.18.8-arm-linux-gnu)
+      racc (~> 1.4)
+    nokogiri (1.18.8-arm-linux-musl)
+      racc (~> 1.4)
     nokogiri (1.18.8-arm64-darwin)
       racc (~> 1.4)
+    nokogiri (1.18.8-x86_64-darwin)
+      racc (~> 1.4)
     nokogiri (1.18.8-x86_64-linux-gnu)
+      racc (~> 1.4)
+    nokogiri (1.18.8-x86_64-linux-musl)
       racc (~> 1.4)
     pp (0.6.2)
       prettyprint
@@ -240,11 +251,17 @@ GEM
     zeitwerk (2.7.2)
 
 PLATFORMS
-  aarch64-linux
-  arm64-darwin-24
-  x86_64-linux
+  aarch64-linux-gnu
+  aarch64-linux-musl
+  arm-linux-gnu
+  arm-linux-musl
+  arm64-darwin
+  x86_64-darwin
+  x86_64-linux-gnu
+  x86_64-linux-musl
 
 DEPENDENCIES
+  bcrypt (~> 3.1.7)
   bootsnap
   capybara
   debug
@@ -252,7 +269,7 @@ DEPENDENCIES
   jbuilder
   mysql2 (~> 0.5)
   puma (~> 6.0)
-  rails (~> 7.1.0)
+  rails (~> 7.1.2)
   selenium-webdriver
   stimulus-rails
   turbo-rails
@@ -260,7 +277,7 @@ DEPENDENCIES
   web-console
 
 RUBY VERSION
-   ruby 3.2.2p53
+   ruby 3.3.0p0
 
 BUNDLED WITH
    2.6.2
