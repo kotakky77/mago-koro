@@ -4,7 +4,7 @@
 - コンテナ：docker
 - コード管理：github
 - フロントエンド：Hotwire(Turbo + Stimulus)
-- バックエンド：Ruby 3.4.2
-- バックエンドフレームワーク：Ruby on Rails 8.0.2
+- バックエンド：Ruby
+- バックエンドフレームワーク：Ruby on Rails
 - データベース：mysql
 - ホスティング：AWS
