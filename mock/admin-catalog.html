@@ -9,38 +9,34 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body class="admin-body">
-    <header class="header header-admin">
+    <header>
         <div class="container">
-            <div class="logo">
-                <img src="https://via.placeholder.com/150x50?text=まごころおくりもの" alt="まごころおくりもの">
-                <span class="admin-tag">管理者用</span>
-            </div>
-            <nav class="nav">
-                <ul class="nav-list">
-                    <li class="nav-item"><a href="admin-dashboard.html" class="nav-link">ダッシュボード</a></li>
-                    <li class="nav-item"><a href="admin-users.html" class="nav-link">ユーザー管理</a></li>
-                    <li class="nav-item"><a href="admin-catalog.html" class="nav-link active">記念品カタログ</a></li>
-                    <li class="nav-item"><a href="admin-orders.html" class="nav-link">注文管理</a></li>
-                </ul>
-            </nav>
-            <div class="user-menu">
-                <span class="user-name">管理者</span>
-                <button class="btn btn-link"><i class="fas fa-sign-out-alt"></i> ログアウト</button>
+            <div class="nav-menu">
+                <a href="#" class="logo">まごころおくりもの <span class="admin-tag">管理者用</span></a>
+                <div class="nav-links">
+                    <a href="admin-dashboard.html">ダッシュボード</a>
+                    <a href="admin-users.html">ユーザー管理</a>
+                    <a href="admin-catalog.html" class="active">記念品カタログ</a>
+                    <a href="admin-orders.html">注文管理</a>
+                    <a href="login.html">ログアウト</a>
+                </div>
+                <button class="menu-toggle" aria-label="Toggle menu">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
         </div>
     </header>
 
-    <main class="container">
-        <div class="page-header">
-            <h1 class="page-title">記念品カタログ管理</h1>
-            <p class="page-description">記念品の商品情報を管理できます</p>
-            <button class="btn btn-primary" id="addProductBtn">
+    <main>
+        <div class="container" style="padding-top: 30px;">
+            <h1 style="margin-bottom: 10px;">記念品カタログ管理</h1>
+            <p style="margin-bottom: 30px;">記念品の商品情報を管理できます</p>
+            <button class="btn btn-primary" id="addProductBtn" style="margin-bottom: 20px;">
                 <i class="fas fa-plus"></i> 新規商品追加
             </button>
-        </div>
-
-        <section class="card">
-            <div class="catalog-filters">
+        
+            <div class="card">
+                <div class="catalog-filters">
                 <div class="search-box">
                     <input type="text" placeholder="商品検索..." id="productSearchInput">
                     <button class="btn btn-icon"><i class="fas fa-search"></i></button>
@@ -202,12 +198,12 @@
                 <button class="pagination-btn">2</button>
                 <button class="pagination-btn"><i class="fas fa-chevron-right"></i></button>
             </div>
-        </section>
+        </div>
     </main>
 
     <footer class="footer footer-admin">
         <div class="container">
-            <p>© 2023 まごころおくりもの All Rights Reserved.</p>
+            <p>© 2025 まごころおくりもの All Rights Reserved.</p>
             <div class="footer-links">
                 <a href="#" class="footer-link">利用規約</a>
                 <a href="#" class="footer-link">プライバシーポリシー</a>

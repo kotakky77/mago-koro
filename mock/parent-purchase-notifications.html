@@ -9,34 +9,31 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <div class="logo">
-                <img src="https://via.placeholder.com/150x50?text=まごころおくりもの" alt="まごころおくりもの">
-            </div>
-            <nav class="nav">
-                <ul class="nav-list">
-                    <li class="nav-item"><a href="parent-dashboard.html" class="nav-link">ホーム</a></li>
-                    <li class="nav-item"><a href="parent-photos.html" class="nav-link">写真</a></li>
-                    <li class="nav-item"><a href="parent-wishlist.html" class="nav-link">ほしいものリスト</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">設定</a></li>
-                </ul>
-            </nav>
-            <div class="user-menu">
-                <span class="user-name">鈴木花子さん</span>
-                <button class="btn btn-link"><i class="fas fa-sign-out-alt"></i> ログアウト</button>
-            </div>
+  <header>
+    <div class="container">
+      <div class="nav-menu">
+        <a href="#" class="logo">まごころおくりもの</a>
+        <div class="nav-links">
+          <a href="parent-dashboard.html" class="active">マイページ</a>
+          <a href="parent-wishlist.html">ほしいものリスト</a>
+          <a href="parent-photos.html">写真管理</a>
+          <a href="parent-invite.html">祖父母招待</a>
+          <a href="login.html">ログアウト</a>
         </div>
-    </header>
+        <button class="menu-toggle" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
 
-    <main class="container">
-        <div class="page-header">
-            <h1 class="page-title">購入通知一覧</h1>
-            <p class="page-description">祖父母からの購入通知が届いています</p>
-        </div>
-
-        <section class="card">
-            <div class="purchase-notifications">
+    <main>
+        <div class="container" style="padding-top: 30px;">
+            <h1 style="margin-bottom: 10px;">購入通知一覧</h1>
+            <p style="margin-bottom: 30px;">祖父母からの購入通知が届いています</p>
+        
+            <div class="card">
+                <div class="purchase-notifications">
                 <div class="notification-filters">
                     <div class="filter-group">
                         <label for="notificationStatus">表示:</label>
@@ -139,12 +136,12 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
     </main>
 
     <footer class="footer">
         <div class="container">
-            <p>© 2023 まごころおくりもの All Rights Reserved.</p>
+            <p>© 2025 まごころおくりもの All Rights Reserved.</p>
             <div class="footer-links">
                 <a href="#" class="footer-link">利用規約</a>
                 <a href="#" class="footer-link">プライバシーポリシー</a>

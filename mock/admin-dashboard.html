@@ -9,34 +9,30 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body class="admin-body">
-    <header class="header header-admin">
+    <header>
         <div class="container">
-            <div class="logo">
-                <img src="https://via.placeholder.com/150x50?text=まごころおくりもの" alt="まごころおくりもの">
-                <span class="admin-tag">管理者用</span>
-            </div>
-            <nav class="nav">
-                <ul class="nav-list">
-                    <li class="nav-item"><a href="admin-dashboard.html" class="nav-link active">ダッシュボード</a></li>
-                    <li class="nav-item"><a href="admin-users.html" class="nav-link">ユーザー管理</a></li>
-                    <li class="nav-item"><a href="admin-catalog.html" class="nav-link">記念品カタログ</a></li>
-                    <li class="nav-item"><a href="admin-orders.html" class="nav-link">注文管理</a></li>
-                </ul>
-            </nav>
-            <div class="user-menu">
-                <span class="user-name">管理者</span>
-                <button class="btn btn-link"><i class="fas fa-sign-out-alt"></i> ログアウト</button>
+            <div class="nav-menu">
+                <a href="#" class="logo">まごころおくりもの <span class="admin-tag">管理者用</span></a>
+                <div class="nav-links">
+                    <a href="admin-dashboard.html" class="active">ダッシュボード</a>
+                    <a href="admin-users.html">ユーザー管理</a>
+                    <a href="admin-catalog.html">記念品カタログ</a>
+                    <a href="admin-orders.html">注文管理</a>
+                    <a href="login.html">ログアウト</a>
+                </div>
+                <button class="menu-toggle" aria-label="Toggle menu">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
         </div>
     </header>
 
-    <main class="container">
-        <div class="page-header">
-            <h1 class="page-title">管理者ダッシュボード</h1>
-            <p class="page-description">システム全体の状況を確認できます</p>
-        </div>
-
-        <div class="dashboard-grid">
+    <main>
+        <div class="container" style="padding-top: 30px;">
+            <h1 style="margin-bottom: 10px;">管理者ダッシュボード</h1>
+            <p style="margin-bottom: 30px;">システム全体の状況を確認できます</p>
+        
+            <div class="dashboard-grid">
             <!-- 概要カード -->
             <section class="card dashboard-card">
                 <h2 class="card-title">システム概要</h2>
@@ -196,12 +192,12 @@
                     <span>システム設定</span>
                 </a>
             </div>
-        </section>
+        </div>
     </main>
 
     <footer class="footer footer-admin">
         <div class="container">
-            <p>© 2023 まごころおくりもの All Rights Reserved.</p>
+            <p>© 2025 まごころおくりもの All Rights Reserved.</p>
             <div class="footer-links">
                 <a href="#" class="footer-link">利用規約</a>
                 <a href="#" class="footer-link">プライバシーポリシー</a>
