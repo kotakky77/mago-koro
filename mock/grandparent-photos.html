@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>まごころおくりもの - 写真閲覧</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .photo-viewer-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .photo-viewer-modal.active {
+      display: flex;
+      opacity: 1;
+    }
+    
+    .modal-content {
+      position: relative;
+      max-width: 90%;
+      max-height: 90%;
+    }
+    
+    .modal-image {
+      max-width: 100%;
+      max-height: 90vh;
+      display: block;
+      margin: 0 auto;
+      border-radius: 4px;
+    }
+    
+    .modal-close {
+      position: absolute;
+      top: -30px;
+      right: 0;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 5px;
+    }
+    
+    .modal-nav {
+      position: absolute;
+      width: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .modal-nav button {
+      background: rgba(255, 255, 255, 0.3);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s;
+    }
+    
+    .modal-nav button:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+    
+    .modal-caption {
+      position: absolute;
+      bottom: -40px;
+      left: 0;
+      width: 100%;
+      color: white;
+      text-align: center;
+      font-size: 14px;
+    }
+    
+    .photo-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .photo-filter {
+      background-color: white;
+      border: 1px solid var(--border-color);
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .photo-filter.active {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+    
+    .photo-filter:hover {
+      border-color: var(--primary-color);
+    }
+    
+    .photo-item {
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    
+    .photo-item:hover {
+      transform: scale(1.03);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="nav-menu">
+        <a href="#" class="logo">まごころおくりもの</a>
+        <div class="nav-links">
+          <a href="grandparent-dashboard.html">マイページ</a>
+          <a href="grandparent-wishlist.html">ほしいものリスト</a>
+          <a href="grandparent-photos.html" class="active">写真閲覧</a>
+          <a href="grandparent-souvenirs.html">記念品案内</a>
+          <a href="login.html">ログアウト</a>
+        </div>
+        <button class="menu-toggle" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container" style="padding-top: 30px;">
+      <h1 style="margin-bottom: 10px;">写真閲覧</h1>
+      <p style="margin-bottom: 30px;">はるかちゃんの写真をご覧いただけます</p>
+      
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+          <h2 style="margin: 0;">はるかちゃんの写真アルバム</h2>
+          <div>
+            <button class="btn btn-secondary" id="slideshow-button">
+              <i class="fas fa-play"></i> スライドショー
+            </button>
+            <button class="btn" style="margin-left: 10px;" id="grid-view-button">
+              <i class="fas fa-th"></i> グリッド表示
+            </button>
+          </div>
+        </div>
+        
+        <div class="photo-filters">
+          <div class="photo-filter active" data-filter="all">すべて (12)</div>
+          <div class="photo-filter" data-filter="latest">最近の写真 (5)</div>
+          <div class="photo-filter" data-filter="spring">春の写真 (3)</div>
+          <div class="photo-filter" data-filter="summer">夏の写真 (4)</div>
+          <div class="photo-filter" data-filter="autumn">秋の写真 (2)</div>
+          <div class="photo-filter" data-filter="winter">冬の写真 (3)</div>
+        </div>
+        
+        <div class="photo-grid">
+          <div class="photo-item" data-category="spring latest" data-date="2025-04-15">
+            <img src="https://via.placeholder.com/300/FFD9C0/808080?text=Photo+1" alt="はるかちゃんの写真" data-caption="公園でお花見（2025年4月15日）">
+          </div>
+          <div class="photo-item" data-category="spring" data-date="2025-03-20">
+            <img src="https://via.placeholder.com/300/F1E0C5/808080?text=Photo+2" alt="はるかちゃんの写真" data-caption="初めての三輪車（2025年3月20日）">
+          </div>
+          <div class="photo-item" data-category="winter" data-date="2025-01-15">
+            <img src="https://via.placeholder.com/300/C8E4B2/808080?text=Photo+3" alt="はるかちゃんの写真" data-caption="初めての雪遊び（2025年1月15日）">
+          </div>
+          <div class="photo-item" data-category="winter" data-date="2024-12-25">
+            <img src="https://via.placeholder.com/300/9ED2BE/808080?text=Photo+4" alt="はるかちゃんの写真" data-caption="クリスマスパーティー（2024年12月25日）">
+          </div>
+          <div class="photo-item" data-category="autumn" data-date="2024-11-10">
+            <img src="https://via.placeholder.com/300/7EAA92/808080?text=Photo+5" alt="はるかちゃんの写真" data-caption="紅葉狩り（2024年11月10日）">
+          </div>
+          <div class="photo-item" data-category="autumn" data-date="2024-10-31">
+            <img src="https://via.placeholder.com/300/FFB4B4/808080?text=Photo+6" alt="はるかちゃんの写真" data-caption="ハロウィン衣装（2024年10月31日）">
+          </div>
+          <div class="photo-item" data-category="summer" data-date="2024-08-15">
+            <img src="https://via.placeholder.com/300/FFDEB4/808080?text=Photo+7" alt="はるかちゃんの写真" data-caption="海水浴（2024年8月15日）">
+          </div>
+          <div class="photo-item" data-category="summer latest" data-date="2024-07-20">
+            <img src="https://via.placeholder.com/300/B2A4FF/808080?text=Photo+8" alt="はるかちゃんの写真" data-caption="プール遊び（2024年7月20日）">
+          </div>
+          <div class="photo-item" data-category="summer latest" data-date="2024-07-07">
+            <img src="https://via.placeholder.com/300/FFB4B4/808080?text=Photo+9" alt="はるかちゃんの写真" data-caption="七夕祭り（2024年7月7日）">
+          </div>
+          <div class="photo-item" data-category="summer latest" data-date="2024-06-10">
+            <img src="https://via.placeholder.com/300/B9F3FC/808080?text=Photo+10" alt="はるかちゃんの写真" data-caption="保育園の遠足（2024年6月10日）">
+          </div>
+          <div class="photo-item" data-category="spring" data-date="2024-05-15">
+            <img src="https://via.placeholder.com/300/AEE2FF/808080?text=Photo+11" alt="はるかちゃんの写真" data-caption="2歳の誕生日（2024年5月15日）">
+          </div>
+          <div class="photo-item" data-category="winter latest" data-date="2024-02-10">
+            <img src="https://via.placeholder.com/300/FEDEFF/808080?text=Photo+12" alt="はるかちゃんの写真" data-caption="雪だるま作り（2024年2月10日）">
+          </div>
+        </div>
+        
+        <div style="margin-top: 20px; text-align: center;">
+          <button class="btn btn-secondary" id="load-more-button">
+            もっと見る <i class="fas fa-chevron-down"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="card" style="margin-top: 30px;">
+        <h2 style="margin-bottom: 20px;">写真について</h2>
+        <div style="background-color: #E8F5E9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+          <h3 style="color: #2E7D32; margin-bottom: 10px;"><i class="fas fa-info-circle"></i> 写真のダウンロードについて</h3>
+          <p>写真は右クリックから「名前を付けて画像を保存」を選択することでダウンロードできます。</p>
+        </div>
+        
+        <div style="background-color: #FFF3E0; padding: 15px; border-radius: 8px;">
+          <h3 style="color: #E65100; margin-bottom: 10px;"><i class="fas fa-exclamation-triangle"></i> お願い</h3>
+          <p>写真は個人で楽しむ目的でのみご利用ください。SNSなどへの投稿はお控えいただきますようお願いいたします。</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 写真ビューアーモーダル -->
+  <div class="photo-viewer-modal" id="photo-modal">
+    <div class="modal-content">
+      <button class="modal-close" id="modal-close">
+        <i class="fas fa-times"></i>
+      </button>
+      <img src="" alt="拡大写真" class="modal-image" id="modal-image">
+      <div class="modal-nav">
+        <button id="prev-photo"><i class="fas fa-chevron-left"></i></button>
+        <button id="next-photo"><i class="fas fa-chevron-right"></i></button>
+      </div>
+      <div class="modal-caption" id="modal-caption"></div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="#">利用規約</a>
+          <a href="#">プライバシーポリシー</a>
+          <a href="#">お問い合わせ</a>
+        </div>
+        <div class="copyright">
+          &copy; 2025 まごころおくりもの All Rights Reserved.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="scripts.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // 写真アイテムの取得
+      const photoItems = document.querySelectorAll('.photo-item');
+      const modal = document.getElementById('photo-modal');
+      const modalImage = document.getElementById('modal-image');
+      const modalCaption = document.getElementById('modal-caption');
+      const modalClose = document.getElementById('modal-close');
+      const prevButton = document.getElementById('prev-photo');
+      const nextButton = document.getElementById('next-photo');
+      const slideshowButton = document.getElementById('slideshow-button');
+      const filterButtons = document.querySelectorAll('.photo-filter');
+      
+      let currentIndex = 0;
+      let slideshowInterval;
+      let filteredPhotos = Array.from(photoItems);
+      
+      // 写真フィルター
+      filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          // アクティブクラスの切り替え
+          filterButtons.forEach(btn => btn.classList.remove('active'));
+          this.classList.add('active');
+          
+          const filter = this.dataset.filter;
+          
+          // 写真のフィルタリング
+          photoItems.forEach(item => {
+            if (filter === 'all' || item.dataset.category.includes(filter)) {
+              item.style.display = 'block';
+            } else {
+              item.style.display = 'none';
+            }
+          });
+          
+          // フィルター後の写真配列を更新
+          filteredPhotos = Array.from(photoItems).filter(item => {
+            return filter === 'all' || item.dataset.category.includes(filter);
+          });
+        });
+      });
+      
+      // 写真クリック時のモーダル表示
+      photoItems.forEach((item, index) => {
+        item.addEventListener('click', function() {
+          openModal(index);
+        });
+      });
+      
+      // モーダルを開く関数
+      function openModal(index) {
+        currentIndex = index;
+        const img = filteredPhotos[currentIndex].querySelector('img');
+        modalImage.src = img.src;
+        modalCaption.textContent = img.dataset.caption || '';
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden'; // スクロール防止
+      }
+      
+      // モーダルを閉じる関数
+      function closeModal() {
+        modal.classList.remove('active');
+        document.body.style.overflow = ''; // スクロール再開
+        
+        // スライドショーが実行中なら停止
+        if (slideshowInterval) {
+          clearInterval(slideshowInterval);
+          slideshowInterval = null;
+          slideshowButton.innerHTML = '<i class="fas fa-play"></i> スライドショー';
+        }
+      }
+      
+      // 次の写真を表示
+      function nextPhoto() {
+        currentIndex = (currentIndex + 1) % filteredPhotos.length;
+        const img = filteredPhotos[currentIndex].querySelector('img');
+        modalImage.src = img.src;
+        modalCaption.textContent = img.dataset.caption || '';
+      }
+      
+      // 前の写真を表示
+      function prevPhoto() {
+        currentIndex = (currentIndex - 1 + filteredPhotos.length) % filteredPhotos.length;
+        const img = filteredPhotos[currentIndex].querySelector('img');
+        modalImage.src = img.src;
+        modalCaption.textContent = img.dataset.caption || '';
+      }
+      
+      // スライドショー開始/停止
+      function toggleSlideshow() {
+        if (slideshowInterval) {
+          // 停止
+          clearInterval(slideshowInterval);
+          slideshowInterval = null;
+          slideshowButton.innerHTML = '<i class="fas fa-play"></i> スライドショー';
+        } else {
+          // 開始
+          openModal(0);
+          slideshowInterval = setInterval(nextPhoto, 3000);
+          slideshowButton.innerHTML = '<i class="fas fa-pause"></i> 停止';
+        }
+      }
+      
+      // イベントリスナー
+      modalClose.addEventListener('click', closeModal);
+      prevButton.addEventListener('click', prevPhoto);
+      nextButton.addEventListener('click', nextPhoto);
+      slideshowButton.addEventListener('click', toggleSlideshow);
+      
+      // 背景クリックでモーダルを閉じる
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+      
+      // キーボード操作
+      document.addEventListener('keydown', function(e) {
+        if (!modal.classList.contains('active')) return;
+        
+        if (e.key === 'Escape') {
+          closeModal();
+        } else if (e.key === 'ArrowRight') {
+          nextPhoto();
+        } else if (e.key === 'ArrowLeft') {
+          prevPhoto();
+        }
+      });
+      
+      // もっと見るボタン（モックのため機能はダミー）
+      document.getElementById('load-more-button').addEventListener('click', function() {
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 読み込み中...';
+        
+        setTimeout(() => {
+          this.innerHTML = 'すべての写真を表示しています';
+          this.disabled = true;
+        }, 1500);
+      });
+    });
+  </script>
+</body>
+</html>

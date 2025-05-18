@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>孫の情報編集 - まごころおくりもの</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="https://via.placeholder.com/150x50?text=まごころおくりもの" alt="まごころおくりもの">
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="parent-dashboard.html" class="nav-link">ホーム</a></li>
+                    <li class="nav-item"><a href="parent-photos.html" class="nav-link">写真</a></li>
+                    <li class="nav-item"><a href="parent-wishlist.html" class="nav-link">ほしいものリスト</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">設定</a></li>
+                </ul>
+            </nav>
+            <div class="user-menu">
+                <span class="user-name">鈴木花子さん</span>
+                <button class="btn btn-link"><i class="fas fa-sign-out-alt"></i> ログアウト</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="page-header">
+            <h1 class="page-title">孫の情報編集</h1>
+            <p class="page-description">孫の基本情報を更新できます</p>
+        </div>
+
+        <section class="card">
+            <div class="child-profile-edit">
+                <div class="child-profile-avatar">
+                    <div class="avatar-preview" id="avatarPreview">
+                        <img src="https://via.placeholder.com/150?text=写真" alt="プロフィール写真">
+                    </div>
+                    <div class="avatar-upload">
+                        <label for="profilePhoto" class="btn btn-secondary btn-sm">写真を変更</label>
+                        <input type="file" id="profilePhoto" name="profilePhoto" accept="image/*" hidden>
+                    </div>
+                </div>
+
+                <form id="childInfoForm" class="form">
+                    <div class="form-group">
+                        <label for="childName">氏名 <span class="required">*</span></label>
+                        <input type="text" id="childName" name="childName" value="鈴木太郎" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="childNickname">ニックネーム</label>
+                        <input type="text" id="childNickname" name="childNickname" value="たろちゃん">
+                        <small class="form-help">祖父母に表示される愛称です</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="childBirthday">誕生日 <span class="required">*</span></label>
+                        <input type="date" id="childBirthday" name="childBirthday" value="2020-05-10" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="childGender">性別</label>
+                        <select id="childGender" name="childGender">
+                            <option value="">選択してください</option>
+                            <option value="male" selected>男の子</option>
+                            <option value="female">女の子</option>
+                            <option value="other">その他</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="childFavoriteThings">好きなもの・趣味</label>
+                        <textarea id="childFavoriteThings" name="childFavoriteThings" rows="3">恐竜、電車、絵本、公園で遊ぶこと</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="childNote">メモ（祖父母には表示されません）</label>
+                        <textarea id="childNote" name="childNote" rows="3">アレルギー：卵、いちご</textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" onclick="window.location.href='parent-dashboard.html'">キャンセル</button>
+                        <button type="submit" class="btn btn-primary">保存する</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2023 まごころおくりもの All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">利用規約</a>
+                <a href="#" class="footer-link">プライバシーポリシー</a>
+                <a href="#" class="footer-link">お問い合わせ</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 保存完了モーダル -->
+    <div class="modal" id="saveCompletedModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">保存完了</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>孫の情報が更新されました。</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary modal-close">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+    <script>
+        // プロフィール写真のプレビュー
+        document.getElementById('profilePhoto').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.querySelector('#avatarPreview img').src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // フォーム送信処理
+        document.getElementById('childInfoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 保存成功のシミュレーション
+            showModal('saveCompletedModal');
+            
+            // モーダルのOKボタンがクリックされたらダッシュボードに戻る
+            document.querySelector('#saveCompletedModal .modal-close').addEventListener('click', function() {
+                window.location.href = 'parent-dashboard.html';
+            });
+        });
+    </script>
+</body>
+</html>

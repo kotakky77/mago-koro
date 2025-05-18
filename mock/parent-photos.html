@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>まごころおくりもの - 写真管理</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .upload-area {
+      border: 2px dashed var(--border-color);
+      border-radius: 8px;
+      padding: 30px;
+      text-align: center;
+      margin-bottom: 30px;
+      background-color: #FAFAFA;
+      transition: all 0.3s;
+    }
+    
+    .upload-area:hover {
+      border-color: var(--primary-color);
+      background-color: #FFF9C4;
+    }
+    
+    .upload-icon {
+      font-size: 48px;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+    }
+    
+    .drag-text {
+      margin-bottom: 15px;
+    }
+    
+    .file-input {
+      display: none;
+    }
+    
+    .preview-container {
+      margin-top: 20px;
+      text-align: center;
+    }
+    
+    #photo-preview {
+      max-width: 300px;
+      max-height: 300px;
+      display: none;
+      margin: 0 auto;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="nav-menu">
+        <a href="#" class="logo">まごころおくりもの</a>
+        <div class="nav-links">
+          <a href="parent-dashboard.html">マイページ</a>
+          <a href="parent-wishlist.html">ほしいものリスト</a>
+          <a href="parent-photos.html" class="active">写真管理</a>
+          <a href="parent-invite.html">祖父母招待</a>
+          <a href="login.html">ログアウト</a>
+        </div>
+        <button class="menu-toggle" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container" style="padding-top: 30px;">
+      <h1 style="margin-bottom: 10px;">写真管理</h1>
+      <p style="margin-bottom: 30px;">孫の写真をアップロードして、祖父母と共有しましょう</p>
+      
+      <div class="card">
+        <h2 style="margin-bottom: 20px;">写真のアップロード</h2>
+        
+        <form id="photo-upload-form">
+          <div class="upload-area" id="drop-area">
+            <div class="upload-icon">
+              <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <h3 class="drag-text">ファイルをドラッグ＆ドロップするか、クリックしてアップロード</h3>
+            <p>対応形式: JPEG, PNG（最大10MB）</p>
+            <button class="btn btn-primary" id="upload-button" type="button" style="margin-top: 15px;">
+              写真を選択
+            </button>
+            <input type="file" class="file-input" id="file-input" accept="image/jpeg, image/png">
+          </div>
+          
+          <div class="preview-container">
+            <img id="photo-preview" src="" alt="写真プレビュー">
+            <div style="margin-top: 15px;">
+              <button type="submit" class="btn btn-primary" id="submit-upload" style="display: none;">
+                アップロードする
+              </button>
+            </div>
+          </div>
+        </form>
+        
+        <div style="margin-top: 15px;">
+          <p><i class="fas fa-info-circle"></i> アップロード可能な合計容量は10MBまでです（現在使用: 5.2MB）</p>
+        </div>
+      </div>
+      
+      <div class="card" style="margin-top: 30px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h2 style="margin: 0;">アップロード済みの写真</h2>
+          <div>
+            <button class="btn btn-secondary">
+              <i class="fas fa-th"></i> グリッド表示
+            </button>
+            <button class="btn" style="margin-left: 10px;">
+              <i class="fas fa-list"></i> リスト表示
+            </button>
+          </div>
+        </div>
+        
+        <div class="photo-grid">
+          <div class="photo-item">
+            <img src="https://via.placeholder.com/300/FFD9C0/808080?text=Photo+1" alt="孫の写真">
+            <div class="photo-actions">
+              <button class="btn-delete-photo">削除</button>
+            </div>
+          </div>
+          <div class="photo-item">
+            <img src="https://via.placeholder.com/300/F1E0C5/808080?text=Photo+2" alt="孫の写真">
+            <div class="photo-actions">
+              <button class="btn-delete-photo">削除</button>
+            </div>
+          </div>
+          <div class="photo-item">
+            <img src="https://via.placeholder.com/300/C8E4B2/808080?text=Photo+3" alt="孫の写真">
+            <div class="photo-actions">
+              <button class="btn-delete-photo">削除</button>
+            </div>
+          </div>
+          <div class="photo-item">
+            <img src="https://via.placeholder.com/300/9ED2BE/808080?text=Photo+4" alt="孫の写真">
+            <div class="photo-actions">
+              <button class="btn-delete-photo">削除</button>
+            </div>
+          </div>
+          <div class="photo-item">
+            <img src="https://via.placeholder.com/300/7EAA92/808080?text=Photo+5" alt="孫の写真">
+            <div class="photo-actions">
+              <button class="btn-delete-photo">削除</button>
+            </div>
+          </div>
+          <div class="photo-item">
+            <img src="https://via.placeholder.com/300/FFB4B4/808080?text=Photo+6" alt="孫の写真">
+            <div class="photo-actions">
+              <button class="btn-delete-photo">削除</button>
+            </div>
+          </div>
+          <div class="photo-item">
+            <img src="https://via.placeholder.com/300/FFDEB4/808080?text=Photo+7" alt="孫の写真">
+            <div class="photo-actions">
+              <button class="btn-delete-photo">削除</button>
+            </div>
+          </div>
+          <div class="photo-item">
+            <img src="https://via.placeholder.com/300/B2A4FF/808080?text=Photo+8" alt="孫の写真">
+            <div class="photo-actions">
+              <button class="btn-delete-photo">削除</button>
+            </div>
+          </div>
+          <div class="photo-item">
+            <img src="https://via.placeholder.com/300/FFB4B4/808080?text=Photo+9" alt="孫の写真">
+            <div class="photo-actions">
+              <button class="btn-delete-photo">削除</button>
+            </div>
+          </div>
+          <div class="photo-item">
+            <img src="https://via.placeholder.com/300/B9F3FC/808080?text=Photo+10" alt="孫の写真">
+            <div class="photo-actions">
+              <button class="btn-delete-photo">削除</button>
+            </div>
+          </div>
+          <div class="photo-item">
+            <img src="https://via.placeholder.com/300/AEE2FF/808080?text=Photo+11" alt="孫の写真">
+            <div class="photo-actions">
+              <button class="btn-delete-photo">削除</button>
+            </div>
+          </div>
+          <div class="photo-item">
+            <img src="https://via.placeholder.com/300/FEDEFF/808080?text=Photo+12" alt="孫の写真">
+            <div class="photo-actions">
+              <button class="btn-delete-photo">削除</button>
+            </div>
+          </div>
+        </div>
+        
+        <div style="margin-top: 20px; text-align: center;">
+          <button class="btn btn-secondary">
+            もっと見る <i class="fas fa-chevron-down"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="card" style="margin-top: 30px;">
+        <h2 style="margin-bottom: 20px;">写真共有の注意点</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+          <div style="flex: 1; min-width: 300px;">
+            <h3 style="margin-bottom: 10px; color: var(--primary-color);">
+              <i class="fas fa-shield-alt"></i> プライバシーについて
+            </h3>
+            <ul style="list-style-type: none; padding-left: 10px;">
+              <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> アップロードした写真は招待した祖父母のみが閲覧できます</li>
+              <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> 個人情報が特定できる写真（住所が映り込んだもの等）にはご注意ください</li>
+              <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> 写真はいつでも削除することができます</li>
+            </ul>
+          </div>
+          <div style="flex: 1; min-width: 300px;">
+            <h3 style="margin-bottom: 10px; color: var(--primary-color);">
+              <i class="fas fa-camera"></i> 効果的な写真について
+            </h3>
+            <ul style="list-style-type: none; padding-left: 10px;">
+              <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> 明るく鮮明な写真を選びましょう</li>
+              <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> 孫の表情がよく見える写真が喜ばれます</li>
+              <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> 季節の行事や日常の様子など、バラエティに富んだ写真を共有しましょう</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="#">利用規約</a>
+          <a href="#">プライバシーポリシー</a>
+          <a href="#">お問い合わせ</a>
+        </div>
+        <div class="copyright">
+          &copy; 2025 まごころおくりもの All Rights Reserved.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="scripts.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const dropArea = document.getElementById('drop-area');
+      const fileInput = document.getElementById('file-input');
+      const uploadButton = document.getElementById('upload-button');
+      const photoPreview = document.getElementById('photo-preview');
+      const submitUpload = document.getElementById('submit-upload');
+      
+      // アップロードボタンクリック時
+      uploadButton.addEventListener('click', function() {
+        fileInput.click();
+      });
+      
+      // ファイル選択時
+      fileInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+          const file = this.files[0];
+          previewFile(file);
+        }
+      });
+      
+      // ドラッグ&ドロップの処理
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, preventDefaults, false);
+      });
+      
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, highlight, false);
+      });
+      
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, unhighlight, false);
+      });
+      
+      function highlight() {
+        dropArea.classList.add('highlight');
+      }
+      
+      function unhighlight() {
+        dropArea.classList.remove('highlight');
+      }
+      
+      dropArea.addEventListener('drop', handleDrop, false);
+      
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        
+        if (files && files[0]) {
+          const file = files[0];
+          previewFile(file);
+        }
+      }
+      
+      // ファイルのプレビュー表示
+      function previewFile(file) {
+        // ファイルサイズのチェック（10MB以下）
+        if (file.size > 10 * 1024 * 1024) {
+          showAlert('ファイルサイズが大きすぎます（最大10MB）', 'danger');
+          return;
+        }
+        
+        // ファイル形式のチェック
+        if (!['image/jpeg', 'image/png'].includes(file.type)) {
+          showAlert('対応していないファイル形式です（JPEGまたはPNG）', 'danger');
+          return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          photoPreview.src = e.target.result;
+          photoPreview.style.display = 'block';
+          submitUpload.style.display = 'inline-block';
+        }
+        reader.readAsDataURL(file);
+      }
+      
+      // アラート表示関数
+      function showAlert(message, type) {
+        const alertsContainer = document.getElementById('alerts-container') || (() => {
+          const container = document.createElement('div');
+          container.id = 'alerts-container';
+          container.style.position = 'fixed';
+          container.style.top = '20px';
+          container.style.right = '20px';
+          container.style.zIndex = '1000';
+          document.body.appendChild(container);
+          return container;
+        })();
+        
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type}`;
+        alert.textContent = message;
+        
+        const closeBtn = document.createElement('button');
+        closeBtn.type = 'button';
+        closeBtn.className = 'close';
+        closeBtn.innerHTML = '&times;';
+        closeBtn.style.marginLeft = '10px';
+        closeBtn.style.float = 'right';
+        closeBtn.addEventListener('click', function() {
+          alert.remove();
+        });
+        
+        alert.appendChild(closeBtn);
+        alertsContainer.appendChild(alert);
+        
+        setTimeout(() => {
+          alert.remove();
+        }, 5000);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>まごころおくりもの - 親ダッシュボード</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="nav-menu">
+        <a href="#" class="logo">まごころおくりもの</a>
+        <div class="nav-links">
+          <a href="parent-dashboard.html" class="active">マイページ</a>
+          <a href="parent-wishlist.html">ほしいものリスト</a>
+          <a href="parent-photos.html">写真管理</a>
+          <a href="parent-invite.html">祖父母招待</a>
+          <a href="login.html">ログアウト</a>
+        </div>
+        <button class="menu-toggle" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container" style="padding-top: 30px;">
+      <h1 style="margin-bottom: 30px;">親ダッシュボード</h1>
+      
+      <div class="card">
+        <h2 style="margin-bottom: 15px;">孫の情報</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 30px; align-items: center;">
+          <div style="flex: 0 0 150px;">
+            <img src="https://via.placeholder.com/150" alt="孫の写真" style="width: 100%; border-radius: 10px;">
+          </div>
+          <div style="flex: 1;">
+            <table style="width: 100%;">
+              <tr>
+                <th style="text-align: left; padding: 8px 0; width: 150px;">お名前</th>
+                <td>田中 はるか</td>
+              </tr>
+              <tr>
+                <th style="text-align: left; padding: 8px 0;">生年月日</th>
+                <td>2022年5月15日（3歳）</td>
+              </tr>
+              <tr>
+                <th style="text-align: left; padding: 8px 0;">つながっている祖父母</th>
+                <td>田中 良子（祖母）、田中 健一（祖父）</td>
+              </tr>
+            </table>
+            <div style="margin-top: 15px;">
+              <a href="#" class="btn btn-secondary" style="font-size: 14px;">
+                <i class="fas fa-edit"></i> 情報を編集
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="dashboard-cards">
+        <div class="dashboard-card">
+          <div class="dashboard-card-icon">
+            <i class="fas fa-gift"></i>
+          </div>
+          <h3 class="dashboard-card-title">ほしいものリスト</h3>
+          <div class="dashboard-card-count">5</div>
+          <p>現在登録中のアイテム数</p>
+          <div style="margin-top: 15px;">
+            <a href="parent-wishlist.html" class="btn btn-primary" style="width: 100%;">管理する</a>
+          </div>
+        </div>
+        
+        <div class="dashboard-card">
+          <div class="dashboard-card-icon">
+            <i class="fas fa-images"></i>
+          </div>
+          <h3 class="dashboard-card-title">写真</h3>
+          <div class="dashboard-card-count">12</div>
+          <p>アップロード済みの写真数</p>
+          <div style="margin-top: 15px;">
+            <a href="parent-photos.html" class="btn btn-primary" style="width: 100%;">管理する</a>
+          </div>
+        </div>
+        
+        <div class="dashboard-card">
+          <div class="dashboard-card-icon">
+            <i class="fas fa-user-friends"></i>
+          </div>
+          <h3 class="dashboard-card-title">祖父母招待</h3>
+          <div class="dashboard-card-count">2</div>
+          <p>つながっている祖父母の数</p>
+          <div style="margin-top: 15px;">
+            <a href="parent-invite.html" class="btn btn-primary" style="width: 100%;">招待する</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card" style="margin-top: 30px;">
+        <h2 style="margin-bottom: 15px;">最近の購入通知</h2>
+        <div class="item-list">
+          <div class="item-card">
+            <div class="item-details">
+              <div class="item-title">「くまのぬいぐるみ」が購入されました</div>
+              <div class="item-price">田中 良子（祖母）より - 2025年5月10日</div>
+            </div>
+            <div class="item-actions">
+              <button class="btn btn-secondary" style="font-size: 14px;">
+                <i class="fas fa-check"></i> 確認済み
+              </button>
+            </div>
+          </div>
+          
+          <div class="item-card">
+            <div class="item-details">
+              <div class="item-title">「お絵かきセット」が購入されました</div>
+              <div class="item-price">田中 健一（祖父）より - 2025年4月25日</div>
+            </div>
+            <div class="item-actions">
+              <button class="btn btn-secondary" style="font-size: 14px;">
+                <i class="fas fa-check"></i> 確認済み
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div style="margin-top: 15px; text-align: right;">
+          <a href="#" style="color: var(--primary-color); text-decoration: none;">
+            すべての通知を見る <i class="fas fa-chevron-right"></i>
+          </a>
+        </div>
+      </div>
+      
+      <div class="card" style="margin-top: 30px;">
+        <h2 style="margin-bottom: 15px;">最近アップロードした写真</h2>
+        <div class="photo-grid">
+          <div class="photo-item">
+            <img src="https://via.placeholder.com/300/FFD9C0/808080?text=Photo+1" alt="孫の写真">
+          </div>
+          <div class="photo-item">
+            <img src="https://via.placeholder.com/300/F1E0C5/808080?text=Photo+2" alt="孫の写真">
+          </div>
+          <div class="photo-item">
+            <img src="https://via.placeholder.com/300/C8E4B2/808080?text=Photo+3" alt="孫の写真">
+          </div>
+          <div class="photo-item">
+            <img src="https://via.placeholder.com/300/9ED2BE/808080?text=Photo+4" alt="孫の写真">
+          </div>
+        </div>
+        
+        <div style="margin-top: 15px; text-align: right;">
+          <a href="parent-photos.html" style="color: var(--primary-color); text-decoration: none;">
+            すべての写真を見る <i class="fas fa-chevron-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="#">利用規約</a>
+          <a href="#">プライバシーポリシー</a>
+          <a href="#">お問い合わせ</a>
+        </div>
+        <div class="copyright">
+          &copy; 2025 まごころおくりもの All Rights Reserved.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="scripts.js"></script>
+</body>
+</html>

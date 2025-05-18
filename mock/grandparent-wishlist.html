@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>まごころおくりもの - ほしいものリスト閲覧</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="nav-menu">
+        <a href="#" class="logo">まごころおくりもの</a>
+        <div class="nav-links">
+          <a href="grandparent-dashboard.html">マイページ</a>
+          <a href="grandparent-wishlist.html" class="active">ほしいものリスト</a>
+          <a href="grandparent-photos.html">写真閲覧</a>
+          <a href="grandparent-souvenirs.html">記念品案内</a>
+          <a href="login.html">ログアウト</a>
+        </div>
+        <button class="menu-toggle" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container" style="padding-top: 30px;">
+      <h1 style="margin-bottom: 10px;">ほしいものリスト閲覧</h1>
+      <p style="margin-bottom: 30px;">はるかちゃんにほしいものをご確認いただけます</p>
+      
+      <div class="card" style="margin-bottom: 30px;">
+        <h2 style="margin-bottom: 20px;">はるかちゃんのほしいものリスト</h2>
+        
+        <div class="item-list">
+          <div class="item-card">
+            <div class="item-details">
+              <div class="item-title">くまのぬいぐるみ</div>
+              <div class="item-price">価格: 約3,500円 - <span class="tag">おもちゃ</span></div>
+              <div>商品URL: <a href="#" target="_blank">https://example.com/teddy-bear</a></div>
+              <div style="margin-top: 10px; font-size: 14px;">
+                <i class="fas fa-comment"></i> メッセージ: 最近、くまさんに興味を持ち始めました。お気に入りのぬいぐるみになるといいなと思っています。
+              </div>
+            </div>
+            <div class="item-actions">
+              <span class="tag" style="background-color: #A5D6A7; margin-right: 10px;">購入済み</span>
+              <a href="grandparent-wishlist-detail.html?id=1" class="btn btn-secondary" style="font-size: 14px;">
+                詳細を見る
+              </a>
+            </div>
+          </div>
+          
+          <div class="item-card">
+            <div class="item-details">
+              <div class="item-title">キッズ用自転車</div>
+              <div class="item-price">価格: 約15,000円 - <span class="tag">外遊び</span></div>
+              <div>商品URL: <a href="#" target="_blank">https://example.com/kids-bike</a></div>
+              <div style="margin-top: 10px; font-size: 14px;">
+                <i class="fas fa-comment"></i> メッセージ: 公園でお友達が自転車に乗っているのを見て、はるかも欲しがっています。安全に乗れるように補助輪付きを希望します。
+              </div>
+            </div>
+            <div class="item-actions">
+              <a href="grandparent-wishlist-detail.html?id=2" class="btn btn-secondary" style="font-size: 14px; margin-right: 10px;">
+                詳細を見る
+              </a>
+              <button class="btn btn-primary btn-purchase" data-item-id="2">
+                購入する
+              </button>
+            </div>
+          </div>
+          
+          <div class="item-card">
+            <div class="item-details">
+              <div class="item-title">絵本セット（5冊）</div>
+              <div class="item-price">価格: 約4,800円 - <span class="tag">本</span></div>
+              <div>商品URL: <a href="#" target="_blank">https://example.com/picture-books</a></div>
+              <div style="margin-top: 10px; font-size: 14px;">
+                <i class="fas fa-comment"></i> メッセージ: 寝る前の読み聞かせ用に、新しい絵本が欲しいです。この絵本セットは年齢に合った内容で、はるかも喜ぶと思います。
+              </div>
+            </div>
+            <div class="item-actions">
+              <a href="grandparent-wishlist-detail.html?id=3" class="btn btn-secondary" style="font-size: 14px; margin-right: 10px;">
+                詳細を見る
+              </a>
+              <button class="btn btn-primary btn-purchase" data-item-id="3">
+                購入する
+              </button>
+            </div>
+          </div>
+          
+          <div class="item-card">
+            <div class="item-details">
+              <div class="item-title">お絵かきセット</div>
+              <div class="item-price">価格: 約2,500円 - <span class="tag">文房具</span></div>
+              <div>商品URL: <a href="#" target="_blank">https://example.com/drawing-set</a></div>
+              <div style="margin-top: 10px; font-size: 14px;">
+                <i class="fas fa-comment"></i> メッセージ: お絵かきが大好きなはるかのために、クレヨンや色鉛筆、スケッチブックがセットになったものが欲しいです。
+              </div>
+            </div>
+            <div class="item-actions">
+              <span class="tag" style="background-color: #A5D6A7; margin-right: 10px;">購入済み</span>
+              <a href="grandparent-wishlist-detail.html?id=4" class="btn btn-secondary" style="font-size: 14px;">
+                詳細を見る
+              </a>
+            </div>
+          </div>
+          
+          <div class="item-card">
+            <div class="item-details">
+              <div class="item-title">夏用の帽子</div>
+              <div class="item-price">価格: 約1,800円 - <span class="tag">洋服</span></div>
+              <div>商品URL: <a href="#" target="_blank">https://example.com/summer-hat</a></div>
+              <div style="margin-top: 10px; font-size: 14px;">
+                <i class="fas fa-comment"></i> メッセージ: 夏のお出かけ用に、つばの広い帽子が欲しいです。日焼け対策になるものを希望しています。
+              </div>
+            </div>
+            <div class="item-actions">
+              <a href="grandparent-wishlist-detail.html?id=5" class="btn btn-secondary" style="font-size: 14px; margin-right: 10px;">
+                詳細を見る
+              </a>
+              <button class="btn btn-primary btn-purchase" data-item-id="5">
+                購入する
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <h2 style="margin-bottom: 20px;">ほしいものリスト利用ガイド</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+          <div style="flex: 1; min-width: 300px;">
+            <h3 style="margin-bottom: 10px; color: var(--primary-color);">
+              <i class="fas fa-info-circle"></i> 「購入する」ボタンについて
+            </h3>
+            <p style="margin-bottom: 15px;">
+              「購入する」ボタンを押すと、親に購入の意思が通知されます。<br>
+              実際の購入はご自身で外部サイトから行っていただく必要があります。
+            </p>
+            <p>
+              ※購入済みの商品は他の方も確認できるため、重複して購入することを防げます。
+            </p>
+          </div>
+          <div style="flex: 1; min-width: 300px;">
+            <h3 style="margin-bottom: 10px; color: var(--primary-color);">
+              <i class="fas fa-question-circle"></i> よくある質問
+            </h3>
+            <ul style="list-style-type: none; padding-left: 0;">
+              <li style="margin-bottom: 8px;">
+                <details>
+                  <summary style="cursor: pointer; font-weight: 500;">ほしいものリストの商品は誰が登録していますか？</summary>
+                  <p style="margin-top: 5px; padding-left: 15px;">孫の親（はるかちゃんのお母さん）が登録しています。</p>
+                </details>
+              </li>
+              <li style="margin-bottom: 8px;">
+                <details>
+                  <summary style="cursor: pointer; font-weight: 500;">購入した後、キャンセルはできますか？</summary>
+                  <p style="margin-top: 5px; padding-left: 15px;">「購入する」ボタンを押した後のキャンセルは、カスタマーサポートにお問い合わせください。</p>
+                </details>
+              </li>
+              <li style="margin-bottom: 8px;">
+                <details>
+                  <summary style="cursor: pointer; font-weight: 500;">商品について質問がある場合はどうすればいいですか？</summary>
+                  <p style="margin-top: 5px; padding-left: 15px;">現在、アプリ内での直接のメッセージ機能はありません。親御さんに別途ご連絡いただくか、カスタマーサポートを通じてお問い合わせください。</p>
+                </details>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="#">利用規約</a>
+          <a href="#">プライバシーポリシー</a>
+          <a href="#">お問い合わせ</a>
+        </div>
+        <div class="copyright">
+          &copy; 2025 まごころおくりもの All Rights Reserved.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="scripts.js"></script>
+</body>
+</html>

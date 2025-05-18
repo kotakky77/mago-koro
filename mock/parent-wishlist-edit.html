@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ほしいものアイテム編集 - まごころおくりもの</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="https://via.placeholder.com/150x50?text=まごころおくりもの" alt="まごころおくりもの">
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="parent-dashboard.html" class="nav-link">ホーム</a></li>
+                    <li class="nav-item"><a href="parent-photos.html" class="nav-link">写真</a></li>
+                    <li class="nav-item"><a href="parent-wishlist.html" class="nav-link active">ほしいものリスト</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">設定</a></li>
+                </ul>
+            </nav>
+            <div class="user-menu">
+                <span class="user-name">鈴木花子さん</span>
+                <button class="btn btn-link"><i class="fas fa-sign-out-alt"></i> ログアウト</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="page-header">
+            <h1 class="page-title">ほしいものアイテム編集</h1>
+            <p class="page-description">登録済みのほしいものアイテムを編集できます</p>
+        </div>
+
+        <section class="card">
+            <form id="editWishlistItemForm" class="form">
+                <div class="form-group">
+                    <label for="itemName">アイテム名 <span class="required">*</span></label>
+                    <input type="text" id="itemName" name="itemName" value="レゴ デュプロ 動物セット" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="itemUrl">商品URL</label>
+                    <input type="url" id="itemUrl" name="itemUrl" value="https://example.com/toy/123456">
+                    <small class="form-help">Amazonや楽天などの商品ページのURLを入力してください</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="itemPrice">価格の目安</label>
+                    <div class="price-input-group">
+                        <input type="number" id="itemPrice" name="itemPrice" value="5000" min="0" step="1">
+                        <span class="price-symbol">円</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="itemPriority">優先度</label>
+                    <select id="itemPriority" name="itemPriority">
+                        <option value="high" selected>高（とても欲しい）</option>
+                        <option value="medium">中（欲しい）</option>
+                        <option value="low">低（あれば嬉しい）</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="itemDescription">説明・メモ</label>
+                    <textarea id="itemDescription" name="itemDescription" rows="3">動物の形のブロックで、動物園ごっこをして遊びたいと言っています。特にキリンが大好きです。</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="itemPhoto">商品写真</label>
+                    <div class="photo-preview" id="photoPreview">
+                        <img src="https://via.placeholder.com/200x150?text=レゴ+デュプロ" alt="商品写真">
+                    </div>
+                    <div class="photo-upload">
+                        <label for="newPhoto" class="btn btn-secondary btn-sm">写真を変更</label>
+                        <input type="file" id="newPhoto" name="newPhoto" accept="image/*" hidden>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-danger" id="deleteItemBtn">このアイテムを削除</button>
+                    <div class="form-action-right">
+                        <button type="button" class="btn btn-outline" onclick="window.location.href='parent-wishlist.html'">キャンセル</button>
+                        <button type="submit" class="btn btn-primary">保存する</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2023 まごころおくりもの All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">利用規約</a>
+                <a href="#" class="footer-link">プライバシーポリシー</a>
+                <a href="#" class="footer-link">お問い合わせ</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 保存完了モーダル -->
+    <div class="modal" id="saveCompletedModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">保存完了</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>ほしいものアイテムが更新されました。</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary modal-close">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 削除確認モーダル -->
+    <div class="modal" id="deleteConfirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">削除の確認</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>このほしいものアイテムを削除してもよろしいですか？</p>
+                <p>この操作は取り消せません。</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close">キャンセル</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">削除する</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+    <script>
+        // 商品写真のプレビュー
+        document.getElementById('newPhoto').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.querySelector('#photoPreview img').src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // フォーム送信処理
+        document.getElementById('editWishlistItemForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 保存成功のシミュレーション
+            showModal('saveCompletedModal');
+            
+            // モーダルのOKボタンがクリックされたらリスト画面に戻る
+            document.querySelector('#saveCompletedModal .modal-close').addEventListener('click', function() {
+                window.location.href = 'parent-wishlist.html';
+            });
+        });
+
+        // 削除ボタンの処理
+        document.getElementById('deleteItemBtn').addEventListener('click', function() {
+            showModal('deleteConfirmModal');
+        });
+
+        // 削除確認の処理
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+            // 削除処理のシミュレーション
+            closeModal('deleteConfirmModal');
+            showAlert('アイテムが削除されました', 'success');
+            
+            // 成功後にリスト画面へリダイレクト
+            setTimeout(() => {
+                window.location.href = 'parent-wishlist.html';
+            }, 1500);
+        });
+    </script>
+</body>
+</html>

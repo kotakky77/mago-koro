@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>アカウント作成 - まごころおくりもの</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="https://via.placeholder.com/150x50?text=まごころおくりもの" alt="まごころおくりもの">
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="card login-card register-card">
+            <h1 class="card-title">アカウント作成</h1>
+            <p class="card-subtitle">おじいちゃん・おばあちゃんに孫の様子を伝えるアカウントを作成しましょう</p>
+            
+            <form id="registerForm" class="form">
+                <div class="form-group">
+                    <label for="email">メールアドレス <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">パスワード <span class="required">*</span></label>
+                    <input type="password" id="password" name="password" required>
+                    <small class="form-help">8文字以上で、英字・数字を含めてください</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">パスワード（確認用） <span class="required">*</span></label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="parentName">親の氏名 <span class="required">*</span></label>
+                    <input type="text" id="parentName" name="parentName" required>
+                </div>
+                
+                <h2 class="section-title">孫の情報</h2>
+                
+                <div class="form-group">
+                    <label for="childName">孫の氏名 <span class="required">*</span></label>
+                    <input type="text" id="childName" name="childName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="childBirthday">孫の誕生日 <span class="required">*</span></label>
+                    <input type="date" id="childBirthday" name="childBirthday" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="childGender">孫の性別</label>
+                    <select id="childGender" name="childGender">
+                        <option value="">選択してください</option>
+                        <option value="male">男の子</option>
+                        <option value="female">女の子</option>
+                        <option value="other">その他</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="childHobby">孫の好きなこと・趣味（任意）</label>
+                    <textarea id="childHobby" name="childHobby" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">
+                        <a href="#" class="link">利用規約</a>と<a href="#" class="link">プライバシーポリシー</a>に同意します
+                    </label>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-block">アカウントを作成する</button>
+                </div>
+            </form>
+            
+            <div class="form-footer">
+                <p>すでにアカウントをお持ちですか？ <a href="login.html" class="link">ログイン</a></p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2023 まごころおくりもの All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">利用規約</a>
+                <a href="#" class="footer-link">プライバシーポリシー</a>
+                <a href="#" class="footer-link">お問い合わせ</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scripts.js"></script>
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // パスワード一致確認
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                showAlert('パスワードが一致しません。再度入力してください。', 'error');
+                return;
+            }
+            
+            // パスワード強度チェック
+            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+            if (!passwordRegex.test(password)) {
+                showAlert('パスワードは8文字以上で、英字と数字を含める必要があります。', 'error');
+                return;
+            }
+            
+            // フォーム送信成功のシミュレーション
+            showAlert('アカウントが作成されました！ログイン画面に移動します。', 'success');
+            
+            // 成功後にログイン画面へリダイレクト（モックなので少し遅延させる）
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

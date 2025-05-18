@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>購入通知一覧 - まごころおくりもの</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="https://via.placeholder.com/150x50?text=まごころおくりもの" alt="まごころおくりもの">
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="parent-dashboard.html" class="nav-link">ホーム</a></li>
+                    <li class="nav-item"><a href="parent-photos.html" class="nav-link">写真</a></li>
+                    <li class="nav-item"><a href="parent-wishlist.html" class="nav-link">ほしいものリスト</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">設定</a></li>
+                </ul>
+            </nav>
+            <div class="user-menu">
+                <span class="user-name">鈴木花子さん</span>
+                <button class="btn btn-link"><i class="fas fa-sign-out-alt"></i> ログアウト</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="page-header">
+            <h1 class="page-title">購入通知一覧</h1>
+            <p class="page-description">祖父母からの購入通知が届いています</p>
+        </div>
+
+        <section class="card">
+            <div class="purchase-notifications">
+                <div class="notification-filters">
+                    <div class="filter-group">
+                        <label for="notificationStatus">表示:</label>
+                        <select id="notificationStatus" name="notificationStatus">
+                            <option value="all" selected>すべて</option>
+                            <option value="unread">未読のみ</option>
+                            <option value="read">既読のみ</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="notification-list">
+                    <!-- 通知アイテム1 - 未読 -->
+                    <div class="notification-item unread">
+                        <div class="notification-badge">
+                            <span class="badge badge-new">新着</span>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-header">
+                                <h3 class="notification-title">佐藤おじいちゃんが「レゴ デュプロ 動物セット」を購入しました</h3>
+                                <span class="notification-date">2023年8月10日 14:30</span>
+                            </div>
+                            <div class="notification-body">
+                                <div class="notification-product">
+                                    <img src="https://via.placeholder.com/80x60?text=商品画像" alt="レゴ デュプロ 動物セット" class="notification-product-image">
+                                    <div class="notification-product-info">
+                                        <p class="notification-product-name">レゴ デュプロ 動物セット</p>
+                                        <p class="notification-product-price">5,000円</p>
+                                    </div>
+                                </div>
+                                <div class="notification-message">
+                                    <p>たろちゃんへのプレゼントです。誕生日に間に合うように送るようにします。</p>
+                                </div>
+                            </div>
+                            <div class="notification-actions">
+                                <button class="btn btn-outline btn-sm notification-action" data-action="mark-read">既読にする</button>
+                                <button class="btn btn-outline btn-sm notification-action" data-action="send-thanks">お礼を送る</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 通知アイテム2 - 既読 -->
+                    <div class="notification-item read">
+                        <div class="notification-content">
+                            <div class="notification-header">
+                                <h3 class="notification-title">田中おばあちゃんが「恐竜の図鑑セット」を購入しました</h3>
+                                <span class="notification-date">2023年8月5日 10:15</span>
+                            </div>
+                            <div class="notification-body">
+                                <div class="notification-product">
+                                    <img src="https://via.placeholder.com/80x60?text=図鑑セット" alt="恐竜の図鑑セット" class="notification-product-image">
+                                    <div class="notification-product-info">
+                                        <p class="notification-product-name">恐竜の図鑑セット</p>
+                                        <p class="notification-product-price">3,800円</p>
+                                    </div>
+                                </div>
+                                <div class="notification-message">
+                                    <p>たろちゃんが恐竜が好きと聞いたので、この図鑑を選びました。来週お届けする予定です。</p>
+                                </div>
+                            </div>
+                            <div class="notification-actions">
+                                <button class="btn btn-outline btn-sm notification-action" data-action="mark-unread">未読に戻す</button>
+                                <button class="btn btn-outline btn-sm notification-action" data-action="send-thanks">お礼を送る</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 通知アイテム3 - 既読 -->
+                    <div class="notification-item read">
+                        <div class="notification-content">
+                            <div class="notification-header">
+                                <h3 class="notification-title">渡辺おじいちゃんが「子ども用自転車」を購入しました</h3>
+                                <span class="notification-date">2023年7月28日 16:45</span>
+                            </div>
+                            <div class="notification-body">
+                                <div class="notification-product">
+                                    <img src="https://via.placeholder.com/80x60?text=自転車" alt="子ども用自転車" class="notification-product-image">
+                                    <div class="notification-product-info">
+                                        <p class="notification-product-name">子ども用自転車（16インチ）</p>
+                                        <p class="notification-product-price">15,000円</p>
+                                    </div>
+                                </div>
+                                <div class="notification-message">
+                                    <p>公園で遊ぶのが好きだとお聞きしました。次回会いに行ったときに持って行きます。乗り方も教えてあげられたらと思っています。</p>
+                                </div>
+                            </div>
+                            <div class="notification-actions">
+                                <button class="btn btn-outline btn-sm notification-action" data-action="mark-unread">未読に戻す</button>
+                                <button class="btn btn-outline btn-sm notification-action" data-action="send-thanks">お礼を送る</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="notification-empty" style="display: none;">
+                    <div class="empty-state">
+                        <i class="fas fa-inbox fa-4x empty-icon"></i>
+                        <h3>購入通知はありません</h3>
+                        <p>祖父母がほしいものリストのアイテムを購入すると、ここに通知が表示されます。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2023 まごころおくりもの All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">利用規約</a>
+                <a href="#" class="footer-link">プライバシーポリシー</a>
+                <a href="#" class="footer-link">お問い合わせ</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- お礼メッセージモーダル -->
+    <div class="modal" id="thankYouModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">お礼メッセージを送る</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p><span id="grandparentName">田中おばあちゃん</span>に「<span id="productName">恐竜の図鑑セット</span>」のお礼メッセージを送ります。</p>
+                <div class="form-group">
+                    <label for="thankYouMessage">メッセージ:</label>
+                    <textarea id="thankYouMessage" rows="5" placeholder="例：素敵なプレゼントをありがとうございます。たろはとても喜んでいます。"></textarea>
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="attachPhoto" name="attachPhoto">
+                    <label for="attachPhoto">写真を添付する</label>
+                </div>
+                <div id="photoAttachment" class="form-group" style="display: none;">
+                    <label for="thanksPhoto">写真を選択:</label>
+                    <input type="file" id="thanksPhoto" name="thanksPhoto" accept="image/*">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close">キャンセル</button>
+                <button class="btn btn-primary" id="sendThanksBtn">送信する</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+    <script>
+        // フィルター機能
+        document.getElementById('notificationStatus').addEventListener('change', function() {
+            const status = this.value;
+            const items = document.querySelectorAll('.notification-item');
+            
+            items.forEach(item => {
+                if (status === 'all') {
+                    item.style.display = 'flex';
+                } else if (status === 'unread' && item.classList.contains('unread')) {
+                    item.style.display = 'flex';
+                } else if (status === 'read' && item.classList.contains('read')) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // 表示されるアイテムがなければ空の状態を表示
+            const visibleItems = [...items].filter(item => item.style.display !== 'none').length;
+            document.querySelector('.notification-empty').style.display = visibleItems === 0 ? 'block' : 'none';
+        });
+
+        // 通知アクション処理
+        document.querySelectorAll('.notification-action').forEach(button => {
+            button.addEventListener('click', function() {
+                const action = this.getAttribute('data-action');
+                const notificationItem = this.closest('.notification-item');
+                
+                if (action === 'mark-read') {
+                    notificationItem.classList.remove('unread');
+                    notificationItem.classList.add('read');
+                    notificationItem.querySelector('.notification-badge').remove();
+                    this.setAttribute('data-action', 'mark-unread');
+                    this.textContent = '未読に戻す';
+                    showAlert('既読にしました', 'success');
+                } else if (action === 'mark-unread') {
+                    notificationItem.classList.remove('read');
+                    notificationItem.classList.add('unread');
+                    
+                    // バッジを追加
+                    const badgeDiv = document.createElement('div');
+                    badgeDiv.className = 'notification-badge';
+                    badgeDiv.innerHTML = '<span class="badge badge-new">新着</span>';
+                    notificationItem.insertBefore(badgeDiv, notificationItem.firstChild);
+                    
+                    this.setAttribute('data-action', 'mark-read');
+                    this.textContent = '既読にする';
+                    showAlert('未読に戻しました', 'success');
+                } else if (action === 'send-thanks') {
+                    // モーダルに情報をセット
+                    const grandparentName = notificationItem.querySelector('.notification-title').textContent.split('が')[0];
+                    const productName = notificationItem.querySelector('.notification-product-name').textContent;
+                    
+                    document.getElementById('grandparentName').textContent = grandparentName;
+                    document.getElementById('productName').textContent = productName;
+                    
+                    showModal('thankYouModal');
+                }
+            });
+        });
+
+        // 写真添付のトグル
+        document.getElementById('attachPhoto').addEventListener('change', function() {
+            document.getElementById('photoAttachment').style.display = this.checked ? 'block' : 'none';
+        });
+
+        // お礼メッセージ送信処理
+        document.getElementById('sendThanksBtn').addEventListener('click', function() {
+            const message = document.getElementById('thankYouMessage').value;
+            if (!message.trim()) {
+                showAlert('メッセージを入力してください', 'error');
+                return;
+            }
+            
+            // 送信成功シミュレーション
+            closeModal('thankYouModal');
+            showAlert('お礼メッセージを送信しました', 'success');
+        });
+    </script>
+</body>
+</html>

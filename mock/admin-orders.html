@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注文管理 - まごころおくりもの</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="admin-body">
+    <header class="header header-admin">
+        <div class="container">
+            <div class="logo">
+                <img src="https://via.placeholder.com/150x50?text=まごころおくりもの" alt="まごころおくりもの">
+                <span class="admin-tag">管理者用</span>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="admin-dashboard.html" class="nav-link">ダッシュボード</a></li>
+                    <li class="nav-item"><a href="admin-users.html" class="nav-link">ユーザー管理</a></li>
+                    <li class="nav-item"><a href="admin-catalog.html" class="nav-link">記念品カタログ</a></li>
+                    <li class="nav-item"><a href="admin-orders.html" class="nav-link active">注文管理</a></li>
+                </ul>
+            </nav>
+            <div class="user-menu">
+                <span class="user-name">管理者</span>
+                <button class="btn btn-link"><i class="fas fa-sign-out-alt"></i> ログアウト</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="page-header">
+            <h1 class="page-title">注文管理</h1>
+            <p class="page-description">記念品の注文状況を管理します</p>
+        </div>
+
+        <div class="admin-controls">
+            <div class="search-box">
+                <input type="text" placeholder="注文ID、顧客名で検索..." id="orderSearchInput">
+                <button class="btn btn-icon"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="filter-controls">
+                <select id="statusFilter">
+                    <option value="all">すべてのステータス</option>
+                    <option value="new">新規注文</option>
+                    <option value="processing">処理中</option>
+                    <option value="shipping">出荷準備中</option>
+                    <option value="shipped">発送済み</option>
+                    <option value="completed">完了</option>
+                    <option value="cancelled">キャンセル</option>
+                </select>
+                <div class="date-filter">
+                    <label for="dateFrom">期間:</label>
+                    <input type="date" id="dateFrom" name="dateFrom">
+                    <span>～</span>
+                    <input type="date" id="dateTo" name="dateTo">
+                    <button class="btn btn-outline btn-sm" id="applyDateFilter">適用</button>
+                </div>
+                <button class="btn btn-primary" id="exportOrdersBtn">
+                    <i class="fas fa-file-export"></i> エクスポート
+                </button>
+            </div>
+        </div>
+
+        <section class="card">
+            <div class="order-summary">
+                <div class="summary-item">
+                    <div class="summary-value">12</div>
+                    <div class="summary-label">新規注文</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value">8</div>
+                    <div class="summary-label">処理中</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value">5</div>
+                    <div class="summary-label">出荷準備中</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value">15</div>
+                    <div class="summary-label">発送済み</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value">87</div>
+                    <div class="summary-label">完了</div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="admin-table orders-table">
+                    <thead>
+                        <tr>
+                            <th>注文ID</th>
+                            <th>日付</th>
+                            <th>顧客名</th>
+                            <th>商品</th>
+                            <th>金額</th>
+                            <th>ステータス</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>注文#1089</td>
+                            <td>2023/08/12</td>
+                            <td>佐藤正一</td>
+                            <td>イラスト付きフォトフレーム</td>
+                            <td>5,800円</td>
+                            <td><span class="status-badge processing">処理中</span></td>
+                            <td class="actions-cell">
+                                <button class="btn btn-icon btn-sm" title="詳細"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-icon btn-sm" title="編集"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-icon btn-sm btn-danger" title="キャンセル"><i class="fas fa-times"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>注文#1088</td>
+                            <td>2023/08/10</td>
+                            <td>田中花子</td>
+                            <td>メモリーアルバム</td>
+                            <td>8,200円</td>
+                            <td><span class="status-badge completed">完了</span></td>
+                            <td class="actions-cell">
+                                <button class="btn btn-icon btn-sm" title="詳細"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-icon btn-sm" title="編集"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-icon btn-sm btn-danger" title="キャンセル"><i class="fas fa-times"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>注文#1087</td>
+                            <td>2023/08/08</td>
+                            <td>山田太郎</td>
+                            <td>オリジナルマグカップ</td>
+                            <td>3,800円</td>
+                            <td><span class="status-badge shipped">発送済み</span></td>
+                            <td class="actions-cell">
+                                <button class="btn btn-icon btn-sm" title="詳細"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-icon btn-sm" title="編集"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-icon btn-sm btn-danger" title="キャンセル"><i class="fas fa-times"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>注文#1086</td>
+                            <td>2023/08/05</td>
+                            <td>高橋健一</td>
+                            <td>オリジナルTシャツ</td>
+                            <td>3,900円</td>
+                            <td><span class="status-badge shipping">出荷準備中</span></td>
+                            <td class="actions-cell">
+                                <button class="btn btn-icon btn-sm" title="詳細"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-icon btn-sm" title="編集"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-icon btn-sm btn-danger" title="キャンセル"><i class="fas fa-times"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>注文#1085</td>
+                            <td>2023/08/03</td>
+                            <td>渡辺良子</td>
+                            <td>イラスト付きフォトフレーム</td>
+                            <td>5,800円</td>
+                            <td><span class="status-badge new">新規注文</span></td>
+                            <td class="actions-cell">
+                                <button class="btn btn-icon btn-sm" title="詳細"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-icon btn-sm" title="編集"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-icon btn-sm btn-danger" title="キャンセル"><i class="fas fa-times"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>注文#1084</td>
+                            <td>2023/08/01</td>
+                            <td>木村次郎</td>
+                            <td>メモリーアルバム</td>
+                            <td>8,200円</td>
+                            <td><span class="status-badge cancelled">キャンセル</span></td>
+                            <td class="actions-cell">
+                                <button class="btn btn-icon btn-sm" title="詳細"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-icon btn-sm" title="編集"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-icon btn-sm btn-danger disabled" title="キャンセル"><i class="fas fa-times"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <button class="pagination-btn" disabled><i class="fas fa-chevron-left"></i></button>
+                <button class="pagination-btn active">1</button>
+                <button class="pagination-btn">2</button>
+                <button class="pagination-btn">3</button>
+                <span class="pagination-ellipsis">...</span>
+                <button class="pagination-btn">10</button>
+                <button class="pagination-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer footer-admin">
+        <div class="container">
+            <p>© 2023 まごころおくりもの All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">利用規約</a>
+                <a href="#" class="footer-link">プライバシーポリシー</a>
+                <a href="#" class="footer-link">お問い合わせ</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 注文詳細モーダル -->
+    <div class="modal" id="orderDetailModal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h2 class="modal-title">注文詳細</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="order-info-header">
+                    <div class="order-info-main">
+                        <div class="order-id-container">
+                            <h3 class="order-id">注文#1089</h3>
+                            <span class="status-badge processing">処理中</span>
+                        </div>
+                        <p class="order-date">注文日時: 2023年8月12日 15:30</p>
+                    </div>
+                    <div class="order-status-selector">
+                        <label for="orderStatus">ステータス変更:</label>
+                        <select id="orderStatus" name="orderStatus">
+                            <option value="new">新規注文</option>
+                            <option value="processing" selected>処理中</option>
+                            <option value="shipping">出荷準備中</option>
+                            <option value="shipped">発送済み</option>
+                            <option value="completed">完了</option>
+                            <option value="cancelled">キャンセル</option>
+                        </select>
+                        <button class="btn btn-primary btn-sm" id="updateStatusBtn">更新</button>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h4 class="section-title">注文者情報</h4>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">顧客名:</span>
+                            <span class="detail-value">佐藤正一</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">メールアドレス:</span>
+                            <span class="detail-value">shoichi@example.com</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">電話番号:</span>
+                            <span class="detail-value">090-1234-5678</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">ユーザータイプ:</span>
+                            <span class="detail-value">祖父母</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h4 class="section-title">配送先情報</h4>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">氏名:</span>
+                            <span class="detail-value">佐藤正一</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">郵便番号:</span>
+                            <span class="detail-value">123-4567</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">住所:</span>
+                            <span class="detail-value">東京都千代田区○○町1-2-3 △△マンション101</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">電話番号:</span>
+                            <span class="detail-value">090-1234-5678</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h4 class="section-title">商品情報</h4>
+                    <div class="order-products">
+                        <div class="order-product-item">
+                            <div class="product-image">
+                                <img src="https://via.placeholder.com/80x60?text=フォトフレーム" alt="イラスト付きフォトフレーム">
+                            </div>
+                            <div class="product-details">
+                                <div class="product-name">イラスト付きフォトフレーム</div>
+                                <div class="product-options">
+                                    <span class="option-item">オプション: デザインA</span>
+                                    <span class="option-item">カラー: ナチュラル</span>
+                                </div>
+                                <div class="product-price">5,800円</div>
+                            </div>
+                            <div class="product-quantity">
+                                <span class="quantity-label">数量:</span>
+                                <span class="quantity-value">1</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h4 class="section-title">支払い情報</h4>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">支払い方法:</span>
+                            <span class="detail-value">クレジットカード</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">カード番号:</span>
+                            <span class="detail-value">**** **** **** 1234</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">商品合計:</span>
+                            <span class="detail-value">5,800円</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">送料:</span>
+                            <span class="detail-value">550円</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">消費税:</span>
+                            <span class="detail-value">635円</span>
+                        </div>
+                        <div class="detail-item total">
+                            <span class="detail-label">合計金額:</span>
+                            <span class="detail-value">6,985円</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h4 class="section-title">注文メモ</h4>
+                    <div class="order-notes">
+                        <p>孫の誕生日プレゼントです。できるだけ早く届けていただけるとありがたいです。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" id="cancelOrderBtn">注文をキャンセル</button>
+                <div class="modal-footer-right">
+                    <button class="btn btn-outline modal-close">閉じる</button>
+                    <button class="btn btn-primary" id="printOrderBtn">印刷</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- キャンセル確認モーダル -->
+    <div class="modal" id="cancelConfirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">注文キャンセルの確認</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>以下の注文をキャンセルしてもよろしいですか？</p>
+                <p id="cancelOrderId" class="alert-text">注文#1089</p>
+                <div class="form-group">
+                    <label for="cancelReason">キャンセル理由:</label>
+                    <select id="cancelReason" name="cancelReason">
+                        <option value="customer-request">顧客のリクエスト</option>
+                        <option value="payment-issue">支払い問題</option>
+                        <option value="out-of-stock">在庫切れ</option>
+                        <option value="shipping-issue">配送問題</option>
+                        <option value="other">その他</option>
+                    </select>
+                </div>
+                <div class="form-group" id="otherReasonGroup" style="display: none;">
+                    <label for="otherReason">その他の理由:</label>
+                    <textarea id="otherReason" name="otherReason" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close">戻る</button>
+                <button class="btn btn-danger" id="confirmCancelBtn">キャンセルする</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+    <script>
+        // 注文詳細表示
+        document.querySelectorAll('.orders-table .fa-eye').forEach(icon => {
+            icon.closest('button').addEventListener('click', function() {
+                showModal('orderDetailModal');
+            });
+        });
+
+        // キャンセル確認ダイアログ表示
+        document.querySelectorAll('.orders-table .fa-times').forEach(icon => {
+            const button = icon.closest('button');
+            if (!button.classList.contains('disabled')) {
+                button.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    const orderId = row.cells[0].textContent;
+                    document.getElementById('cancelOrderId').textContent = orderId;
+                    showModal('cancelConfirmModal');
+                });
+            }
+        });
+
+        // 注文詳細内のキャンセルボタン
+        document.getElementById('cancelOrderBtn').addEventListener('click', function() {
+            closeModal('orderDetailModal');
+            
+            const orderId = document.querySelector('.order-id').textContent;
+            document.getElementById('cancelOrderId').textContent = orderId;
+            
+            showModal('cancelConfirmModal');
+        });
+
+        // キャンセル理由「その他」選択時の追加フィールド表示
+        document.getElementById('cancelReason').addEventListener('change', function() {
+            const otherReasonGroup = document.getElementById('otherReasonGroup');
+            if (this.value === 'other') {
+                otherReasonGroup.style.display = 'block';
+            } else {
+                otherReasonGroup.style.display = 'none';
+            }
+        });
+
+        // キャンセル確定処理
+        document.getElementById('confirmCancelBtn').addEventListener('click', function() {
+            const orderId = document.getElementById('cancelOrderId').textContent;
+            
+            // キャンセル処理のシミュレーション
+            closeModal('cancelConfirmModal');
+            showAlert(`${orderId}がキャンセルされました`, 'success');
+            
+            // テーブル内の該当行のステータスを更新
+            const rows = document.querySelectorAll('.orders-table tbody tr');
+            rows.forEach(row => {
+                if (row.cells[0].textContent === orderId) {
+                    const statusCell = row.cells[5].querySelector('.status-badge');
+                    statusCell.className = 'status-badge cancelled';
+                    statusCell.textContent = 'キャンセル';
+                    
+                    // キャンセルボタンを無効化
+                    const cancelBtn = row.cells[6].querySelector('.fa-times').closest('button');
+                    cancelBtn.classList.add('disabled');
+                }
+            });
+        });
+
+        // ステータス更新処理
+        document.getElementById('updateStatusBtn').addEventListener('click', function() {
+            const newStatus = document.getElementById('orderStatus').value;
+            const statusBadge = document.querySelector('.order-id-container .status-badge');
+            
+            // ステータスクラスの更新
+            statusBadge.className = 'status-badge ' + newStatus;
+            
+            // ステータステキストの更新
+            const statusTexts = {
+                'new': '新規注文',
+                'processing': '処理中',
+                'shipping': '出荷準備中',
+                'shipped': '発送済み',
+                'completed': '完了',
+                'cancelled': 'キャンセル'
+            };
+            statusBadge.textContent = statusTexts[newStatus];
+            
+            showAlert('注文ステータスが更新されました', 'success');
+        });
+
+        // 印刷ボタンの処理
+        document.getElementById('printOrderBtn').addEventListener('click', function() {
+            showAlert('印刷ページが開かれました', 'info');
+            // 実際のシステムでは window.print() や専用印刷ページへのリダイレクトを行う
+        });
+
+        // エクスポートボタンの処理
+        document.getElementById('exportOrdersBtn').addEventListener('click', function() {
+            showAlert('注文データをCSVでエクスポートしています...', 'info');
+            setTimeout(() => {
+                showAlert('注文データのエクスポートが完了しました', 'success');
+            }, 1500);
+        });
+
+        // フィルタリングと検索機能のシミュレーション
+        document.getElementById('orderSearchInput').addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.orders-table tbody tr');
+            
+            rows.forEach(row => {
+                const orderId = row.cells[0].textContent.toLowerCase();
+                const customerName = row.cells[2].textContent.toLowerCase();
+                
+                if (orderId.includes(searchTerm) || customerName.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        document.getElementById('statusFilter').addEventListener('change', function() {
+            const filterValue = this.value;
+            const rows = document.querySelectorAll('.orders-table tbody tr');
+            
+            rows.forEach(row => {
+                const statusBadge = row.cells[5].querySelector('.status-badge');
+                
+                if (filterValue === 'all' || statusBadge.classList.contains(filterValue)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        document.getElementById('applyDateFilter').addEventListener('click', function() {
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+            
+            if (!dateFrom && !dateTo) {
+                showAlert('日付範囲を指定してください', 'error');
+                return;
+            }
+            
+            showAlert('日付フィルターが適用されました', 'info');
+            // 実際のシステムではここで日付に基づくフィルタリング処理を行う
+        });
+    </script>
+</body>
+</html>

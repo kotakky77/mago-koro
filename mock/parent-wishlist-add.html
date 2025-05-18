@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>まごころおくりもの - ほしいものリスト追加</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="nav-menu">
+        <a href="#" class="logo">まごころおくりもの</a>
+        <div class="nav-links">
+          <a href="parent-dashboard.html">マイページ</a>
+          <a href="parent-wishlist.html" class="active">ほしいものリスト</a>
+          <a href="parent-photos.html">写真管理</a>
+          <a href="parent-invite.html">祖父母招待</a>
+          <a href="login.html">ログアウト</a>
+        </div>
+        <button class="menu-toggle" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container" style="padding-top: 30px;">
+      <h1 style="margin-bottom: 30px;">ほしいものリスト追加</h1>
+      
+      <div class="card">
+        <form id="add-wishlist-item-form" data-validate="true">
+          <div class="form-group">
+            <label for="item-name">商品名 <span style="color: #F44336;">*</span></label>
+            <input type="text" id="item-name" name="item-name" class="form-control" required placeholder="例: くまのぬいぐるみ">
+          </div>
+          
+          <div class="form-group">
+            <label for="item-url">商品URL <span style="color: #F44336;">*</span></label>
+            <input type="url" id="item-url" name="item-url" class="form-control" required placeholder="例: https://example.com/teddy-bear">
+            <small style="color: #757575;">商品の購入ページのURLを入力してください</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="item-price">価格の目安</label>
+            <div style="display: flex; align-items: center;">
+              <span style="margin-right: 10px;">¥</span>
+              <input type="number" id="item-price" name="item-price" class="form-control" placeholder="例: 3500">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="item-category">カテゴリ</label>
+            <select id="item-category" name="item-category" class="form-control">
+              <option value="">-- カテゴリを選択 --</option>
+              <option value="toys">おもちゃ</option>
+              <option value="books">本</option>
+              <option value="clothes">洋服</option>
+              <option value="shoes">靴</option>
+              <option value="outdoor">外遊び</option>
+              <option value="stationery">文房具</option>
+              <option value="baby">ベビー用品</option>
+              <option value="other">その他</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="item-quantity">数量</label>
+            <input type="number" id="item-quantity" name="item-quantity" class="form-control" value="1" min="1" max="10">
+          </div>
+          
+          <div class="form-group">
+            <label for="item-description">商品の説明/祖父母へのメッセージ</label>
+            <textarea id="item-description" name="item-description" class="form-control" rows="4" placeholder="例: はるかが最近くまに興味を持ち始めました。お気に入りのぬいぐるみになると嬉しいです。"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label>商品画像（任意）</label>
+            <div style="display: flex; align-items: center; gap: 20px;">
+              <div style="flex: 0 0 100px; height: 100px; background-color: #F5F5F5; border: 1px dashed #BDBDBD; display: flex; align-items: center; justify-content: center; cursor: pointer;" id="image-upload-area">
+                <i class="fas fa-plus" style="color: #BDBDBD; font-size: 24px;"></i>
+              </div>
+              <div>
+                <p>画像をアップロードする場合はクリックしてください。</p>
+                <p style="color: #757575; font-size: 14px;">※2MB以下のJPEG、PNG形式</p>
+              </div>
+              <input type="file" id="item-image" name="item-image" accept="image/jpeg, image/png" style="display: none;">
+            </div>
+            <div style="margin-top: 10px; display: none;" id="image-preview-container">
+              <img id="image-preview" src="" alt="商品画像プレビュー" style="max-width: 200px; max-height: 200px;">
+              <button type="button" class="btn" id="remove-image" style="margin-left: 10px; color: #F44336;">
+                <i class="fas fa-times"></i> 削除
+              </button>
+            </div>
+          </div>
+          
+          <div style="margin-top: 30px; display: flex; justify-content: space-between;">
+            <a href="parent-wishlist.html" class="btn">
+              <i class="fas fa-arrow-left"></i> キャンセル
+            </a>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-plus"></i> 追加する
+            </button>
+          </div>
+        </form>
+      </div>
+      
+      <div class="card" style="margin-top: 30px;">
+        <h2 style="margin-bottom: 20px;">アイテム追加のヒント</h2>
+        <div style="background-color: #E8F5E9; padding: 15px; border-radius: 8px;">
+          <h3 style="color: #2E7D32; margin-bottom: 10px;"><i class="fas fa-lightbulb"></i> 効果的なアイテム登録のコツ</h3>
+          <ul style="padding-left: 20px;">
+            <li style="margin-bottom: 8px;">具体的な商品名を記入しましょう。（例: 「おもちゃ」よりも「くまのぬいぐるみ（ブラウン・Mサイズ）」）</li>
+            <li style="margin-bottom: 8px;">複数の選択肢がある場合は、希望のカラーやサイズを説明欄に記載しましょう。</li>
+            <li style="margin-bottom: 8px;">祖父母が購入しやすいように、大手通販サイトのURLを記載することをおすすめします。</li>
+            <li style="margin-bottom: 8px;">メッセージ欄には、なぜそのアイテムが必要なのか、どのように使うのかなどを書くと伝わりやすいです。</li>
+            <li style="margin-bottom: 8px;">季節に合ったアイテムを登録すると、購入される可能性が高まります。</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="#">利用規約</a>
+          <a href="#">プライバシーポリシー</a>
+          <a href="#">お問い合わせ</a>
+        </div>
+        <div class="copyright">
+          &copy; 2025 まごころおくりもの All Rights Reserved.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="scripts.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // 画像アップロード関連
+      const imageUploadArea = document.getElementById('image-upload-area');
+      const itemImage = document.getElementById('item-image');
+      const imagePreview = document.getElementById('image-preview');
+      const imagePreviewContainer = document.getElementById('image-preview-container');
+      const removeImageBtn = document.getElementById('remove-image');
+      
+      // 画像アップロードエリアをクリックしたらファイル選択ダイアログを開く
+      imageUploadArea.addEventListener('click', function() {
+        itemImage.click();
+      });
+      
+      // ファイル選択時のプレビュー表示
+      itemImage.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+          const file = this.files[0];
+          
+          // ファイルサイズのチェック（2MB以下）
+          if (file.size > 2 * 1024 * 1024) {
+            showAlert('ファイルサイズが大きすぎます（最大2MB）', 'danger');
+            this.value = ''; // 選択をクリア
+            return;
+          }
+          
+          // ファイル形式のチェック
+          if (!['image/jpeg', 'image/png'].includes(file.type)) {
+            showAlert('対応していないファイル形式です（JPEGまたはPNG）', 'danger');
+            this.value = ''; // 選択をクリア
+            return;
+          }
+          
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            imagePreview.src = e.target.result;
+            imagePreviewContainer.style.display = 'block';
+          }
+          reader.readAsDataURL(file);
+        }
+      });
+      
+      // 画像削除ボタン
+      removeImageBtn.addEventListener('click', function() {
+        itemImage.value = ''; // ファイル選択をクリア
+        imagePreview.src = '';
+        imagePreviewContainer.style.display = 'none';
+      });
+      
+      // フォーム送信
+      const addWishlistForm = document.getElementById('add-wishlist-item-form');
+      
+      addWishlistForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // バリデーション（scripts.jsのsetupFormValidationでも行われるが、ここでも再度チェック）
+        const itemName = document.getElementById('item-name').value;
+        const itemUrl = document.getElementById('item-url').value;
+        
+        if (!itemName || !itemUrl) {
+          showAlert('必須項目を入力してください', 'danger');
+          return;
+        }
+        
+        // URLの形式チェック
+        if (!isValidUrl(itemUrl)) {
+          showAlert('有効なURLを入力してください', 'danger');
+          return;
+        }
+        
+        // フォームデータの取得（実際のアプリでは送信されるデータ）
+        const formData = {
+          name: itemName,
+          url: itemUrl,
+          price: document.getElementById('item-price').value,
+          category: document.getElementById('item-category').value,
+          quantity: document.getElementById('item-quantity').value,
+          description: document.getElementById('item-description').value,
+          hasImage: !!itemImage.files[0]
+        };
+        
+        // フォーム送信成功のメッセージ（モックアップなので実際には送信されない）
+        showAlert('ほしいものリストにアイテムを追加しました', 'success');
+        
+        // 1秒後にほしいものリスト一覧ページにリダイレクト
+        setTimeout(() => {
+          window.location.href = 'parent-wishlist.html';
+        }, 1000);
+      });
+      
+      // URLのバリデーション
+      function isValidUrl(string) {
+        try {
+          new URL(string);
+          return true;
+        } catch (_) {
+          return false;
+        }
+      }
+      
+      // アラート表示関数
+      function showAlert(message, type) {
+        const alertsContainer = document.getElementById('alerts-container') || (() => {
+          const container = document.createElement('div');
+          container.id = 'alerts-container';
+          container.style.position = 'fixed';
+          container.style.top = '20px';
+          container.style.right = '20px';
+          container.style.zIndex = '1000';
+          document.body.appendChild(container);
+          return container;
+        })();
+        
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type}`;
+        alert.textContent = message;
+        
+        const closeBtn = document.createElement('button');
+        closeBtn.type = 'button';
+        closeBtn.className = 'close';
+        closeBtn.innerHTML = '&times;';
+        closeBtn.style.marginLeft = '10px';
+        closeBtn.style.float = 'right';
+        closeBtn.addEventListener('click', function() {
+          alert.remove();
+        });
+        
+        alert.appendChild(closeBtn);
+        alertsContainer.appendChild(alert);
+        
+        setTimeout(() => {
+          alert.remove();
+        }, 5000);
+      }
+    });
+  </script>
+</body>
+</html>

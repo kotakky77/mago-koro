@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>招待承諾・登録 - まごころおくりもの</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="https://via.placeholder.com/150x50?text=まごころおくりもの" alt="まごころおくりもの">
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="card invitation-card">
+            <div class="invitation-header">
+                <div class="invitation-avatar">
+                    <img src="https://via.placeholder.com/120x120?text=たろちゃん" alt="たろちゃん" class="avatar-image">
+                </div>
+                <div class="invitation-info">
+                    <h1 class="invitation-title">招待状</h1>
+                    <p class="invitation-message">
+                        <strong>鈴木家</strong>から<strong>まごころおくりもの</strong>に招待されました
+                    </p>
+                </div>
+            </div>
+
+            <div class="invitation-content">
+                <div class="invitation-description">
+                    <p>鈴木花子さんがあなたを「まごころおくりもの」に招待しました。</p>
+                    <p>「まごころおくりもの」は、離れて暮らすお孫さんとのつながりを深めるサービスです。</p>
+                    <p>お孫さんの最新の写真の閲覧や、お孫さんがほしがっているものを確認して贈ることができます。</p>
+                </div>
+
+                <div class="child-info-preview">
+                    <h2 class="section-title">お孫さんの情報</h2>
+                    <div class="child-profile">
+                        <div class="profile-item">
+                            <span class="profile-label">お名前:</span>
+                            <span class="profile-value">鈴木太郎（たろちゃん）</span>
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-label">年齢:</span>
+                            <span class="profile-value">3歳</span>
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-label">好きなもの:</span>
+                            <span class="profile-value">恐竜、電車、絵本、公園で遊ぶこと</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="section-title">アカウント作成</h2>
+                <p class="section-description">招待を承諾して、まごころおくりもののアカウントを作成しましょう</p>
+
+                <form id="grandparentRegisterForm" class="form">
+                    <div class="form-group">
+                        <label for="relationship">お孫さんとの関係 <span class="required">*</span></label>
+                        <select id="relationship" name="relationship" required>
+                            <option value="">選択してください</option>
+                            <option value="paternal-grandfather">おじいちゃん（父方）</option>
+                            <option value="paternal-grandmother">おばあちゃん（父方）</option>
+                            <option value="maternal-grandfather">おじいちゃん（母方）</option>
+                            <option value="maternal-grandmother">おばあちゃん（母方）</option>
+                            <option value="other">その他</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="name">お名前 <span class="required">*</span></label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">メールアドレス <span class="required">*</span></label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">パスワード <span class="required">*</span></label>
+                        <input type="password" id="password" name="password" required>
+                        <small class="form-help">8文字以上で、英字・数字を含めてください</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword">パスワード（確認用） <span class="required">*</span></label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    </div>
+                    
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="terms" name="terms" required>
+                        <label for="terms">
+                            <a href="#" class="link">利用規約</a>と<a href="#" class="link">プライバシーポリシー</a>に同意します
+                        </label>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-block">招待を承諾してアカウントを作成</button>
+                    </div>
+                </form>
+
+                <div class="form-footer">
+                    <p>すでにアカウントをお持ちですか？ <a href="login.html" class="link">ログイン</a></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2023 まごころおくりもの All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">利用規約</a>
+                <a href="#" class="footer-link">プライバシーポリシー</a>
+                <a href="#" class="footer-link">お問い合わせ</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 登録完了モーダル -->
+    <div class="modal" id="registerCompletedModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">登録完了</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="success-animation">
+                    <i class="fas fa-check-circle fa-4x"></i>
+                </div>
+                <h3>招待を承諾し、アカウントが作成されました</h3>
+                <p>これからお孫さんの成長を一緒に見守りましょう。</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="goToDashboardBtn">ダッシュボードへ</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+    <script>
+        document.getElementById('grandparentRegisterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // パスワード一致確認
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                showAlert('パスワードが一致しません。再度入力してください。', 'error');
+                return;
+            }
+            
+            // パスワード強度チェック
+            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+            if (!passwordRegex.test(password)) {
+                showAlert('パスワードは8文字以上で、英字と数字を含める必要があります。', 'error');
+                return;
+            }
+            
+            // フォーム送信成功のシミュレーション
+            showModal('registerCompletedModal');
+            
+            // ダッシュボードボタンの処理
+            document.getElementById('goToDashboardBtn').addEventListener('click', function() {
+                window.location.href = 'grandparent-dashboard.html';
+            });
+        });
+    </script>
+</body>
+</html>

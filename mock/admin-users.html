@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ユーザー管理 - まごころおくりもの</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="admin-body">
+    <header class="header header-admin">
+        <div class="container">
+            <div class="logo">
+                <img src="https://via.placeholder.com/150x50?text=まごころおくりもの" alt="まごころおくりもの">
+                <span class="admin-tag">管理者用</span>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="admin-dashboard.html" class="nav-link">ダッシュボード</a></li>
+                    <li class="nav-item"><a href="admin-users.html" class="nav-link active">ユーザー管理</a></li>
+                    <li class="nav-item"><a href="admin-catalog.html" class="nav-link">記念品カタログ</a></li>
+                    <li class="nav-item"><a href="admin-orders.html" class="nav-link">注文管理</a></li>
+                </ul>
+            </nav>
+            <div class="user-menu">
+                <span class="user-name">管理者</span>
+                <button class="btn btn-link"><i class="fas fa-sign-out-alt"></i> ログアウト</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="page-header">
+            <h1 class="page-title">ユーザー管理</h1>
+            <p class="page-description">登録ユーザーの確認・管理ができます</p>
+        </div>
+
+        <div class="admin-controls">
+            <div class="search-box">
+                <input type="text" placeholder="ユーザー検索..." id="userSearchInput">
+                <button class="btn btn-icon"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="filter-controls">
+                <select id="userTypeFilter">
+                    <option value="all">すべてのユーザー</option>
+                    <option value="parent">親アカウント</option>
+                    <option value="grandparent">祖父母アカウント</option>
+                </select>
+                <select id="statusFilter">
+                    <option value="all">すべてのステータス</option>
+                    <option value="active">有効</option>
+                    <option value="inactive">無効</option>
+                </select>
+                <button class="btn btn-primary" id="addUserBtn">
+                    <i class="fas fa-user-plus"></i> 新規ユーザー
+                </button>
+            </div>
+        </div>
+
+        <section class="card">
+            <div class="table-responsive">
+                <table class="admin-table users-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>名前</th>
+                            <th>メールアドレス</th>
+                            <th>タイプ</th>
+                            <th>登録日</th>
+                            <th>ステータス</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>001</td>
+                            <td>鈴木花子</td>
+                            <td>hanako@example.com</td>
+                            <td><span class="badge badge-parent">親</span></td>
+                            <td>2023/05/10</td>
+                            <td><span class="status-badge active">有効</span></td>
+                            <td class="actions-cell">
+                                <button class="btn btn-icon btn-sm" title="詳細"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-icon btn-sm" title="編集"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-icon btn-sm btn-danger" title="無効化"><i class="fas fa-times"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>002</td>
+                            <td>佐藤正一</td>
+                            <td>shoichi@example.com</td>
+                            <td><span class="badge badge-grandparent">祖父母</span></td>
+                            <td>2023/05/15</td>
+                            <td><span class="status-badge active">有効</span></td>
+                            <td class="actions-cell">
+                                <button class="btn btn-icon btn-sm" title="詳細"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-icon btn-sm" title="編集"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-icon btn-sm btn-danger" title="無効化"><i class="fas fa-times"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>003</td>
+                            <td>田中みどり</td>
+                            <td>midori@example.com</td>
+                            <td><span class="badge badge-grandparent">祖父母</span></td>
+                            <td>2023/05/20</td>
+                            <td><span class="status-badge active">有効</span></td>
+                            <td class="actions-cell">
+                                <button class="btn btn-icon btn-sm" title="詳細"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-icon btn-sm" title="編集"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-icon btn-sm btn-danger" title="無効化"><i class="fas fa-times"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>004</td>
+                            <td>山田太郎</td>
+                            <td>taro@example.com</td>
+                            <td><span class="badge badge-parent">親</span></td>
+                            <td>2023/06/05</td>
+                            <td><span class="status-badge active">有効</span></td>
+                            <td class="actions-cell">
+                                <button class="btn btn-icon btn-sm" title="詳細"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-icon btn-sm" title="編集"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-icon btn-sm btn-danger" title="無効化"><i class="fas fa-times"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>005</td>
+                            <td>高橋健一</td>
+                            <td>kenichi@example.com</td>
+                            <td><span class="badge badge-parent">親</span></td>
+                            <td>2023/06/10</td>
+                            <td><span class="status-badge inactive">無効</span></td>
+                            <td class="actions-cell">
+                                <button class="btn btn-icon btn-sm" title="詳細"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-icon btn-sm" title="編集"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-icon btn-sm btn-success" title="有効化"><i class="fas fa-check"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <button class="pagination-btn" disabled><i class="fas fa-chevron-left"></i></button>
+                <button class="pagination-btn active">1</button>
+                <button class="pagination-btn">2</button>
+                <button class="pagination-btn">3</button>
+                <span class="pagination-ellipsis">...</span>
+                <button class="pagination-btn">10</button>
+                <button class="pagination-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer footer-admin">
+        <div class="container">
+            <p>© 2023 まごころおくりもの All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">利用規約</a>
+                <a href="#" class="footer-link">プライバシーポリシー</a>
+                <a href="#" class="footer-link">お問い合わせ</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ユーザー詳細モーダル -->
+    <div class="modal" id="userDetailModal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h2 class="modal-title">ユーザー詳細</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="user-detail-header">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle fa-5x"></i>
+                    </div>
+                    <div class="user-info">
+                        <h3 id="modalUserName">鈴木花子</h3>
+                        <p id="modalUserEmail">hanako@example.com</p>
+                        <span id="modalUserType" class="badge badge-parent">親アカウント</span>
+                        <span id="modalUserStatus" class="status-badge active">有効</span>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h4 class="section-title">基本情報</h4>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">ユーザーID:</span>
+                            <span class="detail-value">001</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">登録日時:</span>
+                            <span class="detail-value">2023年5月10日 14:30</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">最終ログイン:</span>
+                            <span class="detail-value">2023年8月12日 10:15</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">利用端末:</span>
+                            <span class="detail-value">iPhone, PC</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h4 class="section-title">関連情報</h4>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">登録孫:</span>
+                            <span class="detail-value">鈴木太郎（3歳）</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">関連祖父母アカウント:</span>
+                            <span class="detail-value">2アカウント</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">写真数:</span>
+                            <span class="detail-value">27枚</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">ほしいものリスト:</span>
+                            <span class="detail-value">5アイテム</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close">閉じる</button>
+                <button class="btn btn-primary">編集</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新規ユーザー追加モーダル -->
+    <div class="modal" id="addUserModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">新規ユーザー追加</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addUserForm" class="form">
+                    <div class="form-group">
+                        <label for="newUserType">ユーザータイプ <span class="required">*</span></label>
+                        <select id="newUserType" name="newUserType" required>
+                            <option value="">選択してください</option>
+                            <option value="parent">親アカウント</option>
+                            <option value="grandparent">祖父母アカウント</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newUserName">名前 <span class="required">*</span></label>
+                        <input type="text" id="newUserName" name="newUserName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newUserEmail">メールアドレス <span class="required">*</span></label>
+                        <input type="email" id="newUserEmail" name="newUserEmail" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newUserPassword">仮パスワード <span class="required">*</span></label>
+                        <input type="password" id="newUserPassword" name="newUserPassword" required>
+                        <button type="button" class="btn btn-sm btn-link generate-password">ランダム生成</button>
+                    </div>
+                    
+                    <div id="parentUserFields" style="display: none;">
+                        <h4 class="section-title">子供の情報</h4>
+                        <div class="form-group">
+                            <label for="childName">子供の名前</label>
+                            <input type="text" id="childName" name="childName">
+                        </div>
+                        <div class="form-group">
+                            <label for="childBirthday">子供の誕生日</label>
+                            <input type="date" id="childBirthday" name="childBirthday">
+                        </div>
+                    </div>
+                    
+                    <div id="grandparentUserFields" style="display: none;">
+                        <h4 class="section-title">関連付け</h4>
+                        <div class="form-group">
+                            <label for="relatedParent">関連する親アカウント</label>
+                            <select id="relatedParent" name="relatedParent">
+                                <option value="">選択してください</option>
+                                <option value="001">鈴木花子 (hanako@example.com)</option>
+                                <option value="004">山田太郎 (taro@example.com)</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close">キャンセル</button>
+                <button class="btn btn-primary" id="saveNewUserBtn">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+    <script>
+        // ユーザー詳細表示
+        document.querySelectorAll('.users-table .fa-eye').forEach(icon => {
+            icon.closest('button').addEventListener('click', function() {
+                showModal('userDetailModal');
+            });
+        });
+
+        // 新規ユーザー追加ボタン
+        document.getElementById('addUserBtn').addEventListener('click', function() {
+            showModal('addUserModal');
+        });
+
+        // ユーザータイプによる入力項目の表示切替
+        document.getElementById('newUserType').addEventListener('change', function() {
+            const parentFields = document.getElementById('parentUserFields');
+            const grandparentFields = document.getElementById('grandparentUserFields');
+            
+            if (this.value === 'parent') {
+                parentFields.style.display = 'block';
+                grandparentFields.style.display = 'none';
+            } else if (this.value === 'grandparent') {
+                parentFields.style.display = 'none';
+                grandparentFields.style.display = 'block';
+            } else {
+                parentFields.style.display = 'none';
+                grandparentFields.style.display = 'none';
+            }
+        });
+
+        // パスワードランダム生成
+        document.querySelector('.generate-password').addEventListener('click', function() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let password = '';
+            for (let i = 0; i < 10; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('newUserPassword').value = password;
+        });
+
+        // 新規ユーザー保存
+        document.getElementById('saveNewUserBtn').addEventListener('click', function() {
+            const form = document.getElementById('addUserForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            
+            closeModal('addUserModal');
+            showAlert('新規ユーザーが追加されました', 'success');
+            
+            // ページをリロードして更新された表を表示（実際のシステムではAJAXで処理）
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        });
+
+        // フィルタリングと検索機能のシミュレーション
+        document.getElementById('userSearchInput').addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.users-table tbody tr');
+            
+            rows.forEach(row => {
+                const name = row.cells[1].textContent.toLowerCase();
+                const email = row.cells[2].textContent.toLowerCase();
+                
+                if (name.includes(searchTerm) || email.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        document.getElementById('userTypeFilter').addEventListener('change', function() {
+            const filterValue = this.value;
+            const rows = document.querySelectorAll('.users-table tbody tr');
+            
+            rows.forEach(row => {
+                const userType = row.cells[3].textContent.toLowerCase();
+                
+                if (filterValue === 'all' || 
+                    (filterValue === 'parent' && userType.includes('親')) ||
+                    (filterValue === 'grandparent' && userType.includes('祖父母'))) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        document.getElementById('statusFilter').addEventListener('change', function() {
+            const filterValue = this.value;
+            const rows = document.querySelectorAll('.users-table tbody tr');
+            
+            rows.forEach(row => {
+                const status = row.cells[5].textContent.toLowerCase();
+                
+                if (filterValue === 'all' || 
+                    (filterValue === 'active' && status.includes('有効')) ||
+                    (filterValue === 'inactive' && status.includes('無効'))) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

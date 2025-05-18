@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理者ダッシュボード - まごころおくりもの</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="admin-body">
+    <header class="header header-admin">
+        <div class="container">
+            <div class="logo">
+                <img src="https://via.placeholder.com/150x50?text=まごころおくりもの" alt="まごころおくりもの">
+                <span class="admin-tag">管理者用</span>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="admin-dashboard.html" class="nav-link active">ダッシュボード</a></li>
+                    <li class="nav-item"><a href="admin-users.html" class="nav-link">ユーザー管理</a></li>
+                    <li class="nav-item"><a href="admin-catalog.html" class="nav-link">記念品カタログ</a></li>
+                    <li class="nav-item"><a href="admin-orders.html" class="nav-link">注文管理</a></li>
+                </ul>
+            </nav>
+            <div class="user-menu">
+                <span class="user-name">管理者</span>
+                <button class="btn btn-link"><i class="fas fa-sign-out-alt"></i> ログアウト</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="page-header">
+            <h1 class="page-title">管理者ダッシュボード</h1>
+            <p class="page-description">システム全体の状況を確認できます</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- 概要カード -->
+            <section class="card dashboard-card">
+                <h2 class="card-title">システム概要</h2>
+                <div class="stat-grid">
+                    <div class="stat-item">
+                        <div class="stat-icon bg-primary">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value">124</div>
+                            <div class="stat-label">総ユーザー数</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon bg-secondary">
+                            <i class="fas fa-child"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value">56</div>
+                            <div class="stat-label">登録孫数</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon bg-accent">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value">87</div>
+                            <div class="stat-label">完了注文数</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon bg-success">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value">452</div>
+                            <div class="stat-label">アップロード写真数</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 最近の注文 -->
+            <section class="card dashboard-card">
+                <h2 class="card-title">最近の注文</h2>
+                <div class="order-list">
+                    <div class="order-item">
+                        <div class="order-info">
+                            <span class="order-id">注文#1089</span>
+                            <span class="order-date">2023/08/12</span>
+                        </div>
+                        <div class="order-customer">佐藤正一</div>
+                        <div class="order-status processing">処理中</div>
+                        <div class="order-amount">5,800円</div>
+                    </div>
+                    <div class="order-item">
+                        <div class="order-info">
+                            <span class="order-id">注文#1088</span>
+                            <span class="order-date">2023/08/10</span>
+                        </div>
+                        <div class="order-customer">田中花子</div>
+                        <div class="order-status completed">完了</div>
+                        <div class="order-amount">8,200円</div>
+                    </div>
+                    <div class="order-item">
+                        <div class="order-info">
+                            <span class="order-id">注文#1087</span>
+                            <span class="order-date">2023/08/08</span>
+                        </div>
+                        <div class="order-customer">山田太郎</div>
+                        <div class="order-status shipped">発送済</div>
+                        <div class="order-amount">4,500円</div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="admin-orders.html" class="btn btn-outline btn-sm">すべての注文を表示</a>
+                </div>
+            </section>
+
+            <!-- ユーザー登録状況 -->
+            <section class="card dashboard-card">
+                <h2 class="card-title">ユーザー登録状況</h2>
+                <div class="chart-container">
+                    <div class="chart-placeholder">
+                        <img src="https://via.placeholder.com/400x200?text=ユーザー登録グラフ" alt="ユーザー登録グラフ">
+                    </div>
+                </div>
+                <div class="card-content">
+                    <p>過去30日間のユーザー登録状況：</p>
+                    <ul class="stat-list">
+                        <li><span class="stat-label">新規親アカウント:</span> <span class="stat-value">14</span></li>
+                        <li><span class="stat-label">新規祖父母アカウント:</span> <span class="stat-value">23</span></li>
+                        <li><span class="stat-label">合計:</span> <span class="stat-value">37</span></li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a href="admin-users.html" class="btn btn-outline btn-sm">ユーザー管理へ</a>
+                </div>
+            </section>
+
+            <!-- システム通知 -->
+            <section class="card dashboard-card">
+                <h2 class="card-title">システム通知</h2>
+                <div class="notification-list admin-notification-list">
+                    <div class="notification-item">
+                        <div class="notification-icon warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">ストレージ使用量が80%を超えています</div>
+                            <div class="notification-time">3時間前</div>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <div class="notification-icon info">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">バックアップが正常に完了しました</div>
+                            <div class="notification-time">12時間前</div>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <div class="notification-icon success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">システムアップデートが完了しました</div>
+                            <div class="notification-time">2日前</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-outline btn-sm">すべての通知を表示</button>
+                </div>
+            </section>
+        </div>
+
+        <section class="card">
+            <h2 class="card-title">クイックアクション</h2>
+            <div class="quick-actions">
+                <a href="admin-catalog.html" class="quick-action-btn">
+                    <i class="fas fa-book-open"></i>
+                    <span>記念品カタログ管理</span>
+                </a>
+                <a href="admin-users.html" class="quick-action-btn">
+                    <i class="fas fa-user-plus"></i>
+                    <span>新規ユーザー登録</span>
+                </a>
+                <a href="admin-orders.html" class="quick-action-btn">
+                    <i class="fas fa-shipping-fast"></i>
+                    <span>出荷処理</span>
+                </a>
+                <a href="#" class="quick-action-btn">
+                    <i class="fas fa-cog"></i>
+                    <span>システム設定</span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer footer-admin">
+        <div class="container">
+            <p>© 2023 まごころおくりもの All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">利用規約</a>
+                <a href="#" class="footer-link">プライバシーポリシー</a>
+                <a href="#" class="footer-link">お問い合わせ</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

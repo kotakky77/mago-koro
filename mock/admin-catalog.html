@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>記念品カタログ管理 - まごころおくりもの</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="admin-body">
+    <header class="header header-admin">
+        <div class="container">
+            <div class="logo">
+                <img src="https://via.placeholder.com/150x50?text=まごころおくりもの" alt="まごころおくりもの">
+                <span class="admin-tag">管理者用</span>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="admin-dashboard.html" class="nav-link">ダッシュボード</a></li>
+                    <li class="nav-item"><a href="admin-users.html" class="nav-link">ユーザー管理</a></li>
+                    <li class="nav-item"><a href="admin-catalog.html" class="nav-link active">記念品カタログ</a></li>
+                    <li class="nav-item"><a href="admin-orders.html" class="nav-link">注文管理</a></li>
+                </ul>
+            </nav>
+            <div class="user-menu">
+                <span class="user-name">管理者</span>
+                <button class="btn btn-link"><i class="fas fa-sign-out-alt"></i> ログアウト</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="page-header">
+            <h1 class="page-title">記念品カタログ管理</h1>
+            <p class="page-description">記念品の商品情報を管理できます</p>
+            <button class="btn btn-primary" id="addProductBtn">
+                <i class="fas fa-plus"></i> 新規商品追加
+            </button>
+        </div>
+
+        <section class="card">
+            <div class="catalog-filters">
+                <div class="search-box">
+                    <input type="text" placeholder="商品検索..." id="productSearchInput">
+                    <button class="btn btn-icon"><i class="fas fa-search"></i></button>
+                </div>
+                <div class="filter-controls">
+                    <select id="categoryFilter">
+                        <option value="all">全カテゴリー</option>
+                        <option value="frame">フォトフレーム</option>
+                        <option value="mug">マグカップ</option>
+                        <option value="album">アルバム</option>
+                        <option value="other">その他</option>
+                    </select>
+                    <select id="statusFilter">
+                        <option value="all">全ステータス</option>
+                        <option value="available">販売中</option>
+                        <option value="sold-out">品切れ</option>
+                        <option value="discontinued">販売終了</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="product-grid">
+                <!-- 商品アイテム1 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/300x200?text=イラスト付きフォトフレーム" alt="イラスト付きフォトフレーム">
+                        <div class="product-badge available">販売中</div>
+                    </div>
+                    <div class="product-details">
+                        <h3 class="product-title">イラスト付きフォトフレーム</h3>
+                        <div class="product-category">カテゴリー: フォトフレーム</div>
+                        <div class="product-price">価格: 5,800円</div>
+                        <div class="product-stock">在庫: あり</div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn btn-outline btn-sm" data-action="edit">
+                            <i class="fas fa-edit"></i> 編集
+                        </button>
+                        <button class="btn btn-danger btn-sm" data-action="delete">
+                            <i class="fas fa-trash-alt"></i> 削除
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 商品アイテム2 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/300x200?text=オリジナルマグカップ" alt="オリジナルマグカップ">
+                        <div class="product-badge available">販売中</div>
+                    </div>
+                    <div class="product-details">
+                        <h3 class="product-title">オリジナルマグカップ</h3>
+                        <div class="product-category">カテゴリー: マグカップ</div>
+                        <div class="product-price">価格: 3,800円</div>
+                        <div class="product-stock">在庫: あり</div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn btn-outline btn-sm" data-action="edit">
+                            <i class="fas fa-edit"></i> 編集
+                        </button>
+                        <button class="btn btn-danger btn-sm" data-action="delete">
+                            <i class="fas fa-trash-alt"></i> 削除
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 商品アイテム3 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/300x200?text=メモリーアルバム" alt="メモリーアルバム">
+                        <div class="product-badge available">販売中</div>
+                    </div>
+                    <div class="product-details">
+                        <h3 class="product-title">メモリーアルバム</h3>
+                        <div class="product-category">カテゴリー: アルバム</div>
+                        <div class="product-price">価格: 8,200円</div>
+                        <div class="product-stock">在庫: あり</div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn btn-outline btn-sm" data-action="edit">
+                            <i class="fas fa-edit"></i> 編集
+                        </button>
+                        <button class="btn btn-danger btn-sm" data-action="delete">
+                            <i class="fas fa-trash-alt"></i> 削除
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 商品アイテム4 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/300x200?text=お絵描きキャンバス" alt="お絵描きキャンバス">
+                        <div class="product-badge sold-out">品切れ</div>
+                    </div>
+                    <div class="product-details">
+                        <h3 class="product-title">お絵描きキャンバス</h3>
+                        <div class="product-category">カテゴリー: その他</div>
+                        <div class="product-price">価格: 4,500円</div>
+                        <div class="product-stock">在庫: なし</div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn btn-outline btn-sm" data-action="edit">
+                            <i class="fas fa-edit"></i> 編集
+                        </button>
+                        <button class="btn btn-danger btn-sm" data-action="delete">
+                            <i class="fas fa-trash-alt"></i> 削除
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 商品アイテム5 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/300x200?text=ウッドスタンド" alt="ウッドスタンド">
+                        <div class="product-badge discontinued">販売終了</div>
+                    </div>
+                    <div class="product-details">
+                        <h3 class="product-title">ウッドスタンド</h3>
+                        <div class="product-category">カテゴリー: フォトフレーム</div>
+                        <div class="product-price">価格: 6,500円</div>
+                        <div class="product-stock">在庫: なし</div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn btn-outline btn-sm" data-action="edit">
+                            <i class="fas fa-edit"></i> 編集
+                        </button>
+                        <button class="btn btn-danger btn-sm" data-action="delete">
+                            <i class="fas fa-trash-alt"></i> 削除
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 商品アイテム6 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/300x200?text=オリジナルTシャツ" alt="オリジナルTシャツ">
+                        <div class="product-badge available">販売中</div>
+                    </div>
+                    <div class="product-details">
+                        <h3 class="product-title">オリジナルTシャツ</h3>
+                        <div class="product-category">カテゴリー: その他</div>
+                        <div class="product-price">価格: 3,900円</div>
+                        <div class="product-stock">在庫: あり</div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn btn-outline btn-sm" data-action="edit">
+                            <i class="fas fa-edit"></i> 編集
+                        </button>
+                        <button class="btn btn-danger btn-sm" data-action="delete">
+                            <i class="fas fa-trash-alt"></i> 削除
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pagination">
+                <button class="pagination-btn" disabled><i class="fas fa-chevron-left"></i></button>
+                <button class="pagination-btn active">1</button>
+                <button class="pagination-btn">2</button>
+                <button class="pagination-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer footer-admin">
+        <div class="container">
+            <p>© 2023 まごころおくりもの All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">利用規約</a>
+                <a href="#" class="footer-link">プライバシーポリシー</a>
+                <a href="#" class="footer-link">お問い合わせ</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 商品追加・編集モーダル -->
+    <div class="modal" id="productModal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h2 class="modal-title" id="productModalTitle">商品追加</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="productForm" class="form">
+                    <div class="form-group">
+                        <label for="productName">商品名 <span class="required">*</span></label>
+                        <input type="text" id="productName" name="productName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productCategory">カテゴリー <span class="required">*</span></label>
+                        <select id="productCategory" name="productCategory" required>
+                            <option value="">選択してください</option>
+                            <option value="frame">フォトフレーム</option>
+                            <option value="mug">マグカップ</option>
+                            <option value="album">アルバム</option>
+                            <option value="other">その他</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productPrice">価格 (円) <span class="required">*</span></label>
+                        <input type="number" id="productPrice" name="productPrice" min="0" step="100" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productStatus">販売ステータス <span class="required">*</span></label>
+                        <select id="productStatus" name="productStatus" required>
+                            <option value="available">販売中</option>
+                            <option value="sold-out">品切れ</option>
+                            <option value="discontinued">販売終了</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productStock">在庫数 <span class="required">*</span></label>
+                        <input type="number" id="productStock" name="productStock" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productDescription">商品説明</label>
+                        <textarea id="productDescription" name="productDescription" rows="4"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productImage">商品画像</label>
+                        <div class="image-upload-area">
+                            <div class="image-preview" id="imagePreview">
+                                <img src="https://via.placeholder.com/300x200?text=イメージ" alt="商品画像プレビュー">
+                            </div>
+                            <div class="image-upload-controls">
+                                <label for="productImageFile" class="btn btn-secondary btn-sm">画像を選択</label>
+                                <input type="file" id="productImageFile" name="productImageFile" accept="image/*" hidden>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="featuredProduct" name="featuredProduct">
+                        <label for="featuredProduct">注目商品として表示する</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close">キャンセル</button>
+                <button class="btn btn-primary" id="saveProductBtn">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 削除確認モーダル -->
+    <div class="modal" id="deleteConfirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">商品削除の確認</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>以下の商品を削除してもよろしいですか？</p>
+                <p id="deleteProductName" class="alert-text">商品名</p>
+                <p>この操作は取り消せません。</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close">キャンセル</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">削除する</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+    <script>
+        // 新規商品追加ボタンの処理
+        document.getElementById('addProductBtn').addEventListener('click', function() {
+            document.getElementById('productModalTitle').textContent = '商品追加';
+            document.getElementById('productForm').reset();
+            showModal('productModal');
+        });
+
+        // 商品画像プレビュー
+        document.getElementById('productImageFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.querySelector('#imagePreview img').src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 編集ボタンの処理
+        document.querySelectorAll('[data-action="edit"]').forEach(button => {
+            button.addEventListener('click', function() {
+                const card = this.closest('.product-card');
+                const title = card.querySelector('.product-title').textContent;
+                const category = card.querySelector('.product-category').textContent.replace('カテゴリー: ', '');
+                const price = card.querySelector('.product-price').textContent.replace('価格: ', '').replace('円', '');
+                const isAvailable = card.querySelector('.product-badge').classList.contains('available');
+                const isSoldOut = card.querySelector('.product-badge').classList.contains('sold-out');
+                
+                // フォームに値をセット
+                document.getElementById('productModalTitle').textContent = '商品編集';
+                document.getElementById('productName').value = title;
+                document.getElementById('productPrice').value = price;
+                
+                // カテゴリー選択
+                const categorySelect = document.getElementById('productCategory');
+                if (category.includes('フォトフレーム')) categorySelect.value = 'frame';
+                else if (category.includes('マグカップ')) categorySelect.value = 'mug';
+                else if (category.includes('アルバム')) categorySelect.value = 'album';
+                else categorySelect.value = 'other';
+                
+                // ステータス選択
+                const statusSelect = document.getElementById('productStatus');
+                if (isAvailable) statusSelect.value = 'available';
+                else if (isSoldOut) statusSelect.value = 'sold-out';
+                else statusSelect.value = 'discontinued';
+                
+                // 在庫数
+                document.getElementById('productStock').value = card.querySelector('.product-stock').textContent.includes('あり') ? '10' : '0';
+                
+                // 画像のプレビュー更新
+                document.querySelector('#imagePreview img').src = card.querySelector('.product-image img').src;
+                
+                showModal('productModal');
+            });
+        });
+
+        // 削除ボタンの処理
+        document.querySelectorAll('[data-action="delete"]').forEach(button => {
+            button.addEventListener('click', function() {
+                const card = this.closest('.product-card');
+                const title = card.querySelector('.product-title').textContent;
+                
+                document.getElementById('deleteProductName').textContent = title;
+                showModal('deleteConfirmModal');
+                
+                // 削除確認ボタンに対象カードを記憶させる
+                document.getElementById('confirmDeleteBtn').setAttribute('data-target', Array.from(card.parentNode.children).indexOf(card));
+            });
+        });
+
+        // 商品保存処理
+        document.getElementById('saveProductBtn').addEventListener('click', function() {
+            const form = document.getElementById('productForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            
+            // 保存成功のシミュレーション
+            closeModal('productModal');
+            showAlert('商品情報が保存されました', 'success');
+        });
+
+        // 商品削除処理
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+            const targetIndex = this.getAttribute('data-target');
+            if (targetIndex !== null) {
+                const cards = document.querySelectorAll('.product-card');
+                cards[targetIndex].remove();
+            }
+            
+            closeModal('deleteConfirmModal');
+            showAlert('商品が削除されました', 'success');
+        });
+
+        // フィルタリングと検索機能のシミュレーション
+        document.getElementById('productSearchInput').addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase();
+            const cards = document.querySelectorAll('.product-card');
+            
+            cards.forEach(card => {
+                const title = card.querySelector('.product-title').textContent.toLowerCase();
+                const category = card.querySelector('.product-category').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || category.includes(searchTerm)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        document.getElementById('categoryFilter').addEventListener('change', function() {
+            const filterValue = this.value.toLowerCase();
+            const cards = document.querySelectorAll('.product-card');
+            
+            cards.forEach(card => {
+                const category = card.querySelector('.product-category').textContent.toLowerCase();
+                
+                if (filterValue === 'all' || category.includes(filterValue)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        document.getElementById('statusFilter').addEventListener('change', function() {
+            const filterValue = this.value;
+            const cards = document.querySelectorAll('.product-card');
+            
+            cards.forEach(card => {
+                const badge = card.querySelector('.product-badge');
+                
+                if (filterValue === 'all' || 
+                    (filterValue === 'available' && badge.classList.contains('available')) ||
+                    (filterValue === 'sold-out' && badge.classList.contains('sold-out')) ||
+                    (filterValue === 'discontinued' && badge.classList.contains('discontinued'))) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

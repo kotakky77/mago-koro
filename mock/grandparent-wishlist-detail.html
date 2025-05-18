@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ほしいものアイテム詳細 - まごころおくりもの</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="https://via.placeholder.com/150x50?text=まごころおくりもの" alt="まごころおくりもの">
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="grandparent-dashboard.html" class="nav-link">ホーム</a></li>
+                    <li class="nav-item"><a href="grandparent-photos.html" class="nav-link">写真</a></li>
+                    <li class="nav-item"><a href="grandparent-wishlist.html" class="nav-link active">ほしいものリスト</a></li>
+                    <li class="nav-item"><a href="grandparent-souvenirs.html" class="nav-link">記念品</a></li>
+                </ul>
+            </nav>
+            <div class="user-menu">
+                <span class="user-name">佐藤正一さん</span>
+                <button class="btn btn-link"><i class="fas fa-sign-out-alt"></i> ログアウト</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="page-header">
+            <div class="page-navigation">
+                <a href="grandparent-wishlist.html" class="btn btn-back">
+                    <i class="fas fa-arrow-left"></i> ほしいものリストに戻る
+                </a>
+            </div>
+            <h1 class="page-title">ほしいものアイテム詳細</h1>
+        </div>
+
+        <section class="card">
+            <div class="wishlist-item-details">
+                <div class="wishlist-item-header">
+                    <div class="wishlist-item-priority high">とても欲しい！</div>
+                    <div class="wishlist-item-date">
+                        <i class="fas fa-calendar-alt"></i> 登録日: 2023年7月28日
+                    </div>
+                </div>
+
+                <div class="wishlist-item-content">
+                    <div class="wishlist-item-image-container">
+                        <img src="https://via.placeholder.com/400x300?text=レゴ+デュプロ" alt="レゴ デュプロ 動物セット" class="wishlist-item-image">
+                    </div>
+
+                    <div class="wishlist-item-info">
+                        <h2 class="wishlist-item-title">レゴ デュプロ 動物セット</h2>
+                        
+                        <div class="wishlist-item-price">
+                            <span class="price-label">価格の目安:</span>
+                            <span class="price-value">5,000円</span>
+                        </div>
+                        
+                        <div class="wishlist-item-description">
+                            <h3 class="detail-heading">説明・メモ</h3>
+                            <p>動物の形のブロックで、動物園ごっこをして遊びたいと言っています。特にキリンが大好きです。</p>
+                        </div>
+                        
+                        <div class="wishlist-item-link">
+                            <h3 class="detail-heading">商品リンク</h3>
+                            <a href="https://example.com/toy/123456" target="_blank" class="external-link">
+                                <i class="fas fa-external-link-alt"></i> 商品ページを開く
+                            </a>
+                            <small class="form-help">外部サイトの商品ページが開きます</small>
+                        </div>
+                        
+                        <div class="wishlist-item-note">
+                            <div class="note-box">
+                                <i class="fas fa-info-circle"></i>
+                                <p>この商品は以前に写真で遊んでいるところを見て、とても気に入っていたものです。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="wishlist-item-actions">
+                            <button id="purchaseBtn" class="btn btn-primary btn-lg">
+                                <i class="fas fa-gift"></i> プレゼントしました！
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2023 まごころおくりもの All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">利用規約</a>
+                <a href="#" class="footer-link">プライバシーポリシー</a>
+                <a href="#" class="footer-link">お問い合わせ</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 購入確認モーダル -->
+    <div class="modal" id="purchaseConfirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">プレゼントの購入確認</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>「レゴ デュプロ 動物セット」をプレゼントとして購入しますか？</p>
+                <p>このアイテムはほしいものリストから削除され、親御さんに購入通知が送られます。</p>
+                
+                <div class="form-group">
+                    <label for="purchaseMessage">たろちゃんのご両親へのメッセージ（任意）:</label>
+                    <textarea id="purchaseMessage" rows="3" placeholder="例：たろちゃんへのプレゼントです。○月○日までに届ける予定です。"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close">キャンセル</button>
+                <button class="btn btn-primary" id="confirmPurchaseBtn">購入を通知する</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 購入通知完了モーダル -->
+    <div class="modal" id="purchaseCompletedModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">購入通知が完了しました</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="success-animation">
+                    <i class="fas fa-check-circle fa-4x"></i>
+                </div>
+                <h3>ありがとうございます！</h3>
+                <p>購入通知が親御さんに送信されました。たろちゃんがとても喜ぶと思います。</p>
+                <p>実際の商品購入は、以下のリンクから行ってください。</p>
+                <a href="https://example.com/toy/123456" target="_blank" class="btn btn-outline btn-block">
+                    <i class="fas fa-external-link-alt"></i> 商品購入ページへ
+                </a>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="backToListBtn">ほしいものリストへ戻る</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+    <script>
+        // 購入ボタンの処理
+        document.getElementById('purchaseBtn').addEventListener('click', function() {
+            showModal('purchaseConfirmModal');
+        });
+
+        // 購入確認ボタンの処理
+        document.getElementById('confirmPurchaseBtn').addEventListener('click', function() {
+            closeModal('purchaseConfirmModal');
+            showModal('purchaseCompletedModal');
+        });
+
+        // ほしいものリストへ戻るボタンの処理
+        document.getElementById('backToListBtn').addEventListener('click', function() {
+            window.location.href = 'grandparent-wishlist.html';
+        });
+    </script>
+</body>
+</html>

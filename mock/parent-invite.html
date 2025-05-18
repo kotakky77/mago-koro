@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>まごころおくりもの - 祖父母招待</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .invite-url-container {
+      display: flex;
+      margin-bottom: 20px;
+    }
+    
+    .invite-url {
+      flex-grow: 1;
+      padding: 12px 15px;
+      background-color: #F5F5F5;
+      border: 1px solid var(--border-color);
+      border-radius: 4px 0 0 4px;
+      font-size: 14px;
+      font-family: monospace;
+      overflow: auto;
+      white-space: nowrap;
+    }
+    
+    .copy-btn {
+      padding: 12px 20px;
+      background-color: var(--secondary-color);
+      color: white;
+      border: none;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .copy-btn:hover {
+      background-color: #42A5F5;
+    }
+    
+    .grandparent-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .grandparent-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      background-color: #E0E0E0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      color: #757575;
+    }
+    
+    .grandparent-info {
+      flex-grow: 1;
+    }
+    
+    .grandparent-name {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    
+    .grandparent-relation {
+      color: #757575;
+      margin-bottom: 5px;
+    }
+    
+    .grandparent-status {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+    
+    .status-active {
+      background-color: #A5D6A7;
+      color: #2E7D32;
+    }
+    
+    .status-pending {
+      background-color: #FFE082;
+      color: #F57F17;
+    }
+    
+    .grandparent-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .invitation-share-options {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .share-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      background-color: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      flex: 1;
+      min-width: 120px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    
+    .share-option:hover {
+      transform: translateY(-5px);
+    }
+    
+    .share-icon {
+      font-size: 30px;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      color: white;
+    }
+    
+    .share-title {
+      font-weight: 500;
+    }
+    
+    .share-line {
+      background-color: #06C755;
+    }
+    
+    .share-email {
+      background-color: #4285F4;
+    }
+    
+    .share-message {
+      background-color: #7CB342;
+    }
+    
+    .share-copy {
+      background-color: #757575;
+    }
+    
+    .collapsible-section {
+      margin-bottom: 20px;
+    }
+    
+    .collapsible-header {
+      background-color: #F5F5F5;
+      padding: 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background-color 0.3s;
+    }
+    
+    .collapsible-header:hover {
+      background-color: #EEEEEE;
+    }
+    
+    .collapsible-title {
+      font-weight: 600;
+      margin: 0;
+    }
+    
+    .collapsible-content {
+      padding: 15px;
+      border: 1px solid #E0E0E0;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      display: none;
+    }
+    
+    .collapsible-section.active .collapsible-header {
+      border-radius: 8px 8px 0 0;
+      background-color: #EEEEEE;
+    }
+    
+    .collapsible-section.active .collapsible-content {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="nav-menu">
+        <a href="#" class="logo">まごころおくりもの</a>
+        <div class="nav-links">
+          <a href="parent-dashboard.html">マイページ</a>
+          <a href="parent-wishlist.html">ほしいものリスト</a>
+          <a href="parent-photos.html">写真管理</a>
+          <a href="parent-invite.html" class="active">祖父母招待</a>
+          <a href="login.html">ログアウト</a>
+        </div>
+        <button class="menu-toggle" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container" style="padding-top: 30px;">
+      <h1 style="margin-bottom: 10px;">祖父母招待</h1>
+      <p style="margin-bottom: 30px;">はるかちゃんの祖父母を招待して、成長を共有しましょう</p>
+      
+      <div class="card">
+        <h2 style="margin-bottom: 20px;">招待済みの祖父母</h2>
+        
+        <div class="grandparent-card">
+          <div class="grandparent-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="grandparent-info">
+            <div class="grandparent-name">田中 良子</div>
+            <div class="grandparent-relation">祖母（母方）</div>
+            <div class="grandparent-status status-active">アクティブ</div>
+            <div>最終ログイン: 2025年5月17日</div>
+          </div>
+          <div class="grandparent-actions">
+            <button class="btn btn-secondary">
+              <i class="fas fa-envelope"></i> メッセージ
+            </button>
+          </div>
+        </div>
+        
+        <div class="grandparent-card">
+          <div class="grandparent-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="grandparent-info">
+            <div class="grandparent-name">田中 健一</div>
+            <div class="grandparent-relation">祖父（母方）</div>
+            <div class="grandparent-status status-active">アクティブ</div>
+            <div>最終ログイン: 2025年5月15日</div>
+          </div>
+          <div class="grandparent-actions">
+            <button class="btn btn-secondary">
+              <i class="fas fa-envelope"></i> メッセージ
+            </button>
+          </div>
+        </div>
+        
+        <div class="grandparent-card">
+          <div class="grandparent-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="grandparent-info">
+            <div class="grandparent-name">佐藤 みどり</div>
+            <div class="grandparent-relation">祖母（父方）</div>
+            <div class="grandparent-status status-pending">招待中</div>
+            <div>招待日: 2025年5月10日</div>
+          </div>
+          <div class="grandparent-actions">
+            <button class="btn btn-secondary">
+              <i class="fas fa-redo"></i> 再招待
+            </button>
+            <button class="btn" style="color: #E57373;">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card" style="margin-top: 30px;">
+        <h2 style="margin-bottom: 20px;">新しい祖父母を招待</h2>
+        
+        <div class="alert alert-info" style="background-color: #E3F2FD; color: #0D47A1; border: 1px solid #90CAF9; margin-bottom: 20px;">
+          <i class="fas fa-info-circle"></i> 
+          招待URLを祖父母と共有して、アプリの利用を始めてもらいましょう。
+        </div>
+        
+        <form id="create-invite-form">
+          <div class="form-group">
+            <label for="grandparent-type">招待する祖父母の種類</label>
+            <select id="grandparent-type" class="form-control">
+              <option value="paternal-grandmother">祖母（父方）</option>
+              <option value="paternal-grandfather">祖父（父方）</option>
+              <option value="maternal-grandmother">祖母（母方）</option>
+              <option value="maternal-grandfather">祖父（母方）</option>
+              <option value="other">その他</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">
+              招待URLを生成する
+            </button>
+          </div>
+        </form>
+        
+        <div id="invite-url-section" style="display: none; margin-top: 20px;">
+          <h3 style="margin-bottom: 15px;">招待URL</h3>
+          <div class="invite-url-container">
+            <div class="invite-url" id="invite-url">https://mago-koro.jp/invite/abcdef123456789</div>
+            <button class="copy-btn" id="copy-url-btn">
+              <i class="fas fa-copy"></i> コピー
+            </button>
+          </div>
+          
+          <div style="margin-top: 10px;">
+            <p>この招待URLの有効期限: <strong>2025年6月18日</strong>（30日間）</p>
+          </div>
+          
+          <h3 style="margin: 20px 0 15px 0;">招待を共有する方法</h3>
+          <div class="invitation-share-options">
+            <div class="share-option" id="share-line">
+              <div class="share-icon share-line">
+                <i class="fab fa-line"></i>
+              </div>
+              <div class="share-title">LINE</div>
+            </div>
+            <div class="share-option" id="share-email">
+              <div class="share-icon share-email">
+                <i class="fas fa-envelope"></i>
+              </div>
+              <div class="share-title">メール</div>
+            </div>
+            <div class="share-option" id="share-message">
+              <div class="share-icon share-message">
+                <i class="fas fa-comment-alt"></i>
+              </div>
+              <div class="share-title">SMS</div>
+            </div>
+            <div class="share-option" id="share-copy">
+              <div class="share-icon share-copy">
+                <i class="fas fa-copy"></i>
+              </div>
+              <div class="share-title">URLをコピー</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card" style="margin-top: 30px;">
+        <h2 style="margin-bottom: 20px;">祖父母招待ガイド</h2>
+        
+        <div class="collapsible-section">
+          <div class="collapsible-header">
+            <h3 class="collapsible-title">招待の仕組み</h3>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="collapsible-content">
+            <p>
+              「まごころおくりもの」では、孫の親が祖父母を招待することで、孫の成長を共有することができます。
+              招待URLを祖父母に送ると、祖父母はそのURLからアカウント登録を行い、アプリを利用開始できます。
+            </p>
+            <p>
+              招待された祖父母は、親がアップロードした孫の写真の閲覧や、ほしいものリストの確認・購入操作が行えるようになります。
+              また、孫のイラスト入り記念品の購入も可能です。
+            </p>
+          </div>
+        </div>
+        
+        <div class="collapsible-section">
+          <div class="collapsible-header">
+            <h3 class="collapsible-title">招待時のサポート方法</h3>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="collapsible-content">
+            <p>祖父母の方がスマートフォンやパソコンの操作に不慣れな場合は、以下のようなサポートを検討してください：</p>
+            <ul>
+              <li>可能であれば、直接会った時に一緒にアカウント登録を手伝う</li>
+              <li>電話やビデオ通話で操作方法を案内する</li>
+              <li>シニア向けのわかりやすい操作ガイドを別途メールで送る</li>
+              <li>LINE等のメッセージアプリを使って、スクリーンショット付きで手順を説明する</li>
+            </ul>
+            <p>
+              祖父母の方が安心してアプリを使えるよう、初めのうちは定期的に連絡を取り、使い方について質問があれば答えるようにしましょう。
+            </p>
+          </div>
+        </div>
+        
+        <div class="collapsible-section">
+          <div class="collapsible-header">
+            <h3 class="collapsible-title">セキュリティとプライバシー</h3>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="collapsible-content">
+            <p>
+              「まごころおくりもの」では、孫の情報や写真のプライバシーを守るために、以下のような対策を行っています：
+            </p>
+            <ul>
+              <li>招待URLは30日間のみ有効で、その後は自動的に無効になります</li>
+              <li>招待URLは一度のみ使用可能です</li>
+              <li>アカウント登録時にはメールアドレス認証が必要です</li>
+              <li>アップロードされた写真や情報は、招待された祖父母のみが閲覧できます</li>
+              <li>親のアカウントからいつでも祖父母のアクセス権を削除できます</li>
+            </ul>
+            <p>
+              セキュリティに関して不安な点がある場合は、お問い合わせフォームからご連絡ください。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="#">利用規約</a>
+          <a href="#">プライバシーポリシー</a>
+          <a href="#">お問い合わせ</a>
+        </div>
+        <div class="copyright">
+          &copy; 2025 まごころおくりもの All Rights Reserved.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="scripts.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // 招待URL生成フォーム
+      const createInviteForm = document.getElementById('create-invite-form');
+      const inviteUrlSection = document.getElementById('invite-url-section');
+      const inviteUrl = document.getElementById('invite-url');
+      const copyUrlBtn = document.getElementById('copy-url-btn');
+      
+      // 招待URL生成フォーム送信
+      createInviteForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // モックアップなので実際のURLは生成せず、表示するだけ
+        const grandparentType = document.getElementById('grandparent-type').value;
+        const randomCode = Math.random().toString(36).substring(2, 15);
+        
+        // URLを表示
+        inviteUrl.textContent = `https://mago-koro.jp/invite/${randomCode}`;
+        inviteUrlSection.style.display = 'block';
+        
+        // フォームを一時的に非表示
+        createInviteForm.style.display = 'none';
+        
+        // 成功メッセージを表示
+        showAlert('招待URLを生成しました。祖父母と共有してください。', 'success');
+        
+        // 5秒後にフォームを再表示
+        setTimeout(() => {
+          createInviteForm.style.display = 'block';
+        }, 5000);
+      });
+      
+      // URLコピーボタン
+      copyUrlBtn.addEventListener('click', function() {
+        const textToCopy = inviteUrl.textContent;
+        
+        // クリップボードにコピー
+        navigator.clipboard.writeText(textToCopy)
+          .then(() => {
+            // コピー成功
+            showAlert('招待URLをクリップボードにコピーしました', 'success');
+            
+            // ボタンの表示を一時的に変更
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-check"></i> コピーしました';
+            
+            setTimeout(() => {
+              this.innerHTML = originalText;
+            }, 2000);
+          })
+          .catch(err => {
+            // コピー失敗
+            showAlert('コピーに失敗しました', 'danger');
+            console.error('クリップボードへのコピーに失敗しました', err);
+          });
+      });
+      
+      // 共有オプション
+      const shareOptions = {
+        'share-line': function() {
+          const url = encodeURIComponent(inviteUrl.textContent);
+          const text = encodeURIComponent('まごころおくりものに招待されました。下記のURLからアカウント登録してください。');
+          const lineUrl = `https://social-plugins.line.me/lineit/share?url=${url}&text=${text}`;
+          window.open(lineUrl, '_blank');
+        },
+        'share-email': function() {
+          const subject = encodeURIComponent('まごころおくりものに招待されました');
+          const body = encodeURIComponent(`まごころおくりものに招待されました。\n\n下記のURLからアカウント登録してください。\n\n${inviteUrl.textContent}\n\n招待URLの有効期限: 2025年6月18日（30日間）`);
+          window.location.href = `mailto:?subject=${subject}&body=${body}`;
+        },
+        'share-message': function() {
+          const body = encodeURIComponent(`まごころおくりものに招待されました。下記のURLからアカウント登録してください。\n\n${inviteUrl.textContent}`);
+          window.location.href = `sms:?&body=${body}`;
+        },
+        'share-copy': function() {
+          navigator.clipboard.writeText(inviteUrl.textContent)
+            .then(() => {
+              showAlert('招待URLをクリップボードにコピーしました', 'success');
+            })
+            .catch(err => {
+              showAlert('コピーに失敗しました', 'danger');
+            });
+        }
+      };
+      
+      // 各共有オプションにイベントリスナーを追加
+      for (const id in shareOptions) {
+        document.getElementById(id).addEventListener('click', function() {
+          shareOptions[id]();
+        });
+      }
+      
+      // コラプシブルセクション
+      const collapsibleSections = document.querySelectorAll('.collapsible-section');
+      
+      collapsibleSections.forEach(section => {
+        const header = section.querySelector('.collapsible-header');
+        
+        header.addEventListener('click', function() {
+          section.classList.toggle('active');
+          
+          // アイコンの切り替え
+          const icon = this.querySelector('i');
+          if (section.classList.contains('active')) {
+            icon.classList.remove('fa-chevron-down');
+            icon.classList.add('fa-chevron-up');
+          } else {
+            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-down');
+          }
+        });
+      });
+      
+      // アラート表示関数（独自実装）
+      function showAlert(message, type) {
+        const alertsContainer = document.getElementById('alerts-container') || (() => {
+          const container = document.createElement('div');
+          container.id = 'alerts-container';
+          container.style.position = 'fixed';
+          container.style.top = '20px';
+          container.style.right = '20px';
+          container.style.zIndex = '1000';
+          document.body.appendChild(container);
+          return container;
+        })();
+        
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type}`;
+        alert.textContent = message;
+        
+        const closeBtn = document.createElement('button');
+        closeBtn.type = 'button';
+        closeBtn.className = 'close';
+        closeBtn.innerHTML = '&times;';
+        closeBtn.style.marginLeft = '10px';
+        closeBtn.style.float = 'right';
+        closeBtn.addEventListener('click', function() {
+          alert.remove();
+        });
+        
+        alert.appendChild(closeBtn);
+        alertsContainer.appendChild(alert);
+        
+        setTimeout(() => {
+          alert.remove();
+        }, 5000);
+      }
+    });
+  </script>
+</body>
+</html>
