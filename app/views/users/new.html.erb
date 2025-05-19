@@ -1,9 +1,65 @@
-<h1>New user</h1>
+<% provide(:title, "まごころおくりもの - 新規登録") %>
 
-<%= render "form", user: @user %>
+<div class="register-container" style="max-width: 600px; margin: 0 auto; padding: 30px; background: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+  <h1 style="text-align: center; margin-bottom: 30px; color: #4a6da7;">新規ユーザー登録</h1>
 
-<br>
+  <div class="row">
+    <div style="width: 100%;">
+      <%= form_with(model: @user, local: true) do |form| %>
+        <% if @user.errors.any? %>
+          <div class="error-messages" style="color: #dc3545; background: #f8d7da; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+            <h2><%= pluralize(@user.errors.count, "件のエラー") %>があります：</h2>
+            <ul>
+              <% @user.errors.each do |error| %>
+                <li><%= error.full_message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
 
-<div>
-  <%= link_to "Back to users", users_path %>
+        <div class="form-group" style="margin-bottom: 20px;">
+          <%= form.label :name, "お名前", style: "display: block; margin-bottom: 8px; font-weight: bold; font-size: 18px;" %>
+          <%= form.text_field :name, class: 'form-control', style: "width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box;" %>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+          <%= form.label :email, "メールアドレス", style: "display: block; margin-bottom: 8px; font-weight: bold; font-size: 18px;" %>
+          <%= form.email_field :email, class: 'form-control', style: "width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box;" %>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+          <%= form.label :user_type, "ユーザータイプ", style: "display: block; margin-bottom: 8px; font-weight: bold; font-size: 18px;" %>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <label style="display: flex; align-items: center; font-size: 16px;">
+              <%= form.radio_button :user_type, 'parent', style: "margin-right: 10px; width: 20px; height: 20px;" %>
+              親（子供の情報を登録・管理します）
+            </label>
+            <label style="display: flex; align-items: center; font-size: 16px;">
+              <%= form.radio_button :user_type, 'grandparent', style: "margin-right: 10px; width: 20px; height: 20px;" %>
+              祖父母（招待を受けて孫の情報を閲覧します）
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+          <%= form.label :password, "パスワード", style: "display: block; margin-bottom: 8px; font-weight: bold; font-size: 18px;" %>
+          <%= form.password_field :password, class: 'form-control', style: "width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box;" %>
+          <small style="display: block; margin-top: 5px; color: #6c757d;">6文字以上の英数字</small>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 30px;">
+          <%= form.label :password_confirmation, "パスワード（確認）", style: "display: block; margin-bottom: 8px; font-weight: bold; font-size: 18px;" %>
+          <%= form.password_field :password_confirmation, class: 'form-control', style: "width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box;" %>
+        </div>
+
+        <div class="form-group" style="margin: 30px 0;">
+          <%= form.submit "登録する", class: "btn btn-primary", style: "width: 100%; padding: 12px; font-size: 18px; background-color: #4a6da7; border: none; color: white; border-radius: 4px; cursor: pointer;" %>
+        </div>
+      <% end %>
+
+      <div style="text-align: center; margin-top: 20px;">
+        <p style="font-size: 16px;">すでにアカウントをお持ちですか？ <%= link_to "ログイン", login_path, style: "color: #4a6da7; font-weight: bold;" %></p>
+      </div>
+    </div>
+  </div>
 </div>

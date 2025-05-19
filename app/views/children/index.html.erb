@@ -1,0 +1,74 @@
+<% provide(:title, "まごころおくりもの - 子供管理") %>
+
+<div class="children-container">
+  <div class="page-header" style="margin-bottom: 30px;">
+    <h1 style="color: #4a6da7; font-size: 36px;">子供管理</h1>
+    <p style="font-size: 18px; color: #6c757d;">子供の情報を登録・管理できます</p>
+  </div>
+
+  <div class="action-buttons" style="margin-bottom: 30px;">
+    <%= link_to "新しく子供を登録", new_child_path, class: "btn btn-primary", style: "background-color: #4a6da7; border: none; padding: 12px 24px; font-size: 18px; border-radius: 4px;" %>
+  </div>
+
+  <% if @children.empty? %>
+    <div class="no-children-message" style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 8px;">
+      <h2 style="color: #6c757d; margin-bottom: 20px;">まだ子供情報が登録されていません</h2>
+      <p style="font-size: 18px; color: #6c757d;">「新しく子供を登録」ボタンから、子供の情報を登録してください。</p>
+    </div>
+  <% else %>
+    <div class="children-list">
+      <% @children.each do |child| %>
+        <div class="child-card" style="border: 1px solid #dee2e6; border-radius: 8px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); background: white;">
+          <div class="child-card-header" style="display: flex; justify-content: space-between; align-items: center; background-color: #4a6da7; color: white; padding: 15px;">
+            <h3 style="margin: 0; font-size: 22px;"><%= child.name %></h3>
+            <div>
+              <% if child.birthdate %>
+                <span style="font-size: 16px;">
+                  <%= child.birthdate.strftime('%Y年%m月%d日生まれ') %>
+                  (<%= ((Date.today - child.birthdate).to_i / 365.25).floor %>歳)
+                </span>
+              <% end %>
+            </div>
+          </div>
+          
+          <div class="child-card-body" style="padding: 20px;">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="stats" style="margin-bottom: 20px;">
+                  <p style="font-size: 16px; margin-bottom: 10px;">
+                    <strong>写真：</strong>
+                    <%= pluralize(child.photos.count, '枚') %>
+                  </p>
+                  <p style="font-size: 16px; margin-bottom: 10px;">
+                    <strong>ほしいものリスト：</strong>
+                    <%= pluralize(child.wishlist_items.count, '件') %>
+                    <% if child.wishlist_items.purchased.count > 0 %>
+                      （<%= child.wishlist_items.purchased.count %>件購入済み）
+                    <% end %>
+                  </p>
+                  <p style="font-size: 16px; margin-bottom: 10px;">
+                    <strong>祖父母招待：</strong>
+                    <%= pluralize(child.invitations.count, '件') %>
+                    <% if child.invitations.accepted.count > 0 %>
+                      （<%= child.invitations.accepted.count %>件承諾済み）
+                    <% end %>
+                  </p>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="child-actions" style="display: flex; flex-direction: column; gap: 10px;">
+                  <%= link_to "詳細情報の確認・編集", edit_child_path(child), class: "btn", style: "text-align: center; padding: 12px; background-color: #e9ecef; border-radius: 4px; text-decoration: none; color: #495057; font-weight: bold;" %>
+                  <%= link_to "写真管理", child_photos_path(child), class: "btn", style: "text-align: center; padding: 12px; background-color: #e9ecef; border-radius: 4px; text-decoration: none; color: #495057;" %>
+                  <%= link_to "ほしいものリスト管理", child_wishlist_items_path(child), class: "btn", style: "text-align: center; padding: 12px; background-color: #e9ecef; border-radius: 4px; text-decoration: none; color: #495057;" %>
+                  <%= link_to "祖父母招待管理", child_invitations_path(child), class: "btn", style: "text-align: center; padding: 12px; background-color: #e9ecef; border-radius: 4px; text-decoration: none; color: #495057;" %>
+                  <%= button_to "削除", child_path(child), method: :delete, class: "btn", style: "text-align: center; padding: 12px; background-color: #dc3545; border-radius: 4px; border: none; color: white; margin-top: 10px;", data: { confirm: "本当に#{child.name}の情報を削除しますか？この操作は取り消せません。" } %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

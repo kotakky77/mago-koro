@@ -8,161 +8,126 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-# サンプルユーザーの作成
-User.create!([
-  {
-    name: "管理者",
-    email: "admin@example.com",
-    password: "password",
-    password_confirmation: "password"
-  },
-  {
-    name: "テストユーザー1",
-    email: "user1@example.com",
-    password: "password",
-    password_confirmation: "password"
-  },
-  {
-    name: "テストユーザー2",
-    email: "user2@example.com",
-    password: "password",
-    password_confirmation: "password"
-  },
-  {
-    name: "テストユーザー3",
-    email: "user3@example.com",
-    password: "password",
-    password_confirmation: "password"
-  }
-])
-
-# サンプルカードの作成
-Card.create!([
-  {
-    name: "小麦畑",
-    card_type: "establishment",
-    cost: 1,
-    effect: "自分の手番で1が出た場合、1コインを得る"
-  },
-  {
-    name: "牧場",
-    card_type: "establishment",
-    cost: 1,
-    effect: "自分の手番で2が出た場合、1コインを得る"
-  },
-  {
-    name: "パン屋",
-    card_type: "establishment",
-    cost: 1,
-    effect: "自分の手番で2-3が出た場合、1コインを得る"
-  },
-  {
-    name: "カフェ",
-    card_type: "establishment",
-    cost: 2,
-    effect: "他人の手番で3が出た場合、その人から1コインをもらう"
-  },
-  {
-    name: "コンビニ",
-    card_type: "establishment",
-    cost: 2,
-    effect: "自分の手番で4が出た場合、3コインを得る"
-  },
-  {
-    name: "森",
-    card_type: "establishment",
-    cost: 3,
-    effect: "自分の手番で5が出た場合、1コインを得る"
-  },
-  {
-    name: "スタジアム",
-    card_type: "establishment",
-    cost: 6,
-    effect: "自分の手番で6が出た場合、全プレイヤーから2コインをもらう"
-  },
-  {
-    name: "テレビ局",
-    card_type: "establishment",
-    cost: 7,
-    effect: "自分の手番で6が出た場合、任意のプレイヤーから5コインをもらう"
-  },
-  {
-    name: "駅",
-    card_type: "landmark",
-    cost: 4,
-    effect: "1回の手番でサイコロを2個まで振れる"
-  },
-  {
-    name: "ショッピングモール",
-    card_type: "landmark",
-    cost: 10,
-    effect: "カフェとパン屋の効果で1コイン増加"
-  },
-  {
-    name: "遊園地",
-    card_type: "landmark",
-    cost: 16,
-    effect: "サイコロの目がゾロ目の場合、もう一度手番"
-  },
-  {
-    name: "電波塔",
-    card_type: "landmark",
-    cost: 22,
-    effect: "自分の手番ではサイコロの目を1つ選んで変更できる"
-  }
-])
-
-# サンプルゲームの作成
-game1 = Game.create!(
-  title: "テストゲーム1",
-  status: "waiting",
-  max_players: 4
+# 管理者ユーザー作成
+admin = User.create!(
+  name: "管理者",
+  email: "admin@example.com",
+  password: "password",
+  password_confirmation: "password",
+  user_type: "admin"
 )
 
-game2 = Game.create!(
-  title: "テストゲーム2",
-  status: "in_progress",
-  max_players: 3
+# 親ユーザー作成
+parent = User.create!(
+  name: "山田太郎",
+  email: "parent@example.com",
+  password: "password",
+  password_confirmation: "password",
+  user_type: "parent"
 )
 
-game3 = Game.create!(
-  title: "テストゲーム3",
-  status: "completed",
-  max_players: 2
+# 子供（孫）作成
+child = parent.children.create!(
+  name: "山田花子",
+  birthdate: 3.years.ago
 )
 
-# サンプルゲームプレイヤーの作成
-GamePlayer.create!([
+# 祖父母ユーザー作成
+grandparent = User.create!(
+  name: "山田義男",
+  email: "grandparent@example.com",
+  password: "password",
+  password_confirmation: "password",
+  user_type: "grandparent"
+)
+
+# 招待作成と承諾
+invitation = child.invitations.create!(
+  parent_id: parent.id,
+  expires_at: 7.days.from_now,
+  status: "accepted",
+  grandparent_id: grandparent.id
+)
+
+# ほしいものリストアイテム作成
+wishlist_items = [
   {
-    game: game1,
-    user: User.find_by(email: "admin@example.com"),
-    points: 0
+    name: "アンパンマン おおきなよくばりボックス",
+    url: "https://example.com/item1",
+    price: 3300,
+    description: "アンパンマンのおもちゃです。形合わせや音が出るボタンなど、遊び方がたくさんあります。",
+    category: "おもちゃ",
+    quantity: 1
   },
   {
-    game: game2,
-    user: User.find_by(email: "admin@example.com"),
-    points: 10
+    name: "ファーストシューズ",
+    url: "https://example.com/item2",
+    price: 4200,
+    description: "はじめての靴です。サイズは14cmです。",
+    category: "衣類",
+    quantity: 1,
+    purchased: true,
+    purchased_by_id: grandparent.id,
+    purchased_at: 2.days.ago
   },
   {
-    game: game2,
-    user: User.find_by(email: "user1@example.com"),
-    points: 8
-  },
-  {
-    game: game2,
-    user: User.find_by(email: "user2@example.com"),
-    points: 12
-  },
-  {
-    game: game3,
-    user: User.find_by(email: "user1@example.com"),
-    points: 20
-  },
-  {
-    game: game3,
-    user: User.find_by(email: "user3@example.com"),
-    points: 18
+    name: "絵本「いないいないばあ」",
+    url: "https://example.com/item3",
+    price: 880,
+    description: "人気の絵本です。寝る前に読んであげたいです。",
+    category: "本",
+    quantity: 1
   }
-])
+]
 
-puts "サンプルデータの作成が完了しました"
+wishlist_items.each do |item_data|
+  child.wishlist_items.create!(item_data)
+end
+
+# 購入通知作成
+notification = parent.purchase_notifications.create!(
+  wishlist_item_id: child.wishlist_items.where(purchased: true).first.id,
+  grandparent_id: grandparent.id
+)
+
+# 記念品作成
+souvenirs = [
+  {
+    name: "子供の絵付きマグカップ",
+    description: "お子様の描いた絵をマグカップにプリントします。おじいちゃん、おばあちゃんへの贈り物に最適です。",
+    price: 2500,
+    active: true,
+    image_path: "/images/souvenirs/mug.jpg"
+  },
+  {
+    name: "子供の絵付きTシャツ",
+    description: "お子様の描いた絵をTシャツにプリントします。サイズはS、M、Lからお選びいただけます。",
+    price: 3500,
+    active: true,
+    image_path: "/images/souvenirs/tshirt.jpg"
+  },
+  {
+    name: "子供の絵付きカレンダー",
+    description: "お子様の描いた絵を使ったオリジナルカレンダーです。毎月違う絵を使用することもできます。",
+    price: 2000,
+    active: true,
+    image_path: "/images/souvenirs/calendar.jpg"
+  }
+]
+
+souvenirs.each do |souvenir_data|
+  Souvenir.create!(souvenir_data)
+end
+
+# 記念品注文作成
+order = SouvenirOrder.create!(
+  user_id: grandparent.id,
+  souvenir_id: Souvenir.first.id,
+  child_id: child.id,
+  status: "pending",
+  shipping_address: "東京都渋谷区○○1-2-3",
+  recipient_name: "山田義男",
+  contact_phone: "090-1234-5678"
+)
+
+puts "まごころおくりものサンプルデータの作成が完了しました"

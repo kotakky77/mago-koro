@@ -1,14 +1,36 @@
-<div class="center jumbotron">
-  <h1>麻雀コロへようこそ！</h1>
+<% content_for :title, "まごころおくりもの - ホーム" %>
 
-  <h2>
-    これは麻雀コロアプリケーションのホームページです。
-  </h2>
-
-  <% if logged_in? %>
-    <p>ログイン中: <%= current_user.name %></p>
-    <%= link_to "プロフィール", current_user, class: "btn btn-lg btn-primary" %>
-  <% else %>
-    <%= link_to "今すぐ登録", new_user_path, class: "btn btn-lg btn-primary" %>
+<div class="jumbotron center">
+  <h1>まごころおくりもの</h1>
+  <p class="lead" style="font-size: 24px; margin: 20px 0;">祖父母と孫をつなぐ架け橋</p>
+  
+  <% unless logged_in? %>
+    <div class="cta-buttons" style="margin-top: 30px;">
+      <a href="<%= login_path %>" class="btn btn-primary btn-lg" style="margin-right: 15px;">ログイン</a>
+      <a href="<%= new_user_path %>" class="btn btn-secondary btn-lg">新規登録</a>
+    </div>
   <% end %>
+</div>
+
+<div class="row features">
+  <div class="col-md-4">
+    <div class="feature-box" style="text-align: center; padding: 20px; margin-bottom: 30px;">
+      <h2>ほしいものリスト</h2>
+      <p style="font-size: 18px;">親御さんが子供の「ほしいもの」をリストアップ。祖父母の方は孫の喜ぶギフトを簡単に選べます。</p>
+    </div>
+  </div>
+  
+  <div class="col-md-4">
+    <div class="feature-box" style="text-align: center; padding: 20px; margin-bottom: 30px;">
+      <h2>成長の共有</h2>
+      <p style="font-size: 18px;">子供の写真をアップロードして、離れて暮らす祖父母と日々の成長を共有できます。</p>
+    </div>
+  </div>
+  
+  <div class="col-md-4">
+    <div class="feature-box" style="text-align: center; padding: 20px; margin-bottom: 30px;">
+      <h2>記念品</h2>
+      <p style="font-size: 18px;">子供の描いた絵をプリントした特別な記念品で、世界にひとつだけの思い出を作りましょう。</p>
+    </div>
+  </div>
 </div>

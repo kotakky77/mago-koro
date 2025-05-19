@@ -1,0 +1,68 @@
+<% provide(:title, "まごころおくりもの - ほしいものを編集") %>
+
+<div class="wishlist-form-container" style="max-width: 700px; margin: 0 auto; padding: 30px; background: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+  <h1 style="text-align: center; margin-bottom: 30px; color: #4a6da7;"><%= @child.name %>のほしいものを編集</h1>
+
+  <%= form_with(model: @wishlist_item, local: true) do |form| %>
+    <% if @wishlist_item.errors.any? %>
+      <div class="error-messages" style="color: #dc3545; background: #f8d7da; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+        <h2><%= pluralize(@wishlist_item.errors.count, "件のエラー") %>があります：</h2>
+        <ul>
+          <% @wishlist_item.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="form-group" style="margin-bottom: 20px;">
+      <%= form.label :name, "商品名", style: "display: block; margin-bottom: 8px; font-weight: bold; font-size: 18px;" %>
+      <%= form.text_field :name, class: 'form-control', style: "width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box;" %>
+    </div>
+
+    <div class="form-group" style="margin-bottom: 20px;">
+      <%= form.label :url, "購入先URL", style: "display: block; margin-bottom: 8px; font-weight: bold; font-size: 18px;" %>
+      <%= form.url_field :url, class: 'form-control', style: "width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box;" %>
+      <small style="display: block; margin-top: 5px; color: #6c757d;">Amazonや楽天などの商品ページのURL</small>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6" style="width: 48%; margin-right: 2%;">
+        <div class="form-group" style="margin-bottom: 20px;">
+          <%= form.label :price, "価格（円）", style: "display: block; margin-bottom: 8px; font-weight: bold; font-size: 18px;" %>
+          <%= form.number_field :price, class: 'form-control', min: 0, style: "width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box;" %>
+        </div>
+      </div>
+      
+      <div class="col-md-6" style="width: 48%;">
+        <div class="form-group" style="margin-bottom: 20px;">
+          <%= form.label :quantity, "数量", style: "display: block; margin-bottom: 8px; font-weight: bold; font-size: 18px;" %>
+          <%= form.number_field :quantity, class: 'form-control', min: 1, style: "width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box;" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group" style="margin-bottom: 20px;">
+      <%= form.label :category, "カテゴリ", style: "display: block; margin-bottom: 8px; font-weight: bold; font-size: 18px;" %>
+      <%= form.select :category, 
+                     ['おもちゃ', '洋服', '本', '文具', '食べ物', '日用品', 'その他'], 
+                     { include_blank: 'カテゴリを選択' }, 
+                     { class: 'form-control', style: "width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box;" } %>
+    </div>
+
+    <div class="form-group" style="margin-bottom: 30px;">
+      <%= form.label :description, "説明・メッセージ", style: "display: block; margin-bottom: 8px; font-weight: bold; font-size: 18px;" %>
+      <%= form.text_area :description, class: 'form-control', rows: 5, style: "width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box;" %>
+      <small style="display: block; margin-top: 5px; color: #6c757d;">サイズや色の希望、祖父母へのメッセージなど</small>
+    </div>
+
+    <div class="form-buttons" style="display: flex; justify-content: space-between; margin-top: 30px;">
+      <%= form.submit "更新する", class: "btn btn-primary", style: "padding: 12px 24px; font-size: 18px; background-color: #4a6da7; border: none; color: white; border-radius: 4px; cursor: pointer;" %>
+      <%= link_to "キャンセル", child_wishlist_items_path(@child), class: "btn btn-secondary", style: "padding: 12px 24px; font-size: 18px; background-color: #6c757d; border: none; color: white; border-radius: 4px; text-decoration: none;" %>
+    </div>
+  <% end %>
+  
+  <div style="margin-top: 30px; border-top: 1px solid #dee2e6; padding-top: 20px;">
+    <%= button_to "このアイテムを削除", wishlist_item_path(@wishlist_item), method: :delete, class: "btn btn-danger", style: "width: 100%; padding: 12px; font-size: 16px; background-color: #dc3545; border: none; color: white; border-radius: 4px;", data: { confirm: "本当にこのアイテムを削除しますか？" } %>
+  </div>
+</div>
