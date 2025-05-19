@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "麻雀コロ" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <style>
+      /* 基本的なスタイル */
+      body {
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      
+      .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
+      }
+      
+      /* ナビゲーションバー */
+      .navbar {
+        background-color: #343a40;
+        padding: 10px 0;
+        margin-bottom: 20px;
+      }
+      
+      .navbar-brand {
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        text-decoration: none;
+      }
+      
+      .navbar-nav {
+        list-style: none;
+        display: flex;
+        margin: 0;
+        padding: 0;
+      }
+      
+      .nav-item {
+        margin-left: 20px;
+      }
+      
+      .nav-link {
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+      }
+      
+      .nav-link:hover {
+        color: white;
+      }
+      
+      /* ボタン */
+      .btn {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 4px;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      
+      .btn-primary {
+        background-color: #007bff;
+        color: white;
+        border: none;
+      }
+      
+      .btn-primary:hover {
+        background-color: #0069d9;
+      }
+      
+      /* フォーム要素 */
+      .form-control {
+        display: block;
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+      }
+      
+      /* フラッシュメッセージ */
+      .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+      }
+      
+      .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      
+      .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+      
+      /* レスポンシブグリッド */
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-right: -15px;
+        margin-left: -15px;
+      }
+      
+      .col-md-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+        padding: 0 15px;
+      }
+      
+      @media (max-width: 768px) {
+        .col-md-6 {
+          flex: 0 0 100%;
+          max-width: 100%;
+        }
+      }
+      
+      /* センタリング */
+      .center {
+        text-align: center;
+      }
+      
+      /* Jumbotron */
+      .jumbotron {
+        padding: 2rem 1rem;
+        margin-bottom: 2rem;
+        background-color: #e9ecef;
+        border-radius: 0.3rem;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="navbar">
+      <div class="container">
+        <a href="<%= root_path %>" class="navbar-brand">麻雀コロ</a>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a href="<%= root_path %>" class="nav-link">ホーム</a>
+          </li>
+          <li class="nav-item">
+            <a href="<%= games_path %>" class="nav-link">ゲーム</a>
+          </li>
+          <% if logged_in? %>
+            <li class="nav-item">
+              <a href="<%= user_path(current_user) %>" class="nav-link">プロフィール</a>
+            </li>
+            <li class="nav-item">
+              <%= button_to "ログアウト", logout_path, method: :delete, class: "nav-link", style: "background: none; border: none;" %>
+            </li>
+          <% else %>
+            <li class="nav-item">
+              <a href="<%= login_path %>" class="nav-link">ログイン</a>
+            </li>
+            <li class="nav-item">
+              <a href="<%= new_user_path %>" class="nav-link">新規登録</a>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </header>
+
+    <div class="container">
+      <% flash.each do |message_type, message| %>
+        <div class="alert alert-<%= message_type %>"><%= message %></div>
+      <% end %>
+      
+      <%= yield %>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,131 @@
+<% provide(:title, "ゲーム一覧") %>
+<h1>ゲーム一覧</h1>
+
+<div>
+  <%= link_to "新しいゲームを作成", new_game_path, class: "btn btn-primary" %>
+</div>
+
+<div class="games-list">
+  <h2>参加可能なゲーム</h2>
+  <% if @games.where(status: 'waiting').any? %>
+    <table>
+      <thead>
+        <tr>
+          <th>タイトル</th>
+          <th>プレイヤー数</th>
+          <th>作成者</th>
+          <th>アクション</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @games.where(status: 'waiting').each do |game| %>
+          <tr>
+            <td><%= link_to game.title, game %></td>
+            <td><%= game.game_players.count %>/<%= game.max_players %></td>
+            <td><%= game.users.first.name %></td>
+            <td>
+              <% if game.can_join? && !game.users.include?(current_user) %>
+                <%= button_to "参加する", join_game_path(game), method: :post, class: "btn btn-primary" %>
+              <% elsif game.users.include?(current_user) %>
+                <span>参加中</span>
+              <% else %>
+                <span>満員</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p>現在、参加可能なゲームはありません。</p>
+  <% end %>
+  
+  <h2>進行中のゲーム</h2>
+  <% if @games.where(status: 'in_progress').any? %>
+    <table>
+      <thead>
+        <tr>
+          <th>タイトル</th>
+          <th>プレイヤー数</th>
+          <th>作成者</th>
+          <th>アクション</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @games.where(status: 'in_progress').each do |game| %>
+          <tr>
+            <td><%= link_to game.title, game %></td>
+            <td><%= game.game_players.count %>/<%= game.max_players %></td>
+            <td><%= game.users.first.name %></td>
+            <td>
+              <% if game.users.include?(current_user) %>
+                <%= link_to "ゲームに戻る", game, class: "btn btn-primary" %>
+              <% else %>
+                <span>観戦</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p>現在、進行中のゲームはありません。</p>
+  <% end %>
+  
+  <h2>終了したゲーム</h2>
+  <% if @games.where(status: 'completed').any? %>
+    <table>
+      <thead>
+        <tr>
+          <th>タイトル</th>
+          <th>プレイヤー数</th>
+          <th>勝者</th>
+          <th>アクション</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @games.where(status: 'completed').each do |game| %>
+          <tr>
+            <td><%= link_to game.title, game %></td>
+            <td><%= game.game_players.count %></td>
+            <td>
+              <% winner = game.game_players.order(points: :desc).first.try(:user) %>
+              <%= winner ? winner.name : '不明' %>
+            </td>
+            <td>
+              <%= link_to "詳細", game, class: "btn btn-secondary" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p>終了したゲームはありません。</p>
+  <% end %>
+</div>
+
+<style>
+  .games-list {
+    margin-top: 30px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+  }
+  
+  th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+</style>
