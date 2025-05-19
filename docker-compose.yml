@@ -1,9 +1,9 @@
 services:
   db:
     image: mysql:8.0
-    restart: always
+    restart: no
     environment:
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: 
       MYSQL_DATABASE: mago_koro_development
       MYSQL_USER: rails
       MYSQL_PASSWORD: password
