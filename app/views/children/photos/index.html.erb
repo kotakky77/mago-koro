@@ -1,0 +1,49 @@
+<% provide(:title, "まごころおくりもの - 写真管理") %>
+
+<div class="photos-container">
+  <div class="page-header" style="margin-bottom: 30px;">
+    <h1 style="color: #4a6da7; font-size: 36px;"><%= @child.name %>の写真管理</h1>
+    <p style="font-size: 18px; color: #6c757d;">写真をアップロードして、祖父母と共有しましょう</p>
+  </div>
+
+  <div class="upload-section" style="margin-bottom: 40px; padding: 20px; background: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <h2 style="color: #4a6da7; font-size: 24px; margin-bottom: 20px;">写真のアップロード</h2>
+    
+    <%= form_with(url: child_photos_path(@child), method: :post, local: true, multipart: true) do |form| %>
+      <div class="form-group" style="margin-bottom: 20px;">
+        <%= form.label :photos, "写真を選択", style: "display: block; margin-bottom: 8px; font-weight: bold; font-size: 18px;" %>
+        <%= form.file_field :photos, multiple: true, accept: 'image/jpeg,image/png', class: 'form-control', style: "width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ced4da; border-radius: 4px;" %>
+        <small style="display: block; margin-top: 5px; color: #6c757d;">JPEG、PNG形式のみ対応。1枚あたり10MB以内。複数選択可能。</small>
+      </div>
+
+      <div class="form-actions">
+        <%= form.submit "アップロード", class: "btn btn-primary", style: "padding: 10px 20px; font-size: 18px; background-color: #4a6da7; border: none; color: white; border-radius: 4px; cursor: pointer;" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="photos-gallery">
+    <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h2 style="color: #4a6da7; font-size: 24px;">アップロード済みの写真（<%= @photos.count %>枚）</h2>
+      <%= link_to "#{@child.name}の管理ページに戻る", edit_child_path(@child), class: "btn btn-sm btn-outline-primary", style: "font-size: 16px; padding: 8px 16px;" %>
+    </div>
+
+    <% if @photos.empty? %>
+      <div class="no-photos-message" style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 8px;">
+        <h3 style="color: #6c757d; margin-bottom: 20px;">まだ写真がアップロードされていません</h3>
+        <p style="font-size: 18px; color: #6c757d;">上部の「写真を選択」から、写真をアップロードしてください。</p>
+      </div>
+    <% else %>
+      <div class="photos-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
+        <% @photos.each do |photo| %>
+          <div class="photo-card" style="position: relative; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <%= image_tag url_for(photo), style: "width: 100%; height: auto; display: block;" %>
+            <div class="photo-actions" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); padding: 10px; text-align: center;">
+              <%= button_to "削除", child_photo_path(@child, photo), method: :delete, class: "btn btn-sm btn-danger", style: "padding: 5px 10px; font-size: 14px; background-color: #dc3545; border: none; color: white; border-radius: 4px;", data: { confirm: "この写真を削除してもよろしいですか？" } %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

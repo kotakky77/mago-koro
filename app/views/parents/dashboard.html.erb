@@ -1,2 +1,56 @@
-<h1>Parents#dashboard</h1>
-<p>Find me in app/views/parents/dashboard.html.erb</p>
+<% provide(:title, "まごころおくりもの - 親ダッシュボード") %>
+
+<div class="dashboard-container">
+  <div class="dashboard-header" style="margin-bottom: 30px;">
+    <h1 style="color: #4a6da7; font-size: 36px;">親ダッシュボード</h1>
+    <p style="font-size: 18px; color: #6c757d;">こんにちは、<%= current_user.name %>さん</p>
+  </div>
+
+  <% if @unread_notifications_count > 0 %>
+    <div class="alert alert-info" style="background-color: #cfe2ff; color: #084298; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+      <%= link_to purchase_notifications_path, style: "color: #084298; font-weight: bold; text-decoration: none;" do %>
+        <span style="font-size: 18px;">🔔 <%= @unread_notifications_count %>件の未読通知があります</span>
+      <% end %>
+    </div>
+  <% end %>
+
+  <% if @children.empty? %>
+    <div class="no-children-message" style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 8px; margin-bottom: 30px;">
+      <h2 style="color: #6c757d; margin-bottom: 20px;">まだ子供情報が登録されていません</h2>
+      <p style="font-size: 18px; color: #6c757d; margin-bottom: 30px;">子供の情報を登録して、祖父母とつながりましょう。</p>
+      <%= link_to "子供を登録する", new_child_path, class: "btn btn-primary", style: "background-color: #4a6da7; border: none; padding: 12px 24px; font-size: 18px; border-radius: 4px;" %>
+    </div>
+  <% else %>
+    <div class="children-section">
+      <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="color: #4a6da7; font-size: 24px;">登録済みの子供</h2>
+        <%= link_to "新しく子供を登録", new_child_path, class: "btn btn-sm btn-outline-primary", style: "font-size: 16px; padding: 8px 16px;" %>
+      </div>
+
+      <div class="children-cards" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+        <% @children.each do |child| %>
+          <div class="child-card" style="border: 1px solid #dee2e6; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); background: white;">
+            <div class="child-card-header" style="background-color: #4a6da7; color: white; padding: 15px; text-align: center;">
+              <h3 style="margin: 0; font-size: 22px;"><%= child.name %></h3>
+              <% if child.birthdate %>
+                <p style="margin: 5px 0 0 0; font-size: 14px;">
+                  <%= child.birthdate.strftime('%Y年%m月%d日生まれ') %>
+                  (<%= ((Date.today - child.birthdate).to_i / 365.25).floor %>歳)
+                </p>
+              <% end %>
+            </div>
+            
+            <div class="child-card-body" style="padding: 20px;">
+              <div class="child-card-actions" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <%= link_to "写真管理", child_photos_path(child), class: "btn", style: "text-align: center; padding: 10px; background-color: #e9ecef; border-radius: 4px; text-decoration: none; color: #495057;" %>
+                <%= link_to "ほしいものリスト", child_wishlist_items_path(child), class: "btn", style: "text-align: center; padding: 10px; background-color: #e9ecef; border-radius: 4px; text-decoration: none; color: #495057;" %>
+                <%= link_to "祖父母を招待", child_invitations_path(child), class: "btn", style: "text-align: center; padding: 10px; background-color: #e9ecef; border-radius: 4px; text-decoration: none; color: #495057;" %>
+                <%= link_to "詳細/編集", edit_child_path(child), class: "btn", style: "text-align: center; padding: 10px; background-color: #e9ecef; border-radius: 4px; text-decoration: none; color: #495057;" %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,33 @@
+<% provide(:title, "まごころおくりもの - 子供登録") %>
+
+<div class="child-form-container" style="max-width: 600px; margin: 0 auto; padding: 30px; background: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+  <h1 style="text-align: center; margin-bottom: 30px; color: #4a6da7;">子供情報の登録</h1>
+
+  <%= form_with(model: @child, local: true) do |form| %>
+    <% if @child.errors.any? %>
+      <div class="error-messages" style="color: #dc3545; background: #f8d7da; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+        <h2><%= pluralize(@child.errors.count, "件のエラー") %>があります：</h2>
+        <ul>
+          <% @child.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="form-group" style="margin-bottom: 20px;">
+      <%= form.label :name, "お名前", style: "display: block; margin-bottom: 8px; font-weight: bold; font-size: 18px;" %>
+      <%= form.text_field :name, class: 'form-control', style: "width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box;" %>
+    </div>
+
+    <div class="form-group" style="margin-bottom: 30px;">
+      <%= form.label :birthdate, "生年月日", style: "display: block; margin-bottom: 8px; font-weight: bold; font-size: 18px;" %>
+      <%= form.date_field :birthdate, class: 'form-control', style: "width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box;" %>
+    </div>
+
+    <div class="form-buttons" style="display: flex; justify-content: space-between; margin-top: 30px;">
+      <%= form.submit "保存する", class: "btn btn-primary", style: "padding: 12px 24px; font-size: 18px; background-color: #4a6da7; border: none; color: white; border-radius: 4px; cursor: pointer;" %>
+      <%= link_to "キャンセル", children_path, class: "btn btn-secondary", style: "padding: 12px 24px; font-size: 18px; background-color: #6c757d; border: none; color: white; border-radius: 4px; text-decoration: none;" %>
+    </div>
+  <% end %>
+</div>

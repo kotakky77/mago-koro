@@ -1,0 +1,65 @@
+<% provide(:title, "まごころおくりもの - 子供情報編集") %>
+
+<div class="child-form-container" style="max-width: 600px; margin: 0 auto; padding: 30px; background: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+  <h1 style="text-align: center; margin-bottom: 30px; color: #4a6da7;">子供情報の編集</h1>
+
+  <%= form_with(model: @child, local: true) do |form| %>
+    <% if @child.errors.any? %>
+      <div class="error-messages" style="color: #dc3545; background: #f8d7da; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+        <h2><%= pluralize(@child.errors.count, "件のエラー") %>があります：</h2>
+        <ul>
+          <% @child.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="form-group" style="margin-bottom: 20px;">
+      <%= form.label :name, "お名前", style: "display: block; margin-bottom: 8px; font-weight: bold; font-size: 18px;" %>
+      <%= form.text_field :name, class: 'form-control', style: "width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box;" %>
+    </div>
+
+    <div class="form-group" style="margin-bottom: 30px;">
+      <%= form.label :birthdate, "生年月日", style: "display: block; margin-bottom: 8px; font-weight: bold; font-size: 18px;" %>
+      <%= form.date_field :birthdate, class: 'form-control', style: "width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box;" %>
+    </div>
+
+    <div class="child-stats" style="margin-bottom: 30px; padding: 15px; background-color: #e9ecef; border-radius: 4px;">
+      <h3 style="color: #4a6da7; font-size: 20px; margin-bottom: 15px;">現在の状況</h3>
+      <p style="font-size: 16px; margin-bottom: 10px;">
+        <strong>写真：</strong>
+        <%= pluralize(@child.photos.count, '枚') %>
+      </p>
+      <p style="font-size: 16px; margin-bottom: 10px;">
+        <strong>ほしいものリスト：</strong>
+        <%= pluralize(@child.wishlist_items.count, '件') %>
+        <% if @child.wishlist_items.purchased.count > 0 %>
+          （<%= @child.wishlist_items.purchased.count %>件購入済み）
+        <% end %>
+      </p>
+      <p style="font-size: 16px; margin-bottom: 10px;">
+        <strong>祖父母招待：</strong>
+        <%= pluralize(@child.invitations.count, '件') %>
+        <% if @child.invitations.accepted.count > 0 %>
+          （<%= @child.invitations.accepted.count %>件承諾済み）
+        <% end %>
+      </p>
+    </div>
+
+    <div class="linked-actions" style="margin-bottom: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+      <%= link_to "写真管理", child_photos_path(@child), class: "btn", style: "text-align: center; padding: 12px; background-color: #e9ecef; border-radius: 4px; text-decoration: none; color: #495057;" %>
+      <%= link_to "ほしいものリスト", child_wishlist_items_path(@child), class: "btn", style: "text-align: center; padding: 12px; background-color: #e9ecef; border-radius: 4px; text-decoration: none; color: #495057;" %>
+      <%= link_to "祖父母招待", child_invitations_path(@child), class: "btn", style: "text-align: center; padding: 12px; background-color: #e9ecef; border-radius: 4px; text-decoration: none; color: #495057;" %>
+    </div>
+
+    <div class="form-buttons" style="display: flex; justify-content: space-between; margin-top: 30px;">
+      <%= form.submit "保存する", class: "btn btn-primary", style: "padding: 12px 24px; font-size: 18px; background-color: #4a6da7; border: none; color: white; border-radius: 4px; cursor: pointer;" %>
+      <%= link_to "戻る", children_path, class: "btn btn-secondary", style: "padding: 12px 24px; font-size: 18px; background-color: #6c757d; border: none; color: white; border-radius: 4px; text-decoration: none;" %>
+    </div>
+  <% end %>
+  
+  <div style="margin-top: 30px; border-top: 1px solid #dee2e6; padding-top: 20px;">
+    <%= button_to "この子供の情報を削除", child_path(@child), method: :delete, class: "btn btn-danger", style: "width: 100%; padding: 12px; font-size: 16px; background-color: #dc3545; border: none; color: white; border-radius: 4px;", data: { confirm: "本当に#{@child.name}の情報を削除しますか？関連するすべてのデータ（写真、ほしいものリスト、招待情報など）も削除されます。この操作は取り消せません。" } %>
+  </div>
+</div>
