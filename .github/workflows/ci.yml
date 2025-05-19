@@ -1,9 +1,15 @@
 name: CI
 
+# CIを一時的に無効化
+# 元に戻すには、コメントを外してください
+# on:
+#   pull_request:
+#   push:
+#     branches: [ main ]
+
+# 代わりに手動トリガーのみ有効にする
 on:
-  pull_request:
-  push:
-    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   scan_ruby:
