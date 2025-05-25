@@ -1,13 +1,15 @@
-<% provide(:title, "まごころおくりもの - 新規登録") %>
+<% provide(:title, "アカウント作成 - まごころおくりもの") %>
+<% content_for :layout_class, "auth-layout" %>
 
-<div class="register-container" style="max-width: 600px; margin: 0 auto; padding: 30px; background: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-  <h1 style="text-align: center; margin-bottom: 30px; color: #4a6da7;">新規ユーザー登録</h1>
-
-  <div class="row">
-    <div style="width: 100%;">
-      <%= form_with(model: @user, local: true) do |form| %>
+<main>
+  <div class="container" style="padding-top: 30px;">
+    <h1 style="margin-bottom: 10px;">アカウント作成</h1>
+    <p style="margin-bottom: 30px;">おじいちゃん・おばあちゃんに孫の様子を伝えるアカウントを作成しましょう</p>
+    
+    <div class="card">
+      <%= form_with(model: @user, local: true, class: "form") do |form| %>
         <% if @user.errors.any? %>
-          <div class="error-messages" style="color: #dc3545; background: #f8d7da; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+          <div class="error-messages">
             <h2><%= pluralize(@user.errors.count, "件のエラー") %>があります：</h2>
             <ul>
               <% @user.errors.each do |error| %>
@@ -17,49 +19,59 @@
           </div>
         <% end %>
 
-        <div class="form-group" style="margin-bottom: 20px;">
-          <%= form.label :name, "お名前", style: "display: block; margin-bottom: 8px; font-weight: bold; font-size: 18px;" %>
-          <%= form.text_field :name, class: 'form-control', style: "width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box;" %>
+        <div class="form-group">
+          <%= form.label :email do %>
+            メールアドレス <span class="required">*</span>
+          <% end %>
+          <%= form.email_field :email, required: true %>
         </div>
 
-        <div class="form-group" style="margin-bottom: 20px;">
-          <%= form.label :email, "メールアドレス", style: "display: block; margin-bottom: 8px; font-weight: bold; font-size: 18px;" %>
-          <%= form.email_field :email, class: 'form-control', style: "width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box;" %>
+        <div class="form-group">
+          <%= form.label :password do %>
+            パスワード <span class="required">*</span>
+          <% end %>
+          <%= form.password_field :password, required: true %>
+          <small class="form-help">8文字以上で、英字・数字を含めてください</small>
         </div>
 
-        <div class="form-group" style="margin-bottom: 20px;">
-          <%= form.label :user_type, "ユーザータイプ", style: "display: block; margin-bottom: 8px; font-weight: bold; font-size: 18px;" %>
-          <div style="display: flex; flex-direction: column; gap: 10px;">
-            <label style="display: flex; align-items: center; font-size: 16px;">
-              <%= form.radio_button :user_type, 'parent', style: "margin-right: 10px; width: 20px; height: 20px;" %>
+        <div class="form-group">
+          <%= form.label :password_confirmation do %>
+            パスワード（確認用） <span class="required">*</span>
+          <% end %>
+          <%= form.password_field :password_confirmation, required: true %>
+        </div>
+
+        <div class="form-group">
+          <%= form.label :name do %>
+            親の氏名 <span class="required">*</span>
+          <% end %>
+          <%= form.text_field :name, required: true %>
+        </div>
+
+        <div class="form-group">
+          <%= form.label :user_type do %>
+            ユーザータイプ <span class="required">*</span>
+          <% end %>
+          <div class="radio-group">
+            <label class="radio-label">
+              <%= form.radio_button :user_type, 'parent', required: true %>
               親（子供の情報を登録・管理します）
             </label>
-            <label style="display: flex; align-items: center; font-size: 16px;">
-              <%= form.radio_button :user_type, 'grandparent', style: "margin-right: 10px; width: 20px; height: 20px;" %>
+            <label class="radio-label">
+              <%= form.radio_button :user_type, 'grandparent', required: true %>
               祖父母（招待を受けて孫の情報を閲覧します）
             </label>
           </div>
         </div>
 
-        <div class="form-group" style="margin-bottom: 20px;">
-          <%= form.label :password, "パスワード", style: "display: block; margin-bottom: 8px; font-weight: bold; font-size: 18px;" %>
-          <%= form.password_field :password, class: 'form-control', style: "width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box;" %>
-          <small style="display: block; margin-top: 5px; color: #6c757d;">6文字以上の英数字</small>
-        </div>
-
-        <div class="form-group" style="margin-bottom: 30px;">
-          <%= form.label :password_confirmation, "パスワード（確認）", style: "display: block; margin-bottom: 8px; font-weight: bold; font-size: 18px;" %>
-          <%= form.password_field :password_confirmation, class: 'form-control', style: "width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box;" %>
-        </div>
-
-        <div class="form-group" style="margin: 30px 0;">
-          <%= form.submit "登録する", class: "btn btn-primary", style: "width: 100%; padding: 12px; font-size: 18px; background-color: #4a6da7; border: none; color: white; border-radius: 4px; cursor: pointer;" %>
+        <div class="form-actions">
+          <%= form.submit "アカウントを作成する", class: "btn btn-primary btn-block" %>
         </div>
       <% end %>
 
-      <div style="text-align: center; margin-top: 20px;">
-        <p style="font-size: 16px;">すでにアカウントをお持ちですか？ <%= link_to "ログイン", login_path, style: "color: #4a6da7; font-weight: bold;" %></p>
+      <div class="form-footer">
+        <p>すでにアカウントをお持ちですか？ <%= link_to "ログイン", login_path, class: "link" %></p>
       </div>
     </div>
   </div>
-</div>
+</main>

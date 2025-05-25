@@ -3,6 +3,8 @@ class Child < ApplicationRecord
   
   has_many :wishlist_items, dependent: :destroy
   has_many :invitations, dependent: :destroy
+  has_many :accepted_invitations, -> { accepted }, class_name: 'Invitation'
+  has_many :grandparents, through: :accepted_invitations, source: :grandparent
   has_many :souvenir_orders, dependent: :destroy
   
   has_many_attached :photos

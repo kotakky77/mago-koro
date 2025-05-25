@@ -1,2 +1,244 @@
-<h1>Grandparents#photos</h1>
-<p>Find me in app/views/grandparents/photos.html.erb</p>
+<% provide(:title, "まごころおくりもの - 写真閲覧") %>
+
+<main>
+  <div class="container" style="padding-top: 30px;">
+    <h1 style="margin-bottom: 10px;">写真閲覧</h1>
+    <p style="margin-bottom: 30px;">
+      <% if @child %>
+        <%= @child.name %>ちゃんの写真をご覧いただけます
+      <% else %>
+        孫の写真をご覧いただけます
+      <% end %>
+    </p>
+    
+    <% if @child&.photos&.any? %>
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+          <h2 style="margin: 0;">
+            <% if @child %>
+              <%= @child.name %>ちゃんの写真アルバム
+            <% else %>
+              写真アルバム
+            <% end %>
+          </h2>
+          <div>
+            <button class="btn btn-secondary" id="slideshow-button">
+              <i class="fas fa-play"></i> スライドショー
+            </button>
+            <button class="btn" style="margin-left: 10px;" id="grid-view-button">
+              <i class="fas fa-th"></i> グリッド表示
+            </button>
+          </div>
+        </div>
+        
+        <div class="photo-filters">
+          <div class="photo-filter active" data-filter="all">すべて (<%= @child.photos.count %>)</div>
+          <div class="photo-filter" data-filter="latest">最近の写真 (<%= @child.photos.limit(5).count %>)</div>
+          <div class="photo-filter" data-filter="spring">春の写真</div>
+          <div class="photo-filter" data-filter="summer">夏の写真</div>
+          <div class="photo-filter" data-filter="autumn">秋の写真</div>
+          <div class="photo-filter" data-filter="winter">冬の写真</div>
+        </div>
+        
+        <div class="photo-grid">
+          <% @child.photos.each_with_index do |photo, index| %>
+            <div class="photo-item" data-category="latest" data-date="<%= photo.created_at.strftime('%Y-%m-%d') %>">
+              <%= image_tag photo, alt: "#{@child.name}ちゃんの写真", 
+                  data: { caption: "#{@child.name}ちゃんの写真（#{photo.created_at.strftime('%Y年%m月%d日')}）" } %>
+            </div>
+          <% end %>
+        </div>
+        
+        <% if @child.photos.count > 12 %>
+          <div style="margin-top: 20px; text-align: center;">
+            <button class="btn btn-secondary" id="load-more-button">
+              もっと見る <i class="fas fa-chevron-down"></i>
+            </button>
+          </div>
+        <% end %>
+      </div>
+      
+      <div class="card" style="margin-top: 30px;">
+        <h2 style="margin-bottom: 20px;">写真について</h2>
+        <div style="background-color: #E8F5E9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+          <h3 style="color: #2E7D32; margin-bottom: 10px;"><i class="fas fa-info-circle"></i> 写真のダウンロードについて</h3>
+          <p>写真は右クリックから「名前を付けて画像を保存」を選択することでダウンロードできます。</p>
+        </div>
+        
+        <div style="background-color: #FFF3E0; padding: 15px; border-radius: 8px;">
+          <h3 style="color: #E65100; margin-bottom: 10px;"><i class="fas fa-exclamation-triangle"></i> お願い</h3>
+          <p>写真は個人で楽しむ目的でのみご利用ください。SNSなどへの投稿はお控えいただきますようお願いいたします。</p>
+        </div>
+      </div>
+    <% else %>
+      <div class="card">
+        <div style="text-align: center; padding: 40px 20px;">
+          <i class="fas fa-images" style="font-size: 64px; color: #E0E0E0; margin-bottom: 20px;"></i>
+          <h2 style="margin-bottom: 10px;">まだ写真がありません</h2>
+          <p style="color: #757575;">親が写真をアップロードすると、ここに表示されます。</p>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</main>
+
+<!-- 写真ビューアーモーダル -->
+<div class="photo-viewer-modal" id="photo-modal">
+  <div class="modal-content">
+    <button class="modal-close" id="modal-close">
+      <i class="fas fa-times"></i>
+    </button>
+    <img src="" alt="拡大写真" class="modal-image" id="modal-image">
+    <div class="modal-nav">
+      <button id="prev-photo"><i class="fas fa-chevron-left"></i></button>
+      <button id="next-photo"><i class="fas fa-chevron-right"></i></button>
+    </div>
+    <div class="modal-caption" id="modal-caption"></div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // 写真アイテムの取得
+  const photoItems = document.querySelectorAll('.photo-item');
+  const modal = document.getElementById('photo-modal');
+  const modalImage = document.getElementById('modal-image');
+  const modalCaption = document.getElementById('modal-caption');
+  const modalClose = document.getElementById('modal-close');
+  const prevButton = document.getElementById('prev-photo');
+  const nextButton = document.getElementById('next-photo');
+  const slideshowButton = document.getElementById('slideshow-button');
+  const filterButtons = document.querySelectorAll('.photo-filter');
+  
+  let currentIndex = 0;
+  let slideshowInterval;
+  let filteredPhotos = Array.from(photoItems);
+  
+  // 写真フィルター
+  filterButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      // アクティブクラスの切り替え
+      filterButtons.forEach(btn => btn.classList.remove('active'));
+      this.classList.add('active');
+      
+      const filter = this.dataset.filter;
+      
+      // 写真のフィルタリング
+      photoItems.forEach(item => {
+        if (filter === 'all' || item.dataset.category.includes(filter)) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+      
+      // フィルター後の写真配列を更新
+      filteredPhotos = Array.from(photoItems).filter(item => {
+        return filter === 'all' || item.dataset.category.includes(filter);
+      });
+    });
+  });
+  
+  // 写真クリック時のモーダル表示
+  photoItems.forEach((item, index) => {
+    item.addEventListener('click', function() {
+      openModal(index);
+    });
+  });
+  
+  // モーダルを開く関数
+  function openModal(index) {
+    currentIndex = index;
+    const img = filteredPhotos[currentIndex].querySelector('img');
+    modalImage.src = img.src;
+    modalCaption.textContent = img.dataset.caption || '';
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden'; // スクロール防止
+  }
+  
+  // モーダルを閉じる関数
+  function closeModal() {
+    modal.classList.remove('active');
+    document.body.style.overflow = ''; // スクロール再開
+    
+    // スライドショーが実行中なら停止
+    if (slideshowInterval) {
+      clearInterval(slideshowInterval);
+      slideshowInterval = null;
+      slideshowButton.innerHTML = '<i class="fas fa-play"></i> スライドショー';
+    }
+  }
+  
+  // 次の写真を表示
+  function nextPhoto() {
+    currentIndex = (currentIndex + 1) % filteredPhotos.length;
+    const img = filteredPhotos[currentIndex].querySelector('img');
+    modalImage.src = img.src;
+    modalCaption.textContent = img.dataset.caption || '';
+  }
+  
+  // 前の写真を表示
+  function prevPhoto() {
+    currentIndex = (currentIndex - 1 + filteredPhotos.length) % filteredPhotos.length;
+    const img = filteredPhotos[currentIndex].querySelector('img');
+    modalImage.src = img.src;
+    modalCaption.textContent = img.dataset.caption || '';
+  }
+  
+  // スライドショー開始/停止
+  function toggleSlideshow() {
+    if (slideshowInterval) {
+      // 停止
+      clearInterval(slideshowInterval);
+      slideshowInterval = null;
+      slideshowButton.innerHTML = '<i class="fas fa-play"></i> スライドショー';
+    } else {
+      // 開始
+      openModal(0);
+      slideshowInterval = setInterval(nextPhoto, 3000);
+      slideshowButton.innerHTML = '<i class="fas fa-pause"></i> 停止';
+    }
+  }
+  
+  // イベントリスナー
+  if (modalClose) modalClose.addEventListener('click', closeModal);
+  if (prevButton) prevButton.addEventListener('click', prevPhoto);
+  if (nextButton) nextButton.addEventListener('click', nextPhoto);
+  if (slideshowButton) slideshowButton.addEventListener('click', toggleSlideshow);
+  
+  // 背景クリックでモーダルを閉じる
+  if (modal) {
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+  }
+  
+  // キーボード操作
+  document.addEventListener('keydown', function(e) {
+    if (!modal || !modal.classList.contains('active')) return;
+    
+    if (e.key === 'Escape') {
+      closeModal();
+    } else if (e.key === 'ArrowRight') {
+      nextPhoto();
+    } else if (e.key === 'ArrowLeft') {
+      prevPhoto();
+    }
+  });
+  
+  // もっと見るボタン（機能はダミー）
+  const loadMoreButton = document.getElementById('load-more-button');
+  if (loadMoreButton) {
+    loadMoreButton.addEventListener('click', function() {
+      this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 読み込み中...';
+      
+      setTimeout(() => {
+        this.innerHTML = 'すべての写真を表示しています';
+        this.disabled = true;
+      }, 1500);
+    });
+  }
+});
+</script>

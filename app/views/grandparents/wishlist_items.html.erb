@@ -1,2 +1,141 @@
-<h1>Grandparents#wishlist_items</h1>
-<p>Find me in app/views/grandparents/wishlist_items.html.erb</p>
+<% provide(:title, "まごころおくりもの - ほしいものリスト閲覧") %>
+
+<main>
+  <div class="container" style="padding-top: 30px;">
+    <h1 style="margin-bottom: 10px;">ほしいものリスト閲覧</h1>
+    <p style="margin-bottom: 30px;">
+      <% if @child %>
+        <%= @child.name %>ちゃんのほしいものをご確認いただけます
+      <% else %>
+        孫のほしいものをご確認いただけます
+      <% end %>
+    </p>
+    
+    <% if @child&.wishlist_items&.any? %>
+      <div class="card" style="margin-bottom: 30px;">
+        <h2 style="margin-bottom: 20px;">
+          <% if @child %>
+            <%= @child.name %>ちゃんのほしいものリスト
+          <% else %>
+            ほしいものリスト
+          <% end %>
+        </h2>
+        
+        <div class="item-list">
+          <% @child.wishlist_items.each do |item| %>
+            <div class="item-card">
+              <div class="item-details">
+                <div class="item-title"><%= item.name %></div>
+                <div class="item-price">
+                  <% if item.price.present? %>
+                    価格: <%= number_to_currency(item.price, unit: "約¥", precision: 0) %>
+                  <% else %>
+                    価格: 未設定
+                  <% end %>
+                  <% if item.category.present? %>
+                    - <span class="tag"><%= item.category %></span>
+                  <% end %>
+                </div>
+                <% if item.url.present? %>
+                  <div>商品URL: <%= link_to item.url, item.url, target: "_blank" %></div>
+                <% end %>
+                <% if item.description.present? %>
+                  <div style="margin-top: 10px; font-size: 14px;">
+                    <i class="fas fa-comment"></i> メッセージ: <%= item.description %>
+                  </div>
+                <% end %>
+              </div>
+              <div class="item-actions">
+                <% if item.purchased? %>
+                  <span class="tag" style="background-color: #A5D6A7; margin-right: 10px;">購入済み</span>
+                <% else %>
+                  <button class="btn btn-primary btn-purchase" data-item-id="<%= item.id %>">
+                    購入する
+                  </button>
+                <% end %>
+                <button class="btn btn-secondary btn-details" data-item-id="<%= item.id %>" style="font-size: 14px; margin-left: 10px;">
+                  詳細を見る
+                </button>
+              </div>
+            </div>
+          <% end %>
+        </div>
+        
+        <div style="margin-top: 30px; text-align: center; color: #757575;">
+          <p>※ 購入を検討されている場合は、親に確認してからご購入ください</p>
+        </div>
+      </div>
+      
+      <div class="card">
+        <h2 style="margin-bottom: 20px;">購入について</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+          <div style="flex: 1; min-width: 300px;">
+            <h3 style="margin-bottom: 10px; color: var(--primary-color);">
+              <i class="fas fa-shopping-cart"></i> 購入方法
+            </h3>
+            <ul style="list-style-type: none; padding-left: 10px;">
+              <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> 「購入する」ボタンをクリックして購入手続きをお進みください</li>
+              <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> 商品URLから直接購入サイトにアクセスすることも可能です</li>
+              <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> 購入後は自動的に「購入済み」として表示されます</li>
+            </ul>
+          </div>
+          <div style="flex: 1; min-width: 300px;">
+            <h3 style="margin-bottom: 10px; color: var(--primary-color);">
+              <i class="fas fa-info-circle"></i> ご注意事項
+            </h3>
+            <ul style="list-style-type: none; padding-left: 10px;">
+              <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> 購入前に親に確認することをおすすめします</li>
+              <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> 同じ商品を複数の方が購入しないよう注意してください</li>
+              <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> 配送先住所は事前に親に確認してください</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <div class="card">
+        <div style="text-align: center; padding: 40px 20px;">
+          <i class="fas fa-gift" style="font-size: 64px; color: #E0E0E0; margin-bottom: 20px;"></i>
+          <h2 style="margin-bottom: 10px;">まだほしいものが登録されていません</h2>
+          <p style="color: #757575;">親がほしいものを登録すると、ここに表示されます。</p>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // 購入ボタンのクリックイベント
+  const purchaseButtons = document.querySelectorAll('.btn-purchase');
+  purchaseButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const itemId = this.dataset.itemId;
+      if (confirm('この商品を購入しますか？')) {
+        // 実際の購入処理（今回はダミー）
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 処理中...';
+        this.disabled = true;
+        
+        setTimeout(() => {
+          const purchasedTag = document.createElement('span');
+          purchasedTag.className = 'tag';
+          purchasedTag.style.backgroundColor = '#A5D6A7';
+          purchasedTag.style.marginRight = '10px';
+          purchasedTag.textContent = '購入済み';
+          this.parentNode.insertBefore(purchasedTag, this);
+          this.remove();
+        }, 2000);
+      }
+    });
+  });
+  
+  // 詳細ボタンのクリックイベント
+  const detailButtons = document.querySelectorAll('.btn-details');
+  detailButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const itemId = this.dataset.itemId;
+      // 詳細画面への遷移（実際のルーティングに合わせて調整）
+      alert('詳細画面への遷移（未実装）');
+    });
+  });
+});
+</script>

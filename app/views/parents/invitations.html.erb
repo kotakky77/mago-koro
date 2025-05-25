@@ -1,2 +1,179 @@
-<h1>Parents#invitations</h1>
-<p>Find me in app/views/parents/invitations.html.erb</p>
+<% provide(:title, "祖父母招待 - まごころおくりもの") %>
+<% content_for :layout_class, "dashboard-layout" %>
+
+<main>
+  <div class="container" style="padding-top: 30px;">
+    <h1 style="margin-bottom: 10px;">祖父母招待</h1>
+    <p style="margin-bottom: 30px;">はるかちゃんの祖父母を招待して、成長を共有しましょう</p>
+    
+    <div class="card">
+      <h2 style="margin-bottom: 20px;">招待済みの祖父母</h2>
+      
+      <% @invitations&.each do |invitation| %>
+        <div class="grandparent-card">
+          <div class="grandparent-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="grandparent-info">
+            <div class="grandparent-name"><%= invitation.invited_email %></div>
+            <div class="grandparent-relation"><%= invitation.relation || "祖父母" %></div>
+            <div class="grandparent-status <%= invitation.status.downcase %>"><%= invitation.status %></div>
+            <div>招待日: <%= invitation.created_at.strftime("%Y年%m月%d日") %></div>
+          </div>
+          <div class="grandparent-actions">
+            <% if invitation.status == "pending" %>
+              <button class="btn btn-secondary">
+                <i class="fas fa-redo"></i> 再招待
+              </button>
+              <button class="btn" style="color: #E57373;">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            <% else %>
+              <button class="btn btn-secondary">
+                <i class="fas fa-envelope"></i> メッセージ
+              </button>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+      
+      <!-- サンプル招待（開発用） -->
+      <div class="grandparent-card">
+        <div class="grandparent-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="grandparent-info">
+          <div class="grandparent-name">田中 良子</div>
+          <div class="grandparent-relation">祖母（母方）</div>
+          <div class="grandparent-status status-active">利用中</div>
+          <div>招待日: 2025年4月20日</div>
+        </div>
+        <div class="grandparent-actions">
+          <button class="btn btn-secondary">
+            <i class="fas fa-envelope"></i> メッセージ
+          </button>
+        </div>
+      </div>
+      
+      <div class="grandparent-card">
+        <div class="grandparent-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="grandparent-info">
+          <div class="grandparent-name">佐藤 みどり</div>
+          <div class="grandparent-relation">祖母（父方）</div>
+          <div class="grandparent-status status-pending">招待中</div>
+          <div>招待日: 2025年5月10日</div>
+        </div>
+        <div class="grandparent-actions">
+          <button class="btn btn-secondary">
+            <i class="fas fa-redo"></i> 再招待
+          </button>
+          <button class="btn" style="color: #E57373;">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card" style="margin-top: 30px;">
+      <h2 style="margin-bottom: 20px;">新しく祖父母を招待する</h2>
+      
+      <div class="invite-url-container">
+        <input type="text" class="invite-url" value="https://mago-koro.com/invite/abc123xyz" readonly id="invite-url">
+        <button class="copy-btn" id="copy-url-btn">
+          <i class="fas fa-copy"></i> コピー
+        </button>
+      </div>
+      
+      <div style="margin-top: 10px;">
+        <p>この招待URLの有効期限: <strong>2025年6月18日</strong>（30日間）</p>
+      </div>
+      
+      <h3 style="margin: 20px 0 15px 0;">招待を共有する方法</h3>
+      <div class="invitation-share-options">
+        <div class="share-option" id="share-line">
+          <div class="share-icon share-line">
+            <i class="fab fa-line"></i>
+          </div>
+          <div class="share-title">LINE</div>
+        </div>
+        <div class="share-option" id="share-email">
+          <div class="share-icon share-email">
+            <i class="fas fa-envelope"></i>
+          </div>
+          <div class="share-title">メール</div>
+        </div>
+        <div class="share-option" id="share-message">
+          <div class="share-icon share-message">
+            <i class="fas fa-comment-alt"></i>
+          </div>
+          <div class="share-title">SMS</div>
+        </div>
+        <div class="share-option" id="share-copy">
+          <div class="share-icon share-copy">
+            <i class="fas fa-copy"></i>
+          </div>
+          <div class="share-title">URLをコピー</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card" style="margin-top: 30px;">
+      <h2 style="margin-bottom: 20px;">祖父母招待ガイド</h2>
+      
+      <div class="collapsible-section">
+        <div class="collapsible-header">
+          <h3 class="collapsible-title">招待の仕組み</h3>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="collapsible-content">
+          <p>
+            「まごころおくりもの」では、孫の親が祖父母を招待することで、孫の成長を共有することができます。
+            招待URLを祖父母に送ると、祖父母はそのURLからアカウント登録を行い、アプリを利用開始できます。
+          </p>
+          <p>
+            招待された祖父母は、親がアップロードした孫の写真の閲覧や、ほしいものリストの確認・購入操作が行えるようになります。
+            また、孫のイラスト入り記念品の購入も可能です。
+          </p>
+        </div>
+      </div>
+      
+      <div class="collapsible-section">
+        <div class="collapsible-header">
+          <h3 class="collapsible-title">プライバシーとセキュリティ</h3>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="collapsible-content">
+          <p>
+            「まごころおくりもの」では、孫の情報や写真のプライバシーを守るために、以下のような対策を行っています：
+          </p>
+          <ul>
+            <li>招待URLは30日間のみ有効で、その後は自動的に無効になります</li>
+            <li>招待URLは一度のみ使用可能です</li>
+            <li>アカウント登録時にはメールアドレス認証が必要です</li>
+            <li>アップロードされた写真や情報は、招待された祖父母のみが閲覧できます</li>
+            <li>親のアカウントからいつでも祖父母のアクセス権を削除できます</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="collapsible-section">
+        <div class="collapsible-header">
+          <h3 class="collapsible-title">よくある質問</h3>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="collapsible-content">
+          <p><strong>Q: 招待できる祖父母の人数に制限はありますか？</strong></p>
+          <p>A: 制限はありません。複数の祖父母を招待して、みんなで孫の成長を共有できます。</p>
+          
+          <p><strong>Q: 祖父母がスマートフォンを使えない場合はどうすればいいですか？</strong></p>
+          <p>A: パソコンからでもご利用いただけます。また、操作に不安がある場合は、お近くにいる時に一緒に設定をお手伝いしてください。</p>
+          
+          <p><strong>Q: 招待を取り消すことはできますか？</strong></p>
+          <p>A: はい、親のアカウントからいつでも祖父母のアクセス権を削除できます。削除後は、写真やほしいものリストを閲覧できなくなります。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

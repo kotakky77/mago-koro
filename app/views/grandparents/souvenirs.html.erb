@@ -1,2 +1,339 @@
-<h1>Grandparents#souvenirs</h1>
-<p>Find me in app/views/grandparents/souvenirs.html.erb</p>
+<% provide(:title, "まごころおくりもの - 記念品案内") %>
+
+<main>
+  <div class="container" style="padding-top: 30px;">
+    <h1 style="margin-bottom: 10px;">記念品案内</h1>
+    <p style="margin-bottom: 30px;">
+      <% if @child %>
+        <%= @child.name %>ちゃんのイラスト入り記念品を制作できます
+      <% else %>
+        孫のイラスト入り記念品を制作できます
+      <% end %>
+    </p>
+    
+    <div class="card">
+      <h2 style="margin-bottom: 20px;">孫のイラスト入り記念品</h2>
+      <p style="margin-bottom: 20px;">
+        お孫さんの写真から専門のイラストレーターが可愛いイラストを制作します。<br>
+        そのイラストを使った記念品を制作し、お届けします。
+      </p>
+      
+      <div class="how-it-works-steps">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <div class="step-icon"><i class="fas fa-image"></i></div>
+          <h3 class="step-title">写真を選ぶ</h3>
+          <p>お孫さんの写真を選びます。できるだけ表情が分かる写真をお選びください。</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <div class="step-icon"><i class="fas fa-paint-brush"></i></div>
+          <h3 class="step-title">イラスト制作</h3>
+          <p>プロのイラストレーターがお写真からかわいいイラストを制作します。</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <div class="step-icon"><i class="fas fa-gift"></i></div>
+          <h3 class="step-title">記念品制作</h3>
+          <p>出来上がったイラストを使用して、お選びいただいた記念品を制作します。</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">4</div>
+          <div class="step-icon"><i class="fas fa-truck"></i></div>
+          <h3 class="step-title">お届け</h3>
+          <p>完成した記念品をご指定の住所にお届けします（通常2-3週間）。</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card" style="margin-top: 30px;">
+      <h2 style="margin-bottom: 20px;">記念品一覧</h2>
+      
+      <div class="souvenir-grid">
+        <div class="souvenir-card" data-category="popular">
+          <img src="https://via.placeholder.com/300/FFB4B4/808080?text=マグカップ" alt="オリジナルマグカップ" class="souvenir-image">
+          <div class="souvenir-details">
+            <div class="souvenir-tag">人気商品</div>
+            <div class="souvenir-title">オリジナルマグカップ</div>
+            <div class="souvenir-price">価格: 2,800円（税込）</div>
+            <p class="souvenir-description">
+              毎日のコーヒータイムが特別に。お孫さんのイラストが入った世界に一つだけのマグカップです。
+            </p>
+            <div class="souvenir-actions">
+              <button class="btn btn-secondary view-details" data-product-id="1">
+                詳細を見る
+              </button>
+              <button class="btn btn-primary order-now" data-product-id="1">
+                注文する
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="souvenir-card" data-category="new">
+          <img src="https://via.placeholder.com/300/C8E4B2/808080?text=フォトフレーム" alt="オリジナルフォトフレーム" class="souvenir-image">
+          <div class="souvenir-details">
+            <div class="souvenir-tag">新商品</div>
+            <div class="souvenir-title">オリジナルフォトフレーム</div>
+            <div class="souvenir-price">価格: 3,500円（税込）</div>
+            <p class="souvenir-description">
+              お気に入りの写真を飾って。イラスト入りの素敵なフォトフレームです。
+            </p>
+            <div class="souvenir-actions">
+              <button class="btn btn-secondary view-details" data-product-id="2">
+                詳細を見る
+              </button>
+              <button class="btn btn-primary order-now" data-product-id="2">
+                注文する
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="souvenir-card" data-category="popular">
+          <img src="https://via.placeholder.com/300/9ED2BE/808080?text=Tシャツ" alt="オリジナルTシャツ" class="souvenir-image">
+          <div class="souvenir-details">
+            <div class="souvenir-tag">人気商品</div>
+            <div class="souvenir-title">オリジナルTシャツ</div>
+            <div class="souvenir-price">価格: 4,200円（税込）</div>
+            <p class="souvenir-description">
+              着るたびに笑顔になれる。お孫さんのイラストがプリントされたTシャツです。
+            </p>
+            <div class="souvenir-actions">
+              <button class="btn btn-secondary view-details" data-product-id="3">
+                詳細を見る
+              </button>
+              <button class="btn btn-primary order-now" data-product-id="3">
+                注文する
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="souvenir-card" data-category="limited">
+          <img src="https://via.placeholder.com/300/7EAA92/808080?text=トートバッグ" alt="オリジナルトートバッグ" class="souvenir-image">
+          <div class="souvenir-details">
+            <div class="souvenir-tag">期間限定</div>
+            <div class="souvenir-title">オリジナルトートバッグ</div>
+            <div class="souvenir-price">価格: 3,800円（税込）</div>
+            <p class="souvenir-description">
+              お買い物のお供に。丈夫で使いやすいトートバッグにお孫さんのイラストを。
+            </p>
+            <div class="souvenir-actions">
+              <button class="btn btn-secondary view-details" data-product-id="4">
+                詳細を見る
+              </button>
+              <button class="btn btn-primary order-now" data-product-id="4">
+                注文する
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="souvenir-card" data-category="seasonal">
+          <img src="https://via.placeholder.com/300/FFD9C0/808080?text=カレンダー" alt="オリジナルカレンダー" class="souvenir-image">
+          <div class="souvenir-details">
+            <div class="souvenir-tag">季節商品</div>
+            <div class="souvenir-title">オリジナルカレンダー（2025年版）</div>
+            <div class="souvenir-price">価格: 2,200円（税込）</div>
+            <p class="souvenir-description">
+              お孫さんのイラストをあしらった2025年用カレンダー。毎月違うデザインが楽しめます。
+            </p>
+            <div class="souvenir-actions">
+              <button class="btn btn-secondary view-details" data-product-id="5">
+                詳細を見る
+              </button>
+              <button class="btn btn-primary order-now" data-product-id="5">
+                注文する
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="souvenir-card" data-category="popular">
+          <img src="https://via.placeholder.com/300/FFB4B4/808080?text=スマホケース" alt="オリジナルスマホケース" class="souvenir-image">
+          <div class="souvenir-details">
+            <div class="souvenir-tag">人気商品</div>
+            <div class="souvenir-title">オリジナルスマホケース</div>
+            <div class="souvenir-price">価格: 3,200円（税込）</div>
+            <p class="souvenir-description">
+              毎日持ち歩くスマホに。お孫さんのイラストがいつも一緒です。各機種対応。
+            </p>
+            <div class="souvenir-actions">
+              <button class="btn btn-secondary view-details" data-product-id="6">
+                詳細を見る
+              </button>
+              <button class="btn btn-primary order-now" data-product-id="6">
+                注文する
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card" style="margin-top: 30px;">
+      <h2 style="margin-bottom: 20px;">お客様の声</h2>
+      
+      <div class="testimonial-card">
+        <p class="testimonial-text">
+          「孫の笑顔が素敵なイラストになって、マグカップで毎日見ることができるのが本当に嬉しいです。朝のコーヒータイムが特別な時間になりました。」
+        </p>
+        <p class="testimonial-author">佐藤 和子さん（65歳・祖母）</p>
+      </div>
+      
+      <div class="testimonial-card">
+        <p class="testimonial-text">
+          「Tシャツを着て散歩に出ると、近所の方に褒められます。孫の成長を感じられる素晴らしい記念品です。」
+        </p>
+        <p class="testimonial-author">田中 健一さん（68歳・祖父）</p>
+      </div>
+      
+      <div class="testimonial-card">
+        <p class="testimonial-text">
+          「フォトフレームに入れた孫の写真とイラストが、リビングを明るくしてくれています。来客の方にも好評です。」
+        </p>
+        <p class="testimonial-author">山田 花子さん（62歳・祖母）</p>
+      </div>
+    </div>
+    
+    <div class="card" style="margin-top: 30px;">
+      <h2 style="margin-bottom: 20px;">よくあるご質問</h2>
+      
+      <div style="margin-bottom: 15px;">
+        <details>
+          <summary style="cursor: pointer; font-weight: 600; padding: 10px 0;">
+            制作期間はどのくらいかかりますか？
+          </summary>
+          <div style="padding: 10px 0 10px 20px;">
+            <p>
+              イラスト制作から記念品の完成まで、通常2-3週間程度お時間をいただいております。
+              お急ぎの場合は別途ご相談ください。
+            </p>
+          </div>
+        </details>
+      </div>
+      
+      <div style="margin-bottom: 15px;">
+        <details>
+          <summary style="cursor: pointer; font-weight: 600; padding: 10px 0;">
+            写真はどのようなものが適していますか？
+          </summary>
+          <div style="padding: 10px 0 10px 20px;">
+            <p>
+              お孫さんの顔がはっきり写っている写真が最適です。表情が明るく、解像度が高い写真をお選びください。
+              集合写真の場合は、どの方をイラスト化するか明記してください。
+            </p>
+          </div>
+        </details>
+      </div>
+      
+      <div>
+        <details>
+          <summary style="cursor: pointer; font-weight: 600; padding: 10px 0;">
+            キャンセルや変更は可能ですか？
+          </summary>
+          <div style="padding: 10px 0 10px 20px;">
+            <p>
+              イラスト制作開始前であればキャンセル・変更が可能です。制作開始後のキャンセルはお受けできませんので、
+              ご注文前に内容をよくご確認ください。
+            </p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // 詳細ボタンのクリックイベント
+  const detailButtons = document.querySelectorAll('.view-details');
+  detailButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const productId = this.dataset.productId;
+      // 商品詳細モーダルの表示（実装例）
+      showProductModal(productId);
+    });
+  });
+  
+  // 注文ボタンのクリックイベント
+  const orderButtons = document.querySelectorAll('.order-now');
+  orderButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const productId = this.dataset.productId;
+      if (confirm('この商品を注文しますか？')) {
+        // 注文処理（今回はダミー）
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 処理中...';
+        this.disabled = true;
+        
+        setTimeout(() => {
+          alert('注文を受け付けました。詳細は別途メールでご連絡いたします。');
+          this.innerHTML = '注文済み';
+          this.className = 'btn btn-secondary';
+        }, 2000);
+      }
+    });
+  });
+  
+  // 商品詳細モーダル表示関数
+  function showProductModal(productId) {
+    // 簡単なモーダル実装例
+    const modal = document.createElement('div');
+    modal.className = 'product-image-modal';
+    modal.style.display = 'flex';
+    modal.style.position = 'fixed';
+    modal.style.top = '0';
+    modal.style.left = '0';
+    modal.style.width = '100%';
+    modal.style.height = '100%';
+    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    modal.style.alignItems = 'center';
+    modal.style.justifyContent = 'center';
+    modal.style.zIndex = '2000';
+    
+    const modalContent = document.createElement('div');
+    modalContent.className = 'modal-content';
+    modalContent.style.backgroundColor = 'white';
+    modalContent.style.padding = '30px';
+    modalContent.style.borderRadius = '8px';
+    modalContent.style.maxWidth = '500px';
+    modalContent.style.width = '90%';
+    modalContent.style.position = 'relative';
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.innerHTML = '&times;';
+    closeBtn.style.position = 'absolute';
+    closeBtn.style.top = '10px';
+    closeBtn.style.right = '15px';
+    closeBtn.style.fontSize = '24px';
+    closeBtn.style.background = 'none';
+    closeBtn.style.border = 'none';
+    closeBtn.style.cursor = 'pointer';
+    
+    const content = `
+      <h3>商品詳細</h3>
+      <p>商品ID: ${productId}</p>
+      <p>詳細な商品情報がここに表示されます。</p>
+      <p>※ 実際の実装では、商品データベースから情報を取得して表示します。</p>
+    `;
+    
+    modalContent.innerHTML = content;
+    modalContent.appendChild(closeBtn);
+    modal.appendChild(modalContent);
+    
+    closeBtn.addEventListener('click', function() {
+      modal.remove();
+    });
+    
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        modal.remove();
+      }
+    });
+    
+    document.body.appendChild(modal);
+  }
+});
+</script>
