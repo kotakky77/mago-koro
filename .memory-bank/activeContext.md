@@ -6,6 +6,30 @@
 
 ## 最近の変更
 
+### ログアウトリンクのRails 7対応修正完了（2025年5月25日）
+
+ナビゲーションメニューでログアウトリンクをクリックした際に以下のルーティングエラーが発生していた問題を修正しました。
+
+**エラー内容:**
+```
+Routing Error
+No route matches [GET] "/logout"
+```
+
+**修正内容:**
+- **レイアウトファイル（`app/views/layouts/application.html.erb`）**
+  - Rails 7のTurbo対応に修正
+  - `method: :delete`を`data: { "turbo-method": :delete }`に変更
+  - 親、祖父母、管理者すべてのログアウトリンクを修正
+
+**問題の原因:**
+- Rails 7では`link_to`の`method: :delete`の指定方法が変更されている
+- Turboフレームワークの導入により、`data: { "turbo-method": :delete }`を使用する必要がある
+
+**修正後の動作:**
+- ログアウトリンクが正常にDELETEリクエストを送信
+- セッションが正しく終了される
+
 ### ナビゲーションメニューのルーティング修正完了（2025年5月25日）
 
 レイアウトファイルで`invitations_path`が未定義エラーになっていた問題を修正しました。
