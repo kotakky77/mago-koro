@@ -212,6 +212,46 @@ button, .btn {
   font-size: 16px;
 }
 
+/* ログイン画面の横並びレイアウト */
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  font-weight: normal;
+  margin-bottom: 0;
+  cursor: pointer;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin: 0;
+  vertical-align: middle;
+  width: auto;
+  flex-shrink: 0;
+}
+
+.forgot-password-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: color 0.3s;
+  flex-shrink: 0;
+}
+
+.forgot-password-link:hover {
+  color: #FF7043;
+  text-decoration: underline;
+}
+
 /* フッター */
 .footer {
   background-color: white;
@@ -1335,6 +1375,28 @@ details div {
 
   .dashboard-cards {
     grid-template-columns: 1fr;
+  }
+
+  .form-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .checkbox-label {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .forgot-password-link {
+    text-align: left;
+    padding: 5px 0;
+    width: 100%;
+  }
+
+  .login-container {
+    margin: 40px auto;
+    padding: 20px;
   }
 
   .photo-grid {
