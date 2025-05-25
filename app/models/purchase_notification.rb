@@ -13,4 +13,12 @@ class PurchaseNotification < ApplicationRecord
   def mark_as_read!
     update(read: true)
   end
+
+  def item_name
+    wishlist_item&.name
+  end
+
+  def purchaser_name
+    grandparent&.name
+  end
 end

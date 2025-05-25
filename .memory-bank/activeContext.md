@@ -6,6 +6,68 @@
 
 ## 最近の変更
 
+### ナビゲーションメニューのルーティング修正完了（2025年5月25日）
+
+レイアウトファイルで`invitations_path`が未定義エラーになっていた問題を修正しました。
+
+**修正内容:**
+1. **ルーティングファイル（`config/routes.rb`）**
+   - 親向け招待一覧ページのルートを追加：`get '/parent/invitations', to: 'parents#invitations'`
+
+2. **レイアウトファイル（`app/views/layouts/application.html.erb`）**
+   - `invitations_path`を`parent_invitations_path`に修正
+
+3. **ParentsController**
+   - `invitations`アクションを追加
+   - `@children = current_user.children.includes(:invitations)`で招待データを取得
+
+**問題の原因:**
+- 親向けの招待一覧ページへの直接ルートが定義されていなかった
+- レイアウトで使用していた`invitations_path`ヘルパーが存在しなかった
+
+**修正後の動作:**
+- ナビゲーションメニューの「祖父母招待」リンクが正常に動作
+- 親向け招待管理ページ（`/parent/invitations`）にアクセス可能
+
+### PurchaseNotificationモデルとParentsControllerの修正完了（2025年5月25日）
+
+親向けダッシュボードで購入通知セクションにて`NoMethodError`が発生していた問題を修正しました。
+
+**修正内容:**
+1. **ParentsController#dashboardアクション**
+   - `@recent_notifications`変数の追加
+   - `@recent_notifications = current_user.purchase_notifications.order(created_at: :desc).limit(5)`
+
+2. **PurchaseNotificationモデル**
+   - `item_name`メソッドの追加（`wishlist_item&.name`を返す）
+   - `purchaser_name`メソッドの追加（`grandparent&.name`を返す）
+
+**問題の原因:**
+- ビューで`@recent_notifications.any?`を呼び出していたが、コントローラーで変数が初期化されていなかった
+- 最初は`notification.item_name`と`notification.purchaser_name`メソッドが未定義だった
+- その後、`item_name`メソッドで`wishlist_item&.item_name`を呼び出していたが、`WishlistItem`モデルには`item_name`ではなく`name`属性があった
+
+**修正後の動作:**
+- 購入通知セクションが正常に表示される
+- 最近の購入通知データが適切に取得・表示される（例：「ファーストシューズ」が「山田義男より」として表示）
+
+### Childモデルのaccepted_invitationsメソッド追加（2025年5月25日）
+
+親向けダッシュボードで「つながっている祖父母」を表示する際に`NoMethodError`が発生していた問題を修正しました。
+
+**修正内容:**
+- `app/models/child.rb`に`accepted_invitations`の関連を追加
+- `has_many :accepted_invitations, -> { accepted }, class_name: 'Invitation'`
+- `has_many :grandparents, through: :accepted_invitations, source: :grandparent`
+
+**問題の原因:**
+- `Child`モデルに`invitations`の関連はあったが、`accepted_invitations`メソッドが未定義
+- ビューで`child.accepted_invitations.any?`を呼び出していたが、該当メソッドが存在しなかった
+
+**修正後の動作:**
+- parent@example.comでログイン後のダッシュボードが正常表示
+- つながっている祖父母の情報が正しく表示される
+
 ### 個別機能画面の実装完了（2025年5月25日）
 
 1. **親向け機能画面の実装**

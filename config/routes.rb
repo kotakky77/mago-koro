@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   
   # 親向け機能
   get '/parent/dashboard', to: 'parents#dashboard'
+  get '/parent/invitations', to: 'parents#invitations'
   
   # 子供管理
   resources :children do

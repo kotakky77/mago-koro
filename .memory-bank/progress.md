@@ -117,11 +117,32 @@
   - 祖父母向け機能画面3画面（写真閲覧、ほしいものリスト閲覧、記念品注文）
   - 高度なCSSコンポーネント（モーダル、商品カード、FAQ折りたたみ）
   - JavaScriptインタラクション機能の統合
+- **ナビゲーションメニューのルーティング修正完了（2025年5月25日）**
+  - レイアウトファイルでの`invitations_path`未定義エラーを修正
+  - `config/routes.rb`に親向け招待一覧ページのルート追加（`/parent/invitations`）
+  - レイアウトファイルで`invitations_path`を`parent_invitations_path`に修正
+  - ParentsControllerに`invitations`アクションを追加
+  - ナビゲーションメニューの「祖父母招待」リンクが正常動作確認済み
+- **PurchaseNotificationモデルとParentsControllerの修正完了（2025年5月25日）**
+  - 親向けダッシュボードでの`@recent_notifications`のNoMethodErrorを修正
+  - ParentsController#dashboardアクションに`@recent_notifications`変数を追加
+  - PurchaseNotificationモデルに`item_name`と`purchaser_name`メソッドを追加
+  - `item_name`メソッドで`wishlist_item&.name`を正しく参照するよう修正
+  - 購入通知セクションが正常表示されることを確認（「ファーストシューズ」が「山田義男より」として表示）
+- **Childモデルのaccepted_invitationsメソッド修正完了（2025年5月25日）**
+  - 親向けダッシュボードでのNoMethodErrorを修正
+  - `Child`モデルに`accepted_invitations`関連を追加
+  - `has_many :grandparents`関連も追加
+  - parent@example.comでのログインが正常動作確認済み
 - 次のステップ：パスワードリセット機能、管理者向け機能の実装
 
 ## 既知の問題
 
 現在のところ、既知の大きな問題はありません。
 - ~~CSSファイルのルーティングエラー~~ → **解決済み（2025年5月25日）**
+- ~~親向けダッシュボードでのNoMethodError (accepted_invitations)~~ → **解決済み（2025年5月25日）**
+- ~~親向けダッシュボードでのNoMethodError (@recent_notifications)~~ → **解決済み（2025年5月25日）**
+- ~~親向けダッシュボードでのNoMethodError (item_name)~~ → **解決済み（2025年5月25日）**
+- ~~ナビゲーションメニューでのNameError (invitations_path)~~ → **解決済み（2025年5月25日）**
 - ルーティングにタイプミスがある可能性があるため、確認が必要
 - 権限チェックが一部不十分な可能性があるため、確認が必要

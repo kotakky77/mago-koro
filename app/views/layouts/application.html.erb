@@ -35,7 +35,7 @@
                   <%= link_to "マイページ", parent_dashboard_path, class: (current_page?(parent_dashboard_path) ? "active" : "") %>
                   <%= link_to "ほしいものリスト", children_path, class: (controller_name == "children" && action_name == "index" ? "active" : "") %>
                   <%= link_to "写真管理", children_path, class: (controller_name == "photos" ? "active" : "") %>
-                  <%= link_to "祖父母招待", invitations_path, class: (controller_name == "invitations" ? "active" : "") %>
+                  <%= link_to "祖父母招待", parent_invitations_path, class: (controller_name == "invitations" ? "active" : "") %>
                   <%= link_to "ログアウト", logout_path, method: :delete %>
                 <% elsif current_user.grandparent? %>
                   <%= link_to "マイページ", grandparent_dashboard_path, class: (current_page?(grandparent_dashboard_path) ? "active" : "") %>
