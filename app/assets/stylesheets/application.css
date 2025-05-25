@@ -68,6 +68,7 @@ header {
 .nav-links {
   display: flex;
   gap: 20px;
+  align-items: center;
 }
 
 .nav-links a {
@@ -75,16 +76,58 @@ header {
   color: var(--text-color);
   font-weight: 500;
   transition: color 0.3s;
+  padding: 8px 12px;
+  border-radius: 4px;
+  position: relative;
 }
 
 .nav-links a:hover {
   color: var(--primary-color);
+  background-color: rgba(255, 158, 128, 0.1);
+}
+
+.nav-links a.current-page {
+  color: var(--primary-color);
+  font-weight: 700;
 }
 
 /* ナビゲーション */
 .nav-links a.active {
   color: var(--primary-color);
   font-weight: 700;
+}
+
+/* ログアウトボタンをナビゲーションリンクと同じスタイルに */
+.logout-button {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-weight: 500;
+  font-family: var(--font-family);
+  font-size: inherit;
+  cursor: pointer;
+  padding: 6px 12px;
+  margin: 0;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  position: relative;
+}
+
+.logout-button:hover {
+  color: var(--primary-color);
+  background-color: rgba(255, 158, 128, 0.1);
+  transform: translateY(-1px);
+}
+
+.logout-button:active {
+  transform: translateY(0);
+}
+
+/* ログアウトボタンにアイコンを追加した場合のスタイル */
+.logout-button i {
+  margin-right: 5px;
+  font-size: 14px;
 }
 
 .menu-toggle {
@@ -1251,10 +1294,43 @@ details div {
 @media (max-width: 768px) {
   .nav-links {
     display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    box-shadow: var(--shadow);
+    flex-direction: column;
+    padding: 20px;
+    gap: 15px;
+    z-index: 1000;
+  }
+
+  .nav-links.active {
+    display: flex;
   }
 
   .menu-toggle {
     display: block;
+  }
+
+  .logout-button {
+    padding: 12px 20px;
+    font-size: 16px;
+    width: 100%;
+    margin-top: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    gap: 8px;
+  }
+
+  .logout-button:hover {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
   }
 
   .dashboard-cards {

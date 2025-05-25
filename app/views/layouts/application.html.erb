@@ -36,19 +36,28 @@
                   <%= link_to "ほしいものリスト", children_path, class: (controller_name == "children" && action_name == "index" ? "active" : "") %>
                   <%= link_to "写真管理", children_path, class: (controller_name == "photos" ? "active" : "") %>
                   <%= link_to "祖父母招待", parent_invitations_path, class: (controller_name == "invitations" ? "active" : "") %>
-                  <%= link_to "ログアウト", logout_path, data: { "turbo-method": :delete } %>
+                  <%= button_to logout_path, method: :delete, class: "logout-button", title: "ログアウト", 
+                      data: { confirm: "ログアウトしますか？" } do %>
+                    <i class="fas fa-sign-out-alt"></i>ログアウト
+                  <% end %>
                 <% elsif current_user.grandparent? %>
                   <%= link_to "マイページ", grandparent_dashboard_path, class: (current_page?(grandparent_dashboard_path) ? "active" : "") %>
                   <%= link_to "ほしいものリスト", grandparent_wishlist_items_path, class: (controller_name == "wishlist_items" ? "active" : "") %>
                   <%= link_to "写真閲覧", grandparent_photos_path, class: (controller_name == "photos" ? "active" : "") %>
                   <%= link_to "記念品案内", grandparent_souvenirs_path, class: (controller_name == "souvenirs" ? "active" : "") %>
-                  <%= link_to "ログアウト", logout_path, data: { "turbo-method": :delete } %>
+                  <%= button_to logout_path, method: :delete, class: "logout-button", title: "ログアウト", 
+                      data: { confirm: "ログアウトしますか？" } do %>
+                    <i class="fas fa-sign-out-alt"></i>ログアウト
+                  <% end %>
                 <% elsif current_user.admin? %>
                   <%= link_to "管理画面", admin_dashboard_path, class: (current_page?(admin_dashboard_path) ? "active" : "") %>
                   <%= link_to "ユーザー管理", admin_users_path, class: (controller_name == "users" ? "active" : "") %>
                   <%= link_to "記念品管理", admin_souvenirs_path, class: (controller_name == "souvenirs" ? "active" : "") %>
                   <%= link_to "注文管理", admin_souvenir_orders_path, class: (controller_name == "souvenir_orders" ? "active" : "") %>
-                  <%= link_to "ログアウト", logout_path, data: { "turbo-method": :delete } %>
+                  <%= button_to logout_path, method: :delete, class: "logout-button", title: "ログアウト", 
+                      data: { confirm: "ログアウトしますか？" } do %>
+                    <i class="fas fa-sign-out-alt"></i>ログアウト
+                  <% end %>
                 <% end %>
               <% else %>
                 <%= link_to "ログイン", login_path %>
