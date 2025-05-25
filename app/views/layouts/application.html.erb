@@ -33,10 +33,11 @@
                 <% if current_user.parent? %>
                   <%= link_to "ダッシュボード", parent_dashboard_path %>
                   <%= link_to "子供管理", children_path %>
-                  <%= link_to "通知", purchase_notifications_path do %>
+                  <% notification_count = current_user.purchase_notifications.unread.count %>
+                  <%= link_to purchase_notifications_path, class: "notification-link" do %>
                     通知
-                    <% if current_user.purchase_notifications.unread.count > 0 %>
-                      <span class="badge"><%= current_user.purchase_notifications.unread.count %></span>
+                    <% if notification_count > 0 %>
+                      <span class="badge"><%= notification_count %></span>
                     <% end %>
                   <% end %>
                 <% elsif current_user.grandparent? %>
