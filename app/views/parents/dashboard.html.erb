@@ -1,56 +1,164 @@
 <% provide(:title, "まごころおくりもの - 親ダッシュボード") %>
 
-<div class="dashboard-container">
-  <div class="dashboard-header" style="margin-bottom: 30px;">
-    <h1 style="color: #4a6da7; font-size: 36px;">親ダッシュボード</h1>
-    <p style="font-size: 18px; color: #6c757d;">こんにちは、<%= current_user.name %>さん</p>
-  </div>
-
-  <% if @unread_notifications_count > 0 %>
-    <div class="alert alert-info" style="background-color: #cfe2ff; color: #084298; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
-      <%= link_to purchase_notifications_path, style: "color: #084298; font-weight: bold; text-decoration: none;" do %>
-        <span style="font-size: 18px;">🔔 <%= @unread_notifications_count %>件の未読通知があります</span>
-      <% end %>
-    </div>
-  <% end %>
-
-  <% if @children.empty? %>
-    <div class="no-children-message" style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 8px; margin-bottom: 30px;">
-      <h2 style="color: #6c757d; margin-bottom: 20px;">まだ子供情報が登録されていません</h2>
-      <p style="font-size: 18px; color: #6c757d; margin-bottom: 30px;">子供の情報を登録して、祖父母とつながりましょう。</p>
-      <%= link_to "子供を登録する", new_child_path, class: "btn btn-primary", style: "background-color: #4a6da7; border: none; padding: 12px 24px; font-size: 18px; border-radius: 4px;" %>
-    </div>
-  <% else %>
-    <div class="children-section">
-      <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="color: #4a6da7; font-size: 24px;">登録済みの子供</h2>
-        <%= link_to "新しく子供を登録", new_child_path, class: "btn btn-sm btn-outline-primary", style: "font-size: 16px; padding: 8px 16px;" %>
+<main>
+  <div class="container" style="padding-top: 30px;">
+    <h1 style="margin-bottom: 30px;">親ダッシュボード</h1>
+    
+    <% if @unread_notifications_count > 0 %>
+      <div class="alert alert-info">
+        <%= link_to purchase_notifications_path do %>
+          <i class="fas fa-bell"></i> <%= @unread_notifications_count %>件の未読通知があります
+        <% end %>
       </div>
+    <% end %>
 
-      <div class="children-cards" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
-        <% @children.each do |child| %>
-          <div class="child-card" style="border: 1px solid #dee2e6; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); background: white;">
-            <div class="child-card-header" style="background-color: #4a6da7; color: white; padding: 15px; text-align: center;">
-              <h3 style="margin: 0; font-size: 22px;"><%= child.name %></h3>
-              <% if child.birthdate %>
-                <p style="margin: 5px 0 0 0; font-size: 14px;">
-                  <%= child.birthdate.strftime('%Y年%m月%d日生まれ') %>
-                  (<%= ((Date.today - child.birthdate).to_i / 365.25).floor %>歳)
-                </p>
+    <% if @children.present? %>
+      <% @children.each do |child| %>
+        <div class="card">
+          <h2 style="margin-bottom: 15px;">孫の情報</h2>
+          <div style="display: flex; flex-wrap: wrap; gap: 30px; align-items: center;">
+            <div style="flex: 0 0 150px;">
+              <% if child.photos.attached? %>
+                <%= image_tag child.photos.first, alt: "#{child.name}の写真", style: "width: 100%; border-radius: 10px;" %>
+              <% else %>
+                <img src="https://via.placeholder.com/150" alt="孫の写真" style="width: 100%; border-radius: 10px;">
               <% end %>
             </div>
-            
-            <div class="child-card-body" style="padding: 20px;">
-              <div class="child-card-actions" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <%= link_to "写真管理", child_photos_path(child), class: "btn", style: "text-align: center; padding: 10px; background-color: #e9ecef; border-radius: 4px; text-decoration: none; color: #495057;" %>
-                <%= link_to "ほしいものリスト", child_wishlist_items_path(child), class: "btn", style: "text-align: center; padding: 10px; background-color: #e9ecef; border-radius: 4px; text-decoration: none; color: #495057;" %>
-                <%= link_to "祖父母を招待", child_invitations_path(child), class: "btn", style: "text-align: center; padding: 10px; background-color: #e9ecef; border-radius: 4px; text-decoration: none; color: #495057;" %>
-                <%= link_to "詳細/編集", edit_child_path(child), class: "btn", style: "text-align: center; padding: 10px; background-color: #e9ecef; border-radius: 4px; text-decoration: none; color: #495057;" %>
+            <div style="flex: 1;">
+              <table style="width: 100%;">
+                <tr>
+                  <th style="text-align: left; padding: 8px 0; width: 150px;">お名前</th>
+                  <td><%= child.name %></td>
+                </tr>
+                <tr>
+                  <th style="text-align: left; padding: 8px 0;">生年月日</th>
+                  <td>
+                    <% if child.birthdate %>
+                      <%= child.birthdate.strftime('%Y年%m月%d日') %>（<%= ((Date.today - child.birthdate).to_i / 365.25).floor %>歳）
+                    <% else %>
+                      未設定
+                    <% end %>
+                  </td>
+                </tr>
+                <tr>
+                  <th style="text-align: left; padding: 8px 0;">つながっている祖父母</th>
+                  <td>
+                    <% if child.accepted_invitations.any? %>
+                      <%= child.accepted_invitations.map { |inv| inv.grandparent&.name }.compact.join('、') %>
+                    <% else %>
+                      まだいません
+                    <% end %>
+                  </td>
+                </tr>
+              </table>
+              <div style="margin-top: 15px;">
+                <%= link_to edit_child_path(child), class: "btn btn-secondary", style: "font-size: 14px;" do %>
+                  <i class="fas fa-edit"></i> 情報を編集
+                <% end %>
               </div>
             </div>
           </div>
+        </div>
+        
+        <div class="dashboard-cards">
+          <div class="dashboard-card">
+            <div class="dashboard-card-icon">
+              <i class="fas fa-gift"></i>
+            </div>
+            <h3 class="dashboard-card-title">ほしいものリスト</h3>
+            <div class="dashboard-card-count"><%= child.wishlist_items.count %></div>
+            <p>現在登録中のアイテム数</p>
+            <div style="margin-top: 15px;">
+              <%= link_to child_wishlist_items_path(child), class: "btn btn-primary", style: "width: 100%;" do %>
+                管理する
+              <% end %>
+            </div>
+          </div>
+          
+          <div class="dashboard-card">
+            <div class="dashboard-card-icon">
+              <i class="fas fa-images"></i>
+            </div>
+            <h3 class="dashboard-card-title">写真</h3>
+            <div class="dashboard-card-count"><%= child.photos.count %></div>
+            <p>アップロード済みの写真数</p>
+            <div style="margin-top: 15px;">
+              <%= link_to child_photos_path(child), class: "btn btn-primary", style: "width: 100%;" do %>
+                管理する
+              <% end %>
+            </div>
+          </div>
+          
+          <div class="dashboard-card">
+            <div class="dashboard-card-icon">
+              <i class="fas fa-user-friends"></i>
+            </div>
+            <h3 class="dashboard-card-title">祖父母招待</h3>
+            <div class="dashboard-card-count"><%= child.accepted_invitations.count %></div>
+            <p>つながっている祖父母の数</p>
+            <div style="margin-top: 15px;">
+              <%= link_to child_invitations_path(child), class: "btn btn-primary", style: "width: 100%;" do %>
+                招待する
+              <% end %>
+            </div>
+          </div>
+        </div>
+        
+        <% if @recent_notifications.any? %>
+          <div class="card" style="margin-top: 30px;">
+            <h2 style="margin-bottom: 15px;">最近の購入通知</h2>
+            <div class="item-list">
+              <% @recent_notifications.limit(2).each do |notification| %>
+                <div class="item-card">
+                  <div class="item-details">
+                    <div class="item-title">「<%= notification.item_name %>」が購入されました</div>
+                    <div class="item-price"><%= notification.purchaser_name %>より - <%= notification.created_at.strftime('%Y年%m月%d日') %></div>
+                  </div>
+                  <div class="item-actions">
+                    <button class="btn btn-secondary" style="font-size: 14px;">
+                      <i class="fas fa-check"></i> 確認済み
+                    </button>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+            
+            <div style="margin-top: 15px; text-align: right;">
+              <%= link_to purchase_notifications_path, style: "color: var(--primary-color); text-decoration: none;" do %>
+                すべての通知を見る <i class="fas fa-chevron-right"></i>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+        
+        <% if child.photos.any? %>
+          <div class="card" style="margin-top: 30px;">
+            <h2 style="margin-bottom: 15px;">最近アップロードした写真</h2>
+            <div class="photo-grid">
+              <% child.photos.limit(4).each do |photo| %>
+                <div class="photo-item">
+                  <%= image_tag photo, alt: "#{child.name}の写真" %>
+                </div>
+              <% end %>
+            </div>
+            
+            <div style="margin-top: 15px; text-align: right;">
+              <%= link_to child_photos_path(child), style: "color: var(--primary-color); text-decoration: none;" do %>
+                すべての写真を見る <i class="fas fa-chevron-right"></i>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    <% else %>
+      <div class="card" style="text-align: center; padding: 60px 20px;">
+        <i class="fas fa-child" style="font-size: 64px; color: var(--primary-color); margin-bottom: 20px;"></i>
+        <h2 style="margin-bottom: 20px;">まだお子様の情報が登録されていません</h2>
+        <p style="margin-bottom: 30px; color: #666;">お子様の情報を登録して、祖父母とのつながりを始めましょう。</p>
+        <%= link_to new_child_path, class: "btn btn-primary btn-lg" do %>
+          <i class="fas fa-plus"></i> お子様を登録する
         <% end %>
       </div>
-    </div>
-  <% end %>
-</div>
+    <% end %>
+  </div>
+</main>

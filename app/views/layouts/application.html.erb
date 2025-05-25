@@ -17,6 +17,7 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
@@ -31,33 +32,32 @@
             <div class="nav-links">
               <% if logged_in? %>
                 <% if current_user.parent? %>
-                  <%= link_to "ダッシュボード", parent_dashboard_path %>
-                  <%= link_to "子供管理", children_path %>
-                  <% notification_count = current_user.purchase_notifications.unread.count %>
-                  <%= link_to purchase_notifications_path, class: "notification-link" do %>
-                    通知
-                    <% if notification_count > 0 %>
-                      <span class="badge"><%= notification_count %></span>
-                    <% end %>
-                  <% end %>
+                  <%= link_to "マイページ", parent_dashboard_path, class: (current_page?(parent_dashboard_path) ? "active" : "") %>
+                  <%= link_to "ほしいものリスト", children_path, class: (controller_name == "children" && action_name == "index" ? "active" : "") %>
+                  <%= link_to "写真管理", children_path, class: (controller_name == "photos" ? "active" : "") %>
+                  <%= link_to "祖父母招待", invitations_path, class: (controller_name == "invitations" ? "active" : "") %>
+                  <%= link_to "ログアウト", logout_path, method: :delete %>
                 <% elsif current_user.grandparent? %>
-                  <%= link_to "ダッシュボード", grandparent_dashboard_path %>
-                  <%= link_to "写真", grandparent_photos_path %>
-                  <%= link_to "ほしいものリスト", grandparent_wishlist_items_path %>
-                  <%= link_to "記念品", grandparent_souvenirs_path %>
+                  <%= link_to "マイページ", grandparent_dashboard_path, class: (current_page?(grandparent_dashboard_path) ? "active" : "") %>
+                  <%= link_to "ほしいものリスト", grandparent_wishlist_items_path, class: (controller_name == "wishlist_items" ? "active" : "") %>
+                  <%= link_to "写真閲覧", grandparent_photos_path, class: (controller_name == "photos" ? "active" : "") %>
+                  <%= link_to "記念品案内", grandparent_souvenirs_path, class: (controller_name == "souvenirs" ? "active" : "") %>
+                  <%= link_to "ログアウト", logout_path, method: :delete %>
                 <% elsif current_user.admin? %>
-                  <%= link_to "管理画面", admin_dashboard_path %>
-                  <%= link_to "ユーザー管理", admin_users_path %>
-                  <%= link_to "記念品管理", admin_souvenirs_path %>
-                  <%= link_to "注文管理", admin_souvenir_orders_path %>
+                  <%= link_to "管理画面", admin_dashboard_path, class: (current_page?(admin_dashboard_path) ? "active" : "") %>
+                  <%= link_to "ユーザー管理", admin_users_path, class: (controller_name == "users" ? "active" : "") %>
+                  <%= link_to "記念品管理", admin_souvenirs_path, class: (controller_name == "souvenirs" ? "active" : "") %>
+                  <%= link_to "注文管理", admin_souvenir_orders_path, class: (controller_name == "souvenir_orders" ? "active" : "") %>
+                  <%= link_to "ログアウト", logout_path, method: :delete %>
                 <% end %>
-                
-                <%= button_to "ログアウト", logout_path, method: :delete, class: "btn btn-secondary" %>
               <% else %>
                 <%= link_to "ログイン", login_path %>
                 <%= link_to "新規登録", new_user_path %>
               <% end %>
             </div>
+            <button class="menu-toggle" aria-label="Toggle menu">
+              <i class="fas fa-bars"></i>
+            </button>
           </div>
         </div>
       </header>
@@ -71,6 +71,19 @@
         
         <%= yield %>
       </div>
+      
+      <footer class="footer">
+        <div class="container">
+          <div class="footer-content">
+            <p class="copyright">© 2025 まごころおくりもの All Rights Reserved.</p>
+            <div class="footer-links">
+              <%= link_to "利用規約", "#", class: "footer-link" %>
+              <%= link_to "プライバシーポリシー", "#", class: "footer-link" %>
+              <%= link_to "お問い合わせ", "#", class: "footer-link" %>
+            </div>
+          </div>
+        </div>
+      </footer>
     <% else %>
       <% flash.each do |message_type, message| %>
         <div class="alert alert-<%= message_type == 'notice' ? 'success' : 'danger' %>" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"><%= message %></div>

@@ -1,2 +1,164 @@
-<h1>Parents#wishlist_items</h1>
-<p>Find me in app/views/parents/wishlist_items.html.erb</p>
+<% provide(:title, "ほしいものリスト管理 - まごころおくりもの") %>
+<% content_for :layout_class, "dashboard-layout" %>
+
+<main>
+  <div class="container" style="padding-top: 30px;">
+    <h1 style="margin-bottom: 10px;">ほしいものリスト管理</h1>
+    <p style="margin-bottom: 30px;">孫にほしいものを登録して、祖父母に伝えましょう</p>
+    
+    <div class="card" style="margin-bottom: 30px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="margin: 0;">現在のほしいものリスト</h2>
+        <a href="<%= new_wishlist_item_path %>" class="btn btn-primary">
+          <i class="fas fa-plus"></i> 新しいアイテムを追加
+        </a>
+      </div>
+      
+      <div class="item-list">
+        <% @wishlist_items&.each do |item| %>
+          <div class="item-card">
+            <div class="item-details">
+              <div class="item-title"><%= item.name %></div>
+              <div class="item-price">価格: <%= item.price ? "約#{number_to_currency(item.price, unit: '¥', precision: 0)}" : "未設定" %> - <span class="tag"><%= item.category || "その他" %></span></div>
+              <% if item.url.present? %>
+                <div>商品URL: <a href="<%= item.url %>" target="_blank" class="link"><%= truncate(item.url, length: 50) %></a></div>
+              <% end %>
+              <% if item.message.present? %>
+                <div style="margin-top: 10px; font-size: 14px;">
+                  <i class="fas fa-comment"></i> メッセージ: <%= item.message %>
+                </div>
+              <% end %>
+            </div>
+            <div class="item-actions">
+              <% if item.purchased? %>
+                <span class="tag" style="background-color: #A5D6A7; margin-right: 10px;">購入済み</span>
+              <% end %>
+              <a href="<%= edit_wishlist_item_path(item) %>" class="btn btn-secondary" style="font-size: 14px; margin-right: 5px;">
+                <i class="fas fa-edit"></i> 編集
+              </a>
+              <button class="btn-delete-item" data-item-id="<%= item.id %>" style="background: none; border: none; cursor: pointer; color: #E57373;">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+          </div>
+        <% end %>
+        
+        <!-- サンプルアイテム（開発用） -->
+        <div class="item-card">
+          <div class="item-details">
+            <div class="item-title">レゴ デュプロ 動物セット</div>
+            <div class="item-priority high">とても欲しい！</div>
+            <div class="item-price">価格: 約3,500円 - <span class="tag">おもちゃ</span></div>
+            <div>商品URL: <a href="#" target="_blank" class="link">https://example.com/lego-duplo</a></div>
+            <div style="margin-top: 10px; font-size: 14px;">
+              <i class="fas fa-comment"></i> メッセージ: 動物が大好きなはるかのために、いろいろな動物のブロックが入ったセットが欲しいです。
+            </div>
+          </div>
+          <div class="item-actions">
+            <a href="#" class="btn btn-secondary" style="font-size: 14px; margin-right: 5px;">
+              <i class="fas fa-edit"></i> 編集
+            </a>
+            <button class="btn-delete-item" data-item-id="2" style="background: none; border: none; cursor: pointer; color: #E57373;">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="item-card">
+          <div class="item-details">
+            <div class="item-title">子供用自転車（補助輪付き）</div>
+            <div class="item-priority high">とても欲しい！</div>
+            <div class="item-price">価格: 約12,000円 - <span class="tag">スポーツ</span></div>
+            <div>商品URL: <a href="#" target="_blank" class="link">https://example.com/kids-bicycle</a></div>
+            <div style="margin-top: 10px; font-size: 14px;">
+              <i class="fas fa-comment"></i> メッセージ: 公園でお友達が自転車に乗っているのを見て、はるかも欲しがっています。安全に乗れるように補助輪付きを希望します。
+            </div>
+          </div>
+          <div class="item-actions">
+            <a href="#" class="btn btn-secondary" style="font-size: 14px; margin-right: 5px;">
+              <i class="fas fa-edit"></i> 編集
+            </a>
+            <button class="btn-delete-item" data-item-id="2" style="background: none; border: none; cursor: pointer; color: #E57373;">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="item-card">
+          <div class="item-details">
+            <div class="item-title">絵本セット（5冊）</div>
+            <div class="item-price">価格: 約4,800円 - <span class="tag">本</span></div>
+            <div>商品URL: <a href="#" target="_blank" class="link">https://example.com/picture-books</a></div>
+          </div>
+          <div class="item-actions">
+            <a href="#" class="btn btn-secondary" style="font-size: 14px; margin-right: 5px;">
+              <i class="fas fa-edit"></i> 編集
+            </a>
+            <button class="btn-delete-item" data-item-id="3" style="background: none; border: none; cursor: pointer; color: #E57373;">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="item-card">
+          <div class="item-details">
+            <div class="item-title">お絵かきセット</div>
+            <div class="item-price">価格: 約2,500円 - <span class="tag">文房具</span></div>
+            <div>商品URL: <a href="#" target="_blank" class="link">https://example.com/drawing-set</a></div>
+          </div>
+          <div class="item-actions">
+            <a href="#" class="btn btn-secondary" style="font-size: 14px; margin-right: 5px;">
+              <i class="fas fa-edit"></i> 編集
+            </a>
+            <button class="btn-delete-item" data-item-id="4" style="background: none; border: none; cursor: pointer; color: #E57373;">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="item-card">
+          <div class="item-details">
+            <div class="item-title">夏用の帽子</div>
+            <div class="item-price">価格: 約1,800円 - <span class="tag">洋服</span></div>
+            <div>商品URL: <a href="#" target="_blank" class="link">https://example.com/summer-hat</a></div>
+          </div>
+          <div class="item-actions">
+            <span class="tag" style="background-color: #A5D6A7; margin-right: 10px;">購入済み</span>
+            <a href="#" class="btn btn-secondary" style="font-size: 14px; margin-right: 5px;">
+              <i class="fas fa-edit"></i> 編集
+            </a>
+            <button class="btn-delete-item" data-item-id="5" style="background: none; border: none; cursor: pointer; color: #E57373;">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2 style="margin-bottom: 20px;">ほしいものリストの使い方</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+        <div style="flex: 1; min-width: 300px;">
+          <h3 style="margin-bottom: 10px; color: var(--primary-color);">
+            <i class="fas fa-plus-circle"></i> アイテムの追加
+          </h3>
+          <ul style="list-style-type: none; padding-left: 10px;">
+            <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> 商品名と価格を入力してください</li>
+            <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> 商品URLを入力すると祖父母が購入しやすくなります</li>
+            <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> メッセージで詳しい情報を伝えることができます</li>
+          </ul>
+        </div>
+        <div style="flex: 1; min-width: 300px;">
+          <h3 style="margin-bottom: 10px; color: var(--primary-color);">
+            <i class="fas fa-heart"></i> 祖父母への配慮
+          </h3>
+          <ul style="list-style-type: none; padding-left: 10px;">
+            <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> 価格は目安として記載しましょう</li>
+            <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> 孫が喜ぶ理由を添えると気持ちが伝わります</li>
+            <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> 購入済みの場合は更新をお忘れなく</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
