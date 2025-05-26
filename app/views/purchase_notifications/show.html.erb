@@ -1,0 +1,127 @@
+<!-- 購入通知詳細画面 -->
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="page-title">
+          <i class="fas fa-bell me-2"></i>購入通知詳細
+        </h1>
+        <%= link_to purchase_notifications_path, class: "btn btn-outline-primary" do %>
+          <i class="fas fa-arrow-left me-1"></i>通知一覧に戻る
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">
+            <i class="fas fa-gift me-2"></i><%= @wishlist_item.name %> が購入されました
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="notification-info mb-4">
+            <div class="row mb-3">
+              <div class="col-md-4 text-muted">購入者</div>
+              <div class="col-md-8"><strong><%= @grandparent.name %></strong></div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4 text-muted">購入日時</div>
+              <div class="col-md-8"><%= @notification.created_at.strftime('%Y年%m月%d日 %H:%M') %></div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4 text-muted">お子様</div>
+              <div class="col-md-8"><%= @child.name %> (<%= @child.age_in_years %>歳)</div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4 text-muted">商品情報</div>
+              <div class="col-md-8">
+                <div>
+                  <strong>名前:</strong> <%= @wishlist_item.name %>
+                </div>
+                <div>
+                  <strong>金額:</strong> <%= number_to_currency(@wishlist_item.price, unit: '¥', precision: 0) %>
+                </div>
+                <% if @wishlist_item.url.present? %>
+                  <div>
+                    <strong>商品URL:</strong> 
+                    <%= link_to @wishlist_item.url, @wishlist_item.url, target: "_blank", rel: "noopener" %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+            <% if @notification.message.present? %>
+              <div class="row mb-3">
+                <div class="col-md-4 text-muted">メッセージ</div>
+                <div class="col-md-8">
+                  <div class="p-3 bg-light rounded">
+                    <i class="fas fa-quote-left text-muted me-2"></i>
+                    <%= simple_format(@notification.message) %>
+                    <i class="fas fa-quote-right text-muted ms-2"></i>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <div>
+              <% unless @notification.read? %>
+                <%= button_to purchase_notification_path(@notification), method: :patch, class: "btn btn-primary", data: { turbo: true } do %>
+                  <i class="fas fa-check me-1"></i>既読にする
+                <% end %>
+              <% end %>
+            </div>
+            <%= link_to "お礼メールを送る", "mailto:#{@grandparent.email}?subject=#{URI.encode_www_form_component('ありがとうございます')}&body=#{URI.encode_www_form_component("#{@grandparent.name}様\n\n#{@wishlist_item.name}を購入していただき、ありがとうございます。")}", class: "btn btn-outline-success" %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>通知情報</h5>
+        </div>
+        <div class="card-body">
+          <p>
+            この通知は <%= @notification.read? ? '既読' : '未読' %> です。
+          </p>
+          <p class="text-muted small">
+            通知ID: <%= @notification.id %><br>
+            作成日時: <%= @notification.created_at.strftime('%Y年%m月%d日 %H:%M:%S') %>
+          </p>
+          <hr>
+          <div class="d-grid">
+            <%= link_to wishlist_items_path, class: "btn btn-outline-primary mb-2" do %>
+              <i class="fas fa-list me-1"></i>ほしいものリストを確認
+            <% end %>
+            <%= link_to parent_dashboard_path, class: "btn btn-outline-secondary" do %>
+              <i class="fas fa-home me-1"></i>ダッシュボードに戻る
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="card bg-light shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="fas fa-lightbulb me-2 text-warning"></i>ヒント
+          </h5>
+          <p class="card-text small">
+            購入された商品は、ほしいものリストから自動的に「購入済み」としてマークされます。
+            お礼メールを送ることで、祖父母様とのコミュニケーションを深めることができます。
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .bg-light {
+    background-color: #f8f9fa;
+  }
+</style>

@@ -3,7 +3,11 @@
 ## 動作しているもの
 
 - Rails 7.1のプロジェクト構成
-- 基本的なデータベース設計とモデルの設定
+- 基本的なデータベー- [x] 祖父母招待画面
+  - [x] app/views/parents/invitations.html.erb - 招待URL共有、ステータス追跡、FAQ、SNS共有機能完了
+- [x] 購入通知一覧画面
+  - [x] app/views/purchase_notifications/index.html.erb - 通知一覧、既読/未読フィルター、詳細表示機能完了
+  - [x] app/views/purchase_notifications/show.html.erb - 通知詳細、既読マーク機能、お礼メール送信機能完了とモデルの設定
   - ユーザーモデル（親、祖父母、管理者）
   - 子供（孫）モデル
   - ほしいものリストモデル
@@ -65,6 +69,8 @@
 - [x] 祖父母招待画面
   - [x] app/views/parents/invitations.html.erb - 招待URL共有、ステータス追跡、FAQ、SNS共有機能完了
 - [x] 購入通知一覧画面
+  - [x] app/views/purchase_notifications/index.html.erb - 通知一覧、既読/未読フィルター、詳細表示機能完了
+  - [x] app/views/purchase_notifications/show.html.erb - 通知詳細、既読マーク機能、お礼メール送信機能完了
 
 #### 祖父母向け機能のビュー
 
@@ -154,6 +160,20 @@
   - セッション終了後のリダイレクト動作確認
   - Font Awesomeアイコンとスタイリングの適用確認
   - 確認ダイアログ機能の動作確認
+- **購入通知一覧画面の実装完了（2025年5月26日）**
+  - app/views/purchase_notifications/index.html.erb - 購入通知一覧ページ実装完了
+  - app/views/purchase_notifications/show.html.erb - 購入通知詳細ページ実装完了
+  - 既読/未読フィルター機能の追加
+  - 通知の既読マーク機能の実装
+  - お礼メール送信機能の実装
+  - 購入通知のステータス管理完了
+- **購入通知機能のバグ修正完了（2025年5月26日）**
+  - PurchaseNotificationモデルに`message`属性がない問題を修正
+  - マイグレーションファイル作成（db/migrate/20250526000001_add_message_to_purchase_notifications.rb）
+  - Docker環境でマイグレーションを実行
+  - PurchaseNotificationテーブルに`message`カラム追加完了
+  - 一時的な対応コードをクリーンアップ
+  - 購入通知一覧・詳細画面の正常動作確認
 - 次のステップ：パスワードリセット機能、管理者向け機能の実装
 
 ## 既知の問題
@@ -165,5 +185,7 @@
 - ~~親向けダッシュボードでのNoMethodError (item_name)~~ → **解決済み（2025年5月25日）**
 - ~~ナビゲーションメニューでのNameError (invitations_path)~~ → **解決済み（2025年5月25日）**
 - ~~ログアウトリンクのルーティングエラー~~ → **解決済み（2025年5月25日）**
+- ~~購入通知一覧画面が未実装~~ → **解決済み（2025年5月26日）**
+- ~~購入通知のメッセージ機能が未実装~~ → **解決済み（2025年5月26日）**
 - ルーティングにタイプミスがある可能性があるため、確認が必要
 - 権限チェックが一部不十分な可能性があるため、確認が必要
