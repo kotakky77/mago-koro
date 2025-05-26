@@ -4,7 +4,16 @@ class PurchaseNotificationsController < ApplicationController
   before_action :correct_parent, only: [:show, :update]
   
   def index
-    @notifications = current_user.purchase_notifications.order(created_at: :desc)
+    @notifications = current_user.purchase_notifications
+    
+    case params[:filter]
+    when 'unread'
+      @notifications = @notifications.unread
+    when 'read'
+      @notifications = @notifications.read
+    end
+    
+    @notifications = @notifications.order(created_at: :desc)
   end
   
   def show

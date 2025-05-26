@@ -1,0 +1,116 @@
+<!-- 購入通知一覧画面 -->
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="page-title">
+          <i class="fas fa-bell me-2"></i>購入通知一覧
+        </h1>
+        <%= link_to parent_dashboard_path, class: "btn btn-outline-primary" do %>
+          <i class="fas fa-arrow-left me-1"></i>ダッシュボードに戻る
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <% if @notifications.any? %>
+            <div class="notification-filters mb-3">
+              <div class="btn-group" role="group">
+                <%= link_to "すべて", purchase_notifications_path, class: "btn #{params[:filter] != 'read' && params[:filter] != 'unread' ? 'btn-primary' : 'btn-outline-primary'}" %>
+                <%= link_to "未読のみ", purchase_notifications_path(filter: 'unread'), class: "btn #{params[:filter] == 'unread' ? 'btn-primary' : 'btn-outline-primary'}" %>
+                <%= link_to "既読のみ", purchase_notifications_path(filter: 'read'), class: "btn #{params[:filter] == 'read' ? 'btn-primary' : 'btn-outline-primary'}" %>
+              </div>
+            </div>
+
+            <div class="list-group notification-list">
+              <% @notifications.each do |notification| %>
+                <div class="list-group-item list-group-item-action <%= notification.read? ? 'read' : 'unread' %>">
+                  <div class="d-flex w-100 justify-content-between align-items-center">
+                    <div>
+                      <%= link_to purchase_notification_path(notification), class: "notification-link" do %>
+                        <h5 class="mb-1">
+                          <% unless notification.read? %>
+                            <span class="badge bg-primary me-2">新着</span>
+                          <% end %>
+                          <%= notification.item_name %> が購入されました
+                        </h5>
+                        <p class="mb-1">
+                          <%= notification.purchaser_name %> が <%= notification.created_at.strftime('%Y年%m月%d日') %> に購入しました
+                        </p>
+                        <% if notification.message.present? %>
+                          <p class="text-muted small mb-0">
+                            <i class="fas fa-comment me-1"></i>「<%= truncate(notification.message, length: 100) %>」
+                          </p>
+                        <% end %>
+                      <% end %>
+                    </div>
+                    <div>
+                      <% if notification.read? %>
+                        <span class="badge bg-secondary">既読</span>
+                      <% else %>
+                        <%= button_to purchase_notification_path(notification), method: :patch, class: "btn btn-sm btn-outline-primary", data: { turbo: true }, remote: true do %>
+                          <i class="fas fa-check me-1"></i>既読にする
+                        <% end %>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="text-center py-5">
+              <i class="fas fa-bell-slash fa-4x text-muted mb-3"></i>
+              <h3>通知はありません</h3>
+              <p class="text-muted">祖父母が商品を購入すると、ここに通知が表示されます。</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <% if @notifications.any? %>
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card bg-light">
+          <div class="card-body">
+            <h5 class="card-title">
+              <i class="fas fa-info-circle me-2"></i>購入通知について
+            </h5>
+            <p class="card-text">
+              購入通知は、祖父母がお子様のほしいものリストから商品を購入した際に届きます。
+              通知を確認することで、どの商品が購入されたかを把握することができます。
+              未読の通知は青色で表示され、既読にすることができます。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<style>
+  .notification-list .list-group-item.unread {
+    border-left: 4px solid var(--primary-color);
+    background-color: rgba(var(--primary-color-rgb), 0.05);
+  }
+  
+  .notification-list .list-group-item.read {
+    border-left: 4px solid #e9ecef;
+  }
+  
+  .notification-link {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+    padding: 0.5rem 0;
+  }
+  
+  .notification-link:hover {
+    color: var(--primary-color);
+  }
+</style>
