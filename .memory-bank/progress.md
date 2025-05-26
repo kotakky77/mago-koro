@@ -32,7 +32,14 @@
   - [x] app/views/users/new.html.erb - モックアップデザインに合わせて更新完了
   - [x] フォームコンポーネントの統一
   - [x] バリデーション表示の改善
-- [ ] パスワードリセット画面
+- [x] パスワードリセット画面
+  - [x] app/views/password_resets/new.html.erb - パスワードリセット要求画面完了
+  - [x] app/views/password_resets/edit.html.erb - パスワード再設定画面完了
+  - [x] app/controllers/password_resets_controller.rb - コントローラー実装完了
+  - [x] app/mailers/user_mailer.rb - メール送信機能完了
+  - [x] app/models/user.rb - パスワードリセット機能拡張完了
+  - [x] メールテンプレート（HTML/テキスト）完了
+  - [x] セキュリティ機能（トークン認証、期限チェック）完了
 
 #### 共通レイアウト・ナビゲーション - 完了
 
