@@ -64,7 +64,7 @@
   - [x] app/views/parents/wishlist_items.html.erb - アイテムカード、優先度表示、購入ステータス管理完了
 - [x] 祖父母招待画面
   - [x] app/views/parents/invitations.html.erb - 招待URL共有、ステータス追跡、FAQ、SNS共有機能完了
-- [ ] 購入通知一覧画面
+- [x] 購入通知一覧画面
 
 #### 祖父母向け機能のビュー
 
