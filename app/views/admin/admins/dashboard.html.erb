@@ -1,0 +1,186 @@
+<% content_for :title, "管理者ダッシュボード" %>
+
+<main>
+  <div class="container" style="padding-top: 30px;">
+    <h1 style="margin-bottom: 10px;">管理者ダッシュボード</h1>
+    <p style="margin-bottom: 30px;">システム全体の状況を確認できます</p>
+
+    <div class="dashboard-grid">
+      <!-- 概要カード -->
+      <section class="card dashboard-card">
+        <h2 class="card-title">システム概要</h2>
+        <div class="stat-grid">
+          <div class="stat-item">
+            <div class="stat-icon bg-primary">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-info">
+              <div class="stat-value"><%= @total_users %></div>
+              <div class="stat-label">総ユーザー数</div>
+            </div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-icon bg-secondary">
+              <i class="fas fa-child"></i>
+            </div>
+            <div class="stat-info">
+              <div class="stat-value"><%= @total_children %></div>
+              <div class="stat-label">登録孫数</div>
+            </div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-icon bg-accent">
+              <i class="fas fa-gift"></i>
+            </div>
+            <div class="stat-info">
+              <div class="stat-value"><%= @completed_orders %></div>
+              <div class="stat-label">完了注文数</div>
+            </div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-icon bg-success">
+              <i class="fas fa-image"></i>
+            </div>
+            <div class="stat-info">
+              <div class="stat-value"><%= @total_photos %></div>
+              <div class="stat-label">アップロード写真数</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 最近の注文 -->
+      <section class="card dashboard-card">
+        <h2 class="card-title">最近の注文</h2>
+        <div class="order-list">
+          <% @recent_orders.each do |order| %>
+            <div class="order-item">
+              <div class="order-info">
+                <span class="order-id">注文#<%= order.id %></span>
+                <span class="order-date"><%= order.created_at.strftime("%Y/%m/%d") %></span>
+              </div>
+              <div class="order-customer"><%= order.user.name %></div>
+              <div class="order-status <%= order.status %>">
+                <%= case order.status
+                    when 'pending' then '処理中'
+                    when 'processing' then '処理中'
+                    when 'shipped' then '発送済'
+                    when 'completed' then '完了'
+                    else order.status
+                    end %>
+              </div>
+              <div class="order-amount">
+                <% if order.souvenir&.price %>
+                  <%= number_to_currency(order.souvenir.price, unit: "￥", precision: 0) %>
+                <% else %>
+                  価格未設定
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+          <% if @recent_orders.empty? %>
+            <div class="empty-state">
+              <p>最近の注文はありません</p>
+            </div>
+          <% end %>
+        </div>
+        <div class="card-footer">
+          <%= link_to "すべての注文を表示", admin_souvenir_orders_path, class: "btn btn-outline btn-sm" %>
+        </div>
+      </section>
+
+      <!-- ユーザー登録状況 -->
+      <section class="card dashboard-card">
+        <h2 class="card-title">ユーザー登録状況</h2>
+        <div class="chart-container">
+          <div class="chart-placeholder">
+            <div class="user-stats-visual">
+              <div class="user-stat-bar">
+                <div class="stat-bar-fill parent-fill" style="width: <%= (@parent_users.to_f / @total_users * 100).round(1) %>%"></div>
+              </div>
+              <div class="user-stat-bar">
+                <div class="stat-bar-fill grandparent-fill" style="width: <%= (@grandparent_users.to_f / @total_users * 100).round(1) %>%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-content">
+          <p>ユーザー構成：</p>
+          <ul class="stat-list">
+            <li><span class="stat-label">親アカウント:</span> <span class="stat-value"><%= @parent_users %></span></li>
+            <li><span class="stat-label">祖父母アカウント:</span> <span class="stat-value"><%= @grandparent_users %></span></li>
+            <li><span class="stat-label">合計:</span> <span class="stat-value"><%= @total_users %></span></li>
+          </ul>
+        </div>
+        <div class="card-footer">
+          <%= link_to "ユーザー管理へ", admin_users_path, class: "btn btn-outline btn-sm" %>
+        </div>
+      </section>
+
+      <!-- システム通知 -->
+      <section class="card dashboard-card">
+        <h2 class="card-title">システム通知</h2>
+        <div class="notification-list admin-notification-list">
+          <% if @pending_orders > 0 %>
+            <div class="notification-item">
+              <div class="notification-icon warning">
+                <i class="fas fa-exclamation-triangle"></i>
+              </div>
+              <div class="notification-content">
+                <div class="notification-title"><%= @pending_orders %>件の注文が処理待ちです</div>
+                <div class="notification-time">確認が必要です</div>
+              </div>
+            </div>
+          <% end %>
+          
+          <div class="notification-item">
+            <div class="notification-icon info">
+              <i class="fas fa-info-circle"></i>
+            </div>
+            <div class="notification-content">
+              <div class="notification-title">システムは正常に動作しています</div>
+              <div class="notification-time"><%= Time.current.strftime("%Y年%m月%d日 %H:%M") %></div>
+            </div>
+          </div>
+          
+          <% if @total_users > 100 %>
+            <div class="notification-item">
+              <div class="notification-icon success">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div class="notification-content">
+                <div class="notification-title">ユーザー数が100人を超えました</div>
+                <div class="notification-time">サービス拡大中</div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-outline btn-sm" onclick="alert('通知機能は開発中です')">すべての通知を表示</button>
+        </div>
+      </section>
+    </div>
+
+    <section class="card">
+      <h2 class="card-title">クイックアクション</h2>
+      <div class="quick-actions">
+        <%= link_to admin_souvenirs_path, class: "quick-action-btn" do %>
+          <i class="fas fa-book-open"></i>
+          <span>記念品カタログ管理</span>
+        <% end %>
+        <%= link_to admin_users_path, class: "quick-action-btn" do %>
+          <i class="fas fa-user-plus"></i>
+          <span>ユーザー管理</span>
+        <% end %>
+        <%= link_to admin_souvenir_orders_path, class: "quick-action-btn" do %>
+          <i class="fas fa-shipping-fast"></i>
+          <span>注文管理</span>
+        <% end %>
+        <a href="#" class="quick-action-btn" onclick="alert('システム設定は開発中です')">
+          <i class="fas fa-cog"></i>
+          <span>システム設定</span>
+        </a>
+      </div>
+    </section>
+  </div>
+</main>
