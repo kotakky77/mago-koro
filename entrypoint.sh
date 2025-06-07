@@ -4,6 +4,10 @@ set -e
 # Remove a potentially pre-existing server.pid for Rails.
 rm -f /app/tmp/pids/server.pid
 
+# Install bundle dependencies
+echo "Installing dependencies..."
+bundle install
+
 # Setup the database if it doesn't exist
 echo "Setting up the database..."
 # Try to set up the database, with retry logic for connection issues
