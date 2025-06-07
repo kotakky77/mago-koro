@@ -3,7 +3,7 @@
 ## 動作しているもの
 
 - Rails 7.1のプロジェクト構成
-- 基本的なデータベース設計とモデルの設定
+- 基本的なデータベースとモデルの設定
   - ユーザーモデル（親、祖父母、管理者）
   - 子供（孫）モデル
   - ほしいものリストモデル
@@ -19,86 +19,47 @@
 
 ## 残りの作業
 
-### ビュー実装
+### 管理者向け機能（実装中 - 2025年6月5日現在）
 
-#### 認証関連のビュー - 完了
+#### 管理者向けビューファイル（基本機能実装済み、UI改善が必要）
 
-- [x] ログイン画面
-  - [x] app/views/sessions/new.html.erb - モックアップデザインに合わせて更新完了
-  - [x] デザインシステムの統一（CSS変数、フォント、色彩）
-  - [x] ログイン状態保持機能の追加
-  - [x] パスワードリセットリンクの配置調整
-- [x] ユーザー登録画面
-  - [x] app/views/users/new.html.erb - モックアップデザインに合わせて更新完了
-  - [x] フォームコンポーネントの統一
-  - [x] バリデーション表示の改善
-- [x] パスワードリセット画面
-  - [x] app/views/password_resets/new.html.erb - パスワードリセット要求画面完了
-  - [x] app/views/password_resets/edit.html.erb - パスワード再設定画面完了
-  - [x] app/controllers/password_resets_controller.rb - コントローラー実装完了
-  - [x] app/mailers/user_mailer.rb - メール送信機能完了
-  - [x] app/models/user.rb - パスワードリセット機能拡張完了
-  - [x] メールテンプレート（HTML/テキスト）完了
-  - [x] セキュリティ機能（トークン認証、期限チェック）完了
+- [x] 管理者コントローラーの基本実装完了
+  - `app/controllers/admins_controller.rb` - 基本的なダッシュボード、ユーザー管理機能
+  - `app/controllers/admin/admins_controller.rb` - 管理者ダッシュボード機能
+  - `app/controllers/admin/users_controller.rb` - ユーザー管理機能
+  - `app/controllers/admin/souvenirs_controller.rb` - 記念品管理機能
+  - `app/controllers/admin/souvenir_orders_controller.rb` - 注文管理機能
 
-#### 共通レイアウト・ナビゲーション - 完了
+- [x] 管理者ダッシュボード画面のUI実装
+  - [x] `app/controllers/admin/admins_controller.rb` - 統計データ取得機能実装済み
+  - [x] `app/views/admin/admins/dashboard.html.erb` - モックアップに基づく本格実装完了（2025年6月5日）
+  - システム統計、最近の注文、ユーザー登録状況の表示
+  - クイックアクション、システム通知機能の実装
+  - 管理者向けナビゲーション・スタイリングの追加
 
-- [x] ログイン前・ログイン後の表示切り替え
-- [x] ユーザー種別に応じたメニュー表示
-- [x] app/views/layouts/application.html.erb - 新デザインシステムに更新完了
-- [x] Font Awesomeアイコンの導入
-- [x] レスポンシブ対応ナビゲーション
-- [x] フッターの追加
+- [ ] ユーザー管理画面のUI実装
+  - [x] `app/controllers/admin/users_controller.rb` - CRUD機能実装済み
+  - [ ] `app/views/admin/users/` - ビューファイル群の実装が必要
+  - ユーザー一覧、検索、詳細、編集、削除機能のUI
 
-#### 親向け機能のビュー
+- [ ] 記念品管理画面のUI実装
+  - [x] `app/controllers/admin/souvenirs_controller.rb` - CRUD機能実装済み
+  - [ ] `app/views/admin/souvenirs/` - ビューファイル群の実装が必要
+  - 記念品一覧、追加、編集、削除機能のUI
 
-- [x] ダッシュボード画面
-  - [x] app/views/parents/dashboard.html.erb - モックアップに合わせて全面刷新完了
-  - [x] カードベースのレイアウト
-  - [x] 統計情報の表示
-  - [x] 最近の活動表示
-- [ ] 子供情報登録・編集画面
-- [x] 写真管理画面
-  - [x] app/views/parents/photos.html.erb - ドラッグ&ドロップアップロード、写真グリッド、使用ガイドライン完了
-- [x] ほしいものリスト管理画面
-  - [x] app/views/parents/wishlist_items.html.erb - アイテムカード、優先度表示、購入ステータス管理完了
-- [x] 祖父母招待画面
-  - [x] app/views/parents/invitations.html.erb - 招待URL共有、ステータス追跡、FAQ、SNS共有機能完了
-- [ ] 購入通知一覧画面
+- [ ] 注文管理画面のUI実装
+  - [x] `app/controllers/admin/souvenir_orders_controller.rb` - 注文管理機能実装済み
+  - [ ] `app/views/admin/souvenir_orders/` - ビューファイル群の実装が必要
+  - 注文一覧、ステータス管理、詳細表示のUI
 
-#### 祖父母向け機能のビュー
-
-- [x] ダッシュボード画面
-  - [x] app/views/grandparents/dashboard.html.erb - モックアップに合わせて新規作成完了
-  - [x] 親向けと統一されたデザイン
-  - [x] 祖父母向け機能への導線
-- [x] 子供写真閲覧画面
-  - [x] app/views/grandparents/photos.html.erb - フィルター機能、モーダル表示、スライドショー、キーボードナビゲーション完了
-- [x] ほしいものリスト閲覧画面
-  - [x] app/views/grandparents/wishlist_items.html.erb - 購入ボタン、アイテム詳細、購入ガイドライン完了
-- [ ] 購入操作画面
-- [x] 記念品閲覧・注文画面
-  - [x] app/views/grandparents/souvenirs.html.erb - 商品カタログ、注文手順、お客様の声、FAQ完了
-
-#### 管理者向け機能のビュー
-
-- [ ] ダッシュボード画面
-- [ ] ユーザー管理画面
-- [ ] 記念品管理画面
-- [ ] 注文管理画面
-
-### セキュリティ・ユーザビリティ
-
-- [ ] 権限チェックの徹底
-- [ ] 入力バリデーションの強化
-- [ ] レスポンシブデザインの適用
-- [ ] 高齢者向けUI/UX改善（祖父母向け画面）
-
-### テスト
+### テスト・品質向上
 
 - [ ] モデルテスト
 - [ ] コントローラーテスト
 - [ ] 統合テスト
+- [ ] 権限チェックの徹底
+- [ ] 入力バリデーションの強化
+- [ ] 高齢者向けUI/UX改善（祖父母向け画面）
 
 ## 現在の進捗状況
 
@@ -145,7 +106,7 @@
   - 親向けダッシュボードでのNoMethodErrorを修正
   - `Child`モデルに`accepted_invitations`関連を追加
   - `has_many :grandparents`関連も追加
-  - parent@example.comでのログインが正常動作確認済み
+  - `parent@example.com`でのログインが正常動作確認済み
 - **ログアウト機能の包括的なテスト完了（2025年5月25日）**
   - 全ユーザータイプでのログイン・ログアウト動作確認済み
   - 親ユーザー、祖父母ユーザー、管理者ユーザーでのテスト実行
@@ -154,16 +115,74 @@
   - セッション終了後のリダイレクト動作確認
   - Font Awesomeアイコンとスタイリングの適用確認
   - 確認ダイアログ機能の動作確認
-- 次のステップ：パスワードリセット機能、管理者向け機能の実装
+- **購入通知一覧画面の実装完了（2025年5月26日）**
+  - app/views/purchase_notifications/index.html.erb - 購入通知一覧ページ実装完了
+  - app/views/purchase_notifications/show.html.erb - 購入通知詳細ページ実装完了
+  - 既読/未読フィルター機能の追加
+  - 通知の既読マーク機能の実装
+  - お礼メール送信機能の実装
+  - 購入通知のステータス管理完了
+- **購入通知機能のバグ修正完了（2025年5月26日）**
+  - PurchaseNotificationモデルに`message`属性がない問題を修正
+  - マイグレーションファイル作成（db/migrate/20250526000001_add_message_to_purchase_notifications.rb）
+  - Docker環境でマイグレーションを実行
+  - PurchaseNotificationテーブルに`message`カラム追加完了
+  - 一時的な対応コードをクリーンアップ
+  - 購入通知一覧・詳細画面の正常動作確認
+- **パスワードリセット機能の完全実装完了（2025年5月25日）**
+  - app/views/password_resets/new.html.erb - パスワードリセット要求画面実装完了
+  - app/views/password_resets/edit.html.erb - パスワード再設定画面実装完了
+  - app/controllers/password_resets_controller.rb - コントローラー実装完了
+  - app/mailers/user_mailer.rb - メール送信機能実装完了
+  - app/models/user.rb - パスワードリセット機能拡張完了
+  - HTML/テキスト両対応のメールテンプレート実装完了
+  - セキュリティ機能（トークン認証、期限チェック）実装完了
+  - ユーザータイプ別リダイレクト機能実装完了
+  - エンドツーエンドでのテスト完了
+- **管理者機能の基盤実装完了（2025年6月5日確認）**
+  - 管理者向けコントローラー群の実装完了
+  - `AdminsController` - 基本的なダッシュボード、ユーザー・記念品・注文管理機能
+  - `Admin::AdminsController` - 管理者ダッシュボード機能、統計データ取得
+  - `Admin::UsersController` - ユーザー管理CRUD機能実装
+  - `Admin::SouvenirsController` - 記念品管理CRUD機能実装
+  - `Admin::SouvenirOrdersController` - 注文管理・ステータス更新機能実装
+  - ルーティング設定完了、権限チェック実装済み
+  - 次のステップ：管理者向けビューファイルのUI実装
+- **管理者ダッシュボードUI実装完了（2025年6月5日）**
+  - app/views/admin/admins/dashboard.html.erb - モックアップに基づく完全実装
+  - システム統計表示（総ユーザー数、登録孫数、完了注文数、写真数）
+  - 最近の注文一覧表示（注文ID、日付、顧客名、ステータス、金額）
+  - ユーザー登録状況の可視化（親・祖父母アカウント構成）
+  - システム通知機能（処理待ち注文、システム状態、重要なマイルストーン）
+  - クイックアクションボタン（記念品管理、ユーザー管理、注文管理へのリンク）
+  - 管理者専用ナビゲーション・スタイリング（admin-tagの追加）
+  - レスポンシブ対応のCSS実装完了
+  - 管理者向けフッタースタイリング追加
+- 次のステップ：ユーザー管理画面のUI実装
+- **管理者ダッシュボードUI実装完了（2025年6月5日）**
+  - app/views/admin/admins/dashboard.html.erb - モックアップに基づく完全実装
+  - システム統計表示（総ユーザー数、登録孫数、完了注文数、写真数）
+  - 最近の注文一覧表示（注文ID、日付、顧客名、ステータス、金額）
+  - ユーザー登録状況の可視化（親・祖父母アカウント構成）
+  - システム通知機能（処理待ち注文、システム状態、重要なマイルストーン）
+  - クイックアクションボタン（記念品管理、ユーザー管理、注文管理へのリンク）
+  - 管理者専用ナビゲーション・スタイリング（admin-tagの追加）
+  - レスポンシブ対応のCSS実装
+  - 管理者向けフッタースタイリング
+- 次のステップ：管理者向けビューファイルのUI実装
 
 ## 既知の問題
 
 現在のところ、既知の大きな問題はありません。
+
 - ~~CSSファイルのルーティングエラー~~ → **解決済み（2025年5月25日）**
 - ~~親向けダッシュボードでのNoMethodError (accepted_invitations)~~ → **解決済み（2025年5月25日）**
 - ~~親向けダッシュボードでのNoMethodError (@recent_notifications)~~ → **解決済み（2025年5月25日）**
 - ~~親向けダッシュボードでのNoMethodError (item_name)~~ → **解決済み（2025年5月25日）**
 - ~~ナビゲーションメニューでのNameError (invitations_path)~~ → **解決済み（2025年5月25日）**
 - ~~ログアウトリンクのルーティングエラー~~ → **解決済み（2025年5月25日）**
+- ~~購入通知一覧画面が未実装~~ → **解決済み（2025年5月26日）**
+- ~~購入通知のメッセージ機能が未実装~~ → **解決済み（2025年5月26日）**
+- ~~パスワードリセット機能が未実装~~ → **解決済み（2025年5月25日）**
 - ルーティングにタイプミスがある可能性があるため、確認が必要
 - 権限チェックが一部不十分な可能性があるため、確認が必要
