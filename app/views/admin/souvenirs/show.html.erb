@@ -1,0 +1,191 @@
+<% content_for :title, "記念品詳細: #{@souvenir.name}" %>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>記念品詳細</h2>
+        <div>
+          <%= link_to "編集", edit_admin_souvenir_path(@souvenir), class: "btn btn-warning" %>
+          <%= link_to "一覧に戻る", admin_souvenirs_path, class: "btn btn-secondary" %>
+        </div>
+      </div>
+
+      <!-- 記念品基本情報 -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">基本情報</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4">
+              <% if @souvenir.image_path.present? %>
+                <img src="<%= @souvenir.image_path %>" alt="<%= @souvenir.name %>" 
+                     class="img-fluid rounded" style="max-height: 300px; width: 100%; object-fit: cover;">
+              <% else %>
+                <div class="d-flex align-items-center justify-content-center rounded" 
+                     style="height: 300px; background-color: #f8f9fa;">
+                  <div class="text-center">
+                    <i class="fas fa-image fa-4x text-muted mb-2"></i>
+                    <p class="text-muted">画像未設定</p>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+            <div class="col-md-8">
+              <dl class="row">
+                <dt class="col-sm-3">ID:</dt>
+                <dd class="col-sm-9"><%= @souvenir.id %></dd>
+                
+                <dt class="col-sm-3">記念品名:</dt>
+                <dd class="col-sm-9"><%= @souvenir.name %></dd>
+                
+                <dt class="col-sm-3">価格:</dt>
+                <dd class="col-sm-9 fw-bold text-primary">¥<%= number_with_delimiter(@souvenir.price) %></dd>
+                
+                <dt class="col-sm-3">ステータス:</dt>
+                <dd class="col-sm-9">
+                  <% if @souvenir.active? %>
+                    <span class="badge bg-success">販売中</span>
+                  <% else %>
+                    <span class="badge bg-secondary">販売終了</span>
+                  <% end %>
+                </dd>
+                
+                <dt class="col-sm-3">登録日:</dt>
+                <dd class="col-sm-9"><%= @souvenir.created_at.strftime("%Y年%m月%d日 %H:%M") %></dd>
+                
+                <dt class="col-sm-3">最終更新:</dt>
+                <dd class="col-sm-9"><%= @souvenir.updated_at.strftime("%Y年%m月%d日 %H:%M") %></dd>
+              </dl>
+              
+              <% if @souvenir.description.present? %>
+                <div class="mt-3">
+                  <h6>商品説明:</h6>
+                  <p class="text-muted"><%= simple_format(@souvenir.description) %></p>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ステータス管理 -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">ステータス管理</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <p class="mb-3">記念品の販売ステータスを変更できます。</p>
+              <% if @souvenir.active? %>
+                <%= link_to deactivate_admin_souvenir_path(@souvenir), method: :patch, 
+                    class: "btn btn-warning",
+                    confirm: "この記念品を販売終了にしますか？" do %>
+                  <i class="fas fa-pause"></i> 販売終了にする
+                <% end %>
+              <% else %>
+                <%= link_to activate_admin_souvenir_path(@souvenir), method: :patch, 
+                    class: "btn btn-success",
+                    confirm: "この記念品を販売再開しますか？" do %>
+                  <i class="fas fa-play"></i> 販売再開する
+                <% end %>
+              <% end %>
+            </div>
+            <div class="col-md-6">
+              <div class="alert alert-light">
+                <h6 class="alert-heading">注文統計</h6>
+                <ul class="mb-0">
+                  <li>総注文数: <strong><%= @orders.count %>件</strong></li>
+                  <li>完了済み: <strong><%= @orders.where(status: 'completed').count %>件</strong></li>
+                  <li>処理中: <strong><%= @orders.where(status: 'processing').count %>件</strong></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 注文履歴 -->
+      <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">注文履歴</h5>
+          <span class="badge bg-primary"><%= @orders.count %>件</span>
+        </div>
+        <div class="card-body">
+          <% if @orders.any? %>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>注文ID</th>
+                    <th>注文者</th>
+                    <th>子供</th>
+                    <th>ステータス</th>
+                    <th>注文日</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @orders.limit(10).each do |order| %>
+                    <tr>
+                      <td><%= link_to "##{order.id}", admin_souvenir_order_path(order), class: "text-decoration-none" %></td>
+                      <td><%= order.user.name %></td>
+                      <td><%= order.child.name %></td>
+                      <td>
+                        <% case order.status %>
+                        <% when 'pending' %>
+                          <span class="badge bg-warning">処理待ち</span>
+                        <% when 'processing' %>
+                          <span class="badge bg-info">処理中</span>
+                        <% when 'completed' %>
+                          <span class="badge bg-success">完了</span>
+                        <% when 'cancelled' %>
+                          <span class="badge bg-danger">キャンセル</span>
+                        <% end %>
+                      </td>
+                      <td><%= order.created_at.strftime("%Y/%m/%d") %></td>
+                      <td>
+                        <%= link_to admin_souvenir_order_path(order), class: "btn btn-sm btn-outline-primary" do %>
+                          <i class="fas fa-eye"></i> 詳細
+                        <% end %>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+            <% if @orders.count > 10 %>
+              <div class="text-center mt-3">
+                <%= link_to "すべての注文を見る", admin_souvenir_orders_path(souvenir_id: @souvenir.id), 
+                    class: "btn btn-outline-primary" %>
+              </div>
+            <% end %>
+          <% else %>
+            <div class="text-center py-4">
+              <i class="fas fa-shopping-cart fa-2x text-muted mb-2"></i>
+              <p class="text-muted">まだ注文がありません</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- 危険な操作 -->
+      <div class="card border-danger">
+        <div class="card-header bg-danger text-white">
+          <h5 class="mb-0">危険な操作</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-danger">以下の操作は取り消すことができません。十分注意してください。</p>
+          <%= link_to admin_souvenir_path(@souvenir), method: :delete, 
+              class: "btn btn-danger",
+              confirm: "この記念品を削除しますか？\n\n・関連する注文履歴も削除されます\n・この操作は取り消せません\n\n本当に削除しますか？",
+              data: { "turbo-method": :delete } do %>
+            <i class="fas fa-trash"></i> 記念品を削除
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

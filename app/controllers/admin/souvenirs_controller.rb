@@ -3,7 +3,16 @@ class Admin::SouvenirsController < ApplicationController
   before_action :set_souvenir, only: [:show, :edit, :update, :destroy, :activate, :deactivate]
   
   def index
-    @souvenirs = Souvenir.all.order(created_at: :desc)
+    @souvenirs = Souvenir.all
+    
+    # ステータスフィルタリング
+    if params[:status] == 'active'
+      @souvenirs = @souvenirs.where(active: true)
+    elsif params[:status] == 'inactive'
+      @souvenirs = @souvenirs.where(active: false)
+    end
+    
+    @souvenirs = @souvenirs.order(created_at: :desc)
   end
   
   def show

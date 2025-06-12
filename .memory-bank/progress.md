@@ -46,10 +46,15 @@
   - [x] `app/views/admin/users/new.html.erb` - 新規ユーザー作成画面
   - ユーザー一覧、検索、詳細、編集、削除機能のUI実装完了
 
-- [ ] 記念品管理画面のUI実装
+- [x] 記念品管理画面のUI実装完了（2025年6月12日）
   - [x] `app/controllers/admin/souvenirs_controller.rb` - CRUD機能実装済み
-  - [ ] `app/views/admin/souvenirs/` - ビューファイル群の実装が必要
-  - 記念品一覧、追加、編集、削除機能のUI
+  - [x] `app/views/admin/souvenirs/` - ビューファイル群の実装完了
+  - [x] `app/views/admin/souvenirs/index.html.erb` - 記念品一覧画面（フィルタリング、統計情報）
+  - [x] `app/views/admin/souvenirs/show.html.erb` - 記念品詳細画面（注文履歴表示）
+  - [x] `app/views/admin/souvenirs/edit.html.erb` - 記念品編集画面（プレビュー機能付き）
+  - [x] `app/views/admin/souvenirs/new.html.erb` - 新規記念品追加画面
+  - [x] `app/views/admin/souvenirs/_form.html.erb` - 共通フォーム部分テンプレート
+  - 記念品一覧、追加、編集、削除、有効化/無効化機能のUI実装完了
 
 - [ ] 注文管理画面のUI実装
   - [x] `app/controllers/admin/souvenir_orders_controller.rb` - 注文管理機能実装済み
