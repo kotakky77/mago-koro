@@ -53,7 +53,12 @@ Rails.application.routes.draw do
   namespace :admin do
     get '/dashboard', to: 'admins#dashboard'
     resources :users
-    resources :souvenirs
+    resources :souvenirs do
+      member do
+        patch :activate
+        patch :deactivate
+      end
+    end
     resources :souvenir_orders do
       member do
         patch :process_order

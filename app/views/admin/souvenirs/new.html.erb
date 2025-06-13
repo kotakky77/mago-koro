@@ -1,0 +1,25 @@
+<% content_for :title, "新規記念品追加" %>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>新規記念品追加</h2>
+        <%= link_to "一覧に戻る", admin_souvenirs_path, class: "btn btn-outline-secondary" %>
+      </div>
+
+      <!-- 記念品追加の説明 -->
+      <div class="alert alert-info" role="alert">
+        <h6 class="alert-heading">記念品追加について</h6>
+        <ul class="mb-0">
+          <li>記念品名と価格は必須項目です</li>
+          <li>商品説明は詳しく書くことで、お客様の購入を促進できます</li>
+          <li>画像URLは商品の魅力を伝える重要な要素です</li>
+          <li>販売設定で「販売中」にチェックを入れると、即座に販売開始されます</li>
+        </ul>
+      </div>
+
+      <%= render 'form', souvenir: @souvenir %>
+    </div>
+  </div>
+</div>

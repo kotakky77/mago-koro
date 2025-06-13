@@ -1,0 +1,64 @@
+<% content_for :title, "記念品編集: #{@souvenir.name}" %>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>記念品編集</h2>
+        <div>
+          <%= link_to "詳細", admin_souvenir_path(@souvenir), class: "btn btn-outline-info" %>
+          <%= link_to "一覧に戻る", admin_souvenirs_path, class: "btn btn-outline-secondary" %>
+        </div>
+      </div>
+
+      <!-- 記念品情報サマリー -->
+      <div class="alert alert-light" role="alert">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h6 class="alert-heading mb-1">編集中の記念品</h6>
+            <div class="d-flex align-items-center">
+              <% if @souvenir.image_path.present? %>
+                <img src="<%= @souvenir.image_path %>" alt="<%= @souvenir.name %>" 
+                     class="me-2" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+              <% end %>
+              <div>
+                <strong><%= @souvenir.name %></strong>
+                <span class="text-muted">（ID: <%= @souvenir.id %>）</span>
+                <br>
+                <small class="text-muted">
+                  登録日: <%= @souvenir.created_at.strftime("%Y年%m月%d日") %> |
+                  最終更新: <%= @souvenir.updated_at.strftime("%Y年%m月%d日") %>
+                </small>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 text-end">
+            <div class="mb-1">
+              <% if @souvenir.active? %>
+                <span class="badge bg-success">販売中</span>
+              <% else %>
+                <span class="badge bg-secondary">販売終了</span>
+              <% end %>
+            </div>
+            <div class="small text-muted">
+              注文数: <%= @souvenir.souvenir_orders.count %>件
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 編集時の注意事項 -->
+      <% if @souvenir.souvenir_orders.any? %>
+        <div class="alert alert-warning" role="alert">
+          <h6 class="alert-heading">編集時の注意</h6>
+          <p class="mb-0">
+            この記念品は既に<strong><%= @souvenir.souvenir_orders.count %>件の注文</strong>があります。
+            価格や基本情報の変更は既存の注文には影響しませんが、新しい注文から適用されます。
+          </p>
+        </div>
+      <% end %>
+
+      <%= render 'form', souvenir: @souvenir %>
+    </div>
+  </div>
+</div>

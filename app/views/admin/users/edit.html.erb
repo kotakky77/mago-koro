@@ -1,0 +1,98 @@
+<% content_for :title, "ユーザー編集: #{@user.name}" %>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>ユーザー編集</h2>
+        <div>
+          <%= link_to "詳細", admin_user_path(@user), class: "btn btn-info" %>
+          <%= link_to "一覧に戻る", admin_users_path, class: "btn btn-secondary" %>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <%= form_with model: [:admin, @user], local: true do |form| %>
+            <% if @user.errors.any? %>
+              <div class="alert alert-danger">
+                <strong><%= pluralize(@user.errors.count, "個のエラー") %>があります:</strong>
+                <ul class="mb-0">
+                  <% @user.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="mb-3">
+              <%= form.label :name, "名前", class: "form-label" %>
+              <%= form.text_field :name, class: "form-control", required: true %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :email, "メールアドレス", class: "form-label" %>
+              <%= form.email_field :email, class: "form-control", required: true %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :user_type, "ユーザータイプ", class: "form-label" %>
+              <%= form.select :user_type, 
+                  options_for_select([
+                    ['親', 'parent'],
+                    ['祖父母', 'grandparent'],
+                    ['管理者', 'admin']
+                  ], @user.user_type), 
+                  {}, 
+                  { class: "form-select", required: true } %>
+            </div>
+
+            <hr class="my-4">
+
+            <h5 class="mb-3">パスワード変更</h5>
+            <p class="text-muted small">パスワードを変更しない場合は、以下の欄を空白のままにしてください。</p>
+
+            <div class="mb-3">
+              <%= form.label :password, "新しいパスワード", class: "form-label" %>
+              <%= form.password_field :password, class: "form-control", autocomplete: "new-password" %>
+              <div class="form-text">6文字以上で入力してください</div>
+            </div>
+
+            <div class="mb-4">
+              <%= form.label :password_confirmation, "パスワード確認", class: "form-label" %>
+              <%= form.password_field :password_confirmation, class: "form-control", autocomplete: "new-password" %>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <%= link_to "キャンセル", admin_user_path(@user), class: "btn btn-secondary me-md-2" %>
+              <%= form.submit "更新", class: "btn btn-primary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- ユーザー詳細情報 -->
+      <div class="card mt-4">
+        <div class="card-header">
+          <h5 class="mb-0">ユーザー情報</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <p><strong>ID:</strong> <%= @user.id %></p>
+              <p><strong>登録日:</strong> <%= @user.created_at.strftime("%Y年%m月%d日 %H:%M") %></p>
+            </div>
+            <div class="col-md-6">
+              <p><strong>最終更新:</strong> <%= @user.updated_at.strftime("%Y年%m月%d日 %H:%M") %></p>
+              <% if @user.parent? && @user.children.any? %>
+                <p><strong>子供の数:</strong> <%= @user.children.count %>人</p>
+              <% elsif @user.grandparent? && @user.grandchildren.any? %>
+                <p><strong>孫の数:</strong> <%= @user.grandchildren.count %>人</p>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

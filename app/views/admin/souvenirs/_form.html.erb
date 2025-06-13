@@ -1,0 +1,189 @@
+<%= form_with model: [:admin, souvenir], local: true, class: "needs-validation", novalidate: true do |form| %>
+  <% if souvenir.errors.any? %>
+    <div class="alert alert-danger" role="alert">
+      <h6 class="alert-heading">エラーが発生しました</h6>
+      <ul class="mb-0">
+        <% souvenir.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">基本情報</h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <%= form.label :name, "記念品名", class: "form-label" %>
+            <span class="text-danger">*</span>
+            <%= form.text_field :name, class: "form-control #{'is-invalid' if souvenir.errors[:name].any?}", 
+                placeholder: "例：イラスト付きフォトフレーム", required: true %>
+            <% if souvenir.errors[:name].any? %>
+              <div class="invalid-feedback">
+                <%= souvenir.errors[:name].first %>
+              </div>
+            <% end %>
+            <div class="form-text">お客様に表示される記念品の名前を入力してください。</div>
+          </div>
+
+          <div class="mb-3">
+            <%= form.label :description, "商品説明", class: "form-label" %>
+            <%= form.text_area :description, class: "form-control #{'is-invalid' if souvenir.errors[:description].any?}", 
+                rows: 4, placeholder: "記念品の詳細説明を入力してください..." %>
+            <% if souvenir.errors[:description].any? %>
+              <div class="invalid-feedback">
+                <%= souvenir.errors[:description].first %>
+              </div>
+            <% end %>
+            <div class="form-text">記念品の特徴や魅力を詳しく説明してください。</div>
+          </div>
+
+          <div class="mb-3">
+            <%= form.label :price, "価格", class: "form-label" %>
+            <span class="text-danger">*</span>
+            <div class="input-group">
+              <span class="input-group-text">¥</span>
+              <%= form.number_field :price, class: "form-control #{'is-invalid' if souvenir.errors[:price].any?}", 
+                  placeholder: "5800", min: 1, step: 1, required: true %>
+              <% if souvenir.errors[:price].any? %>
+                <div class="invalid-feedback">
+                  <%= souvenir.errors[:price].first %>
+                </div>
+              <% end %>
+            </div>
+            <div class="form-text">税込み価格を入力してください。</div>
+          </div>
+
+          <div class="mb-3">
+            <%= form.label :image_path, "商品画像URL", class: "form-label" %>
+            <%= form.url_field :image_path, class: "form-control #{'is-invalid' if souvenir.errors[:image_path].any?}", 
+                placeholder: "https://example.com/image.jpg" %>
+            <% if souvenir.errors[:image_path].any? %>
+              <div class="invalid-feedback">
+                <%= souvenir.errors[:image_path].first %>
+              </div>
+            <% end %>
+            <div class="form-text">商品画像のURLを入力してください。（任意）</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <!-- 販売設定 -->
+      <div class="card mb-3">
+        <div class="card-header">
+          <h5 class="mb-0">販売設定</h5>
+        </div>
+        <div class="card-body">
+          <div class="form-check form-switch">
+            <%= form.check_box :active, class: "form-check-input", checked: souvenir.active? %>
+            <%= form.label :active, "販売中", class: "form-check-label" %>
+          </div>
+          <div class="form-text">チェックを外すと販売を停止します。</div>
+        </div>
+      </div>
+
+      <!-- プレビュー -->
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">プレビュー</h5>
+        </div>
+        <div class="card-body">
+          <div class="preview-container">
+            <div class="preview-image mb-2">
+              <% if souvenir.image_path.present? %>
+                <img src="<%= souvenir.image_path %>" alt="プレビュー" 
+                     class="img-fluid rounded" style="max-height: 150px; width: 100%; object-fit: cover;">
+              <% else %>
+                <div class="d-flex align-items-center justify-content-center rounded" 
+                     style="height: 150px; background-color: #f8f9fa;">
+                  <i class="fas fa-image fa-2x text-muted"></i>
+                </div>
+              <% end %>
+            </div>
+            <h6 class="preview-name"><%= souvenir.name.present? ? souvenir.name : "記念品名" %></h6>
+            <p class="preview-price text-primary fw-bold">
+              ¥<%= souvenir.price.present? ? number_with_delimiter(souvenir.price) : "0" %>
+            </p>
+            <% if souvenir.description.present? %>
+              <p class="preview-description text-muted small">
+                <%= truncate(souvenir.description, length: 80) %>
+              </p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="d-flex justify-content-between">
+        <%= link_to "キャンセル", souvenir.persisted? ? admin_souvenir_path(souvenir) : admin_souvenirs_path, 
+            class: "btn btn-outline-secondary" %>
+        <div>
+          <% if souvenir.persisted? %>
+            <%= form.submit "更新", class: "btn btn-primary" %>
+          <% else %>
+            <%= form.submit "登録", class: "btn btn-primary" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // プレビュー機能
+  const nameInput = document.querySelector('#souvenir_name');
+  const priceInput = document.querySelector('#souvenir_price');
+  const descriptionInput = document.querySelector('#souvenir_description');
+  const imageInput = document.querySelector('#souvenir_image_path');
+  
+  const previewName = document.querySelector('.preview-name');
+  const previewPrice = document.querySelector('.preview-price');
+  const previewDescription = document.querySelector('.preview-description');
+  const previewImage = document.querySelector('.preview-image img, .preview-image div');
+  
+  function updatePreview() {
+    if (nameInput && previewName) {
+      previewName.textContent = nameInput.value || '記念品名';
+    }
+    
+    if (priceInput && previewPrice) {
+      const price = priceInput.value ? parseInt(priceInput.value).toLocaleString() : '0';
+      previewPrice.textContent = '¥' + price;
+    }
+    
+    if (descriptionInput && previewDescription) {
+      const desc = descriptionInput.value;
+      if (desc.length > 80) {
+        previewDescription.textContent = desc.substring(0, 80) + '...';
+      } else {
+        previewDescription.textContent = desc;
+      }
+      previewDescription.style.display = desc ? 'block' : 'none';
+    }
+    
+    if (imageInput && previewImage) {
+      const imageUrl = imageInput.value;
+      if (imageUrl && previewImage.tagName === 'IMG') {
+        previewImage.src = imageUrl;
+      }
+    }
+  }
+  
+  // イベントリスナーを追加
+  [nameInput, priceInput, descriptionInput, imageInput].forEach(input => {
+    if (input) {
+      input.addEventListener('input', updatePreview);
+    }
+  });
+});
+</script>

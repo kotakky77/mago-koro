@@ -1,0 +1,244 @@
+<% content_for :title, "注文詳細: ##{@order.id}" %>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>注文詳細</h2>
+        <div>
+          <%= link_to "一覧に戻る", admin_souvenir_orders_path, class: "btn btn-secondary" %>
+        </div>
+      </div>
+
+      <!-- 注文ステータス表示 -->
+      <div class="alert alert-light mb-4">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <h5 class="alert-heading mb-1">注文 #<%= @order.id %></h5>
+            <p class="mb-0">
+              注文日: <%= @order.created_at.strftime("%Y年%m月%d日 %H:%M") %>
+            </p>
+          </div>
+          <div class="col-md-6 text-end">
+            <h4 class="mb-1">
+              <% case @order.status %>
+              <% when 'pending' %>
+                <span class="badge bg-warning fs-6">処理待ち</span>
+              <% when 'processing' %>
+                <span class="badge bg-info fs-6">処理中</span>
+              <% when 'shipped' %>
+                <span class="badge bg-primary fs-6">発送済み</span>
+              <% when 'delivered' %>
+                <span class="badge bg-success fs-6">配達完了</span>
+              <% when 'cancelled' %>
+                <span class="badge bg-danger fs-6">キャンセル</span>
+              <% end %>
+            </h4>
+            <p class="mb-0 text-muted small">
+              最終更新: <%= @order.updated_at.strftime("%Y/%m/%d %H:%M") %>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- 顧客情報 -->
+        <div class="col-md-6">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">注文者情報</h5>
+            </div>
+            <div class="card-body">
+              <dl class="row">
+                <dt class="col-sm-4">注文者:</dt>
+                <dd class="col-sm-8"><%= @user.name %></dd>
+                
+                <dt class="col-sm-4">メール:</dt>
+                <dd class="col-sm-8"><%= @user.email %></dd>
+                
+                <dt class="col-sm-4">ユーザータイプ:</dt>
+                <dd class="col-sm-8">
+                  <% case @user.user_type %>
+                  <% when 'grandparent' %>
+                    <span class="badge bg-success">祖父母</span>
+                  <% when 'parent' %>
+                    <span class="badge bg-primary">親</span>
+                  <% end %>
+                </dd>
+                
+                <dt class="col-sm-4">登録日:</dt>
+                <dd class="col-sm-8"><%= @user.created_at.strftime("%Y年%m月%d日") %></dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <!-- 配送情報 -->
+        <div class="col-md-6">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">配送情報</h5>
+            </div>
+            <div class="card-body">
+              <dl class="row">
+                <dt class="col-sm-4">受取人:</dt>
+                <dd class="col-sm-8"><%= @order.recipient_name %></dd>
+                
+                <dt class="col-sm-4">配送先住所:</dt>
+                <dd class="col-sm-8"><%= @order.shipping_address %></dd>
+                
+                <% if @order.contact_phone.present? %>
+                  <dt class="col-sm-4">連絡先:</dt>
+                  <dd class="col-sm-8"><%= @order.contact_phone %></dd>
+                <% end %>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- 商品情報 -->
+        <div class="col-md-6">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">注文商品</h5>
+            </div>
+            <div class="card-body">
+              <div class="d-flex align-items-start">
+                <% if @souvenir.image_path.present? %>
+                  <img src="<%= @souvenir.image_path %>" alt="<%= @souvenir.name %>" 
+                       class="me-3" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
+                <% else %>
+                  <div class="me-3 d-flex align-items-center justify-content-center" 
+                       style="width: 80px; height: 80px; background-color: #f8f9fa; border-radius: 8px;">
+                    <i class="fas fa-image text-muted"></i>
+                  </div>
+                <% end %>
+                <div class="flex-grow-1">
+                  <h6 class="mb-1"><%= @souvenir.name %></h6>
+                  <% if @souvenir.description.present? %>
+                    <p class="text-muted small mb-2"><%= truncate(@souvenir.description, length: 100) %></p>
+                  <% end %>
+                  <p class="fw-bold text-primary mb-0">¥<%= number_with_delimiter(@souvenir.price) %></p>
+                  <small class="text-muted">
+                    記念品ID: <%= @souvenir.id %> | 
+                    <%= link_to "記念品詳細", admin_souvenir_path(@souvenir), class: "text-decoration-none" %>
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 孫情報 -->
+        <div class="col-md-6">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">お孫様情報</h5>
+            </div>
+            <div class="card-body">
+              <dl class="row">
+                <dt class="col-sm-4">お名前:</dt>
+                <dd class="col-sm-8"><%= @child.name %></dd>
+                
+                <dt class="col-sm-4">誕生日:</dt>
+                <dd class="col-sm-8"><%= @child.birth_date.strftime("%Y年%m月%d日") %></dd>
+                
+                <dt class="col-sm-4">年齢:</dt>
+                <dd class="col-sm-8"><%= ((Date.current - @child.birth_date) / 365).floor %>歳</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ステータス管理 -->
+      <% unless @order.status == 'cancelled' || @order.status == 'delivered' %>
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0">注文ステータス管理</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-8">
+                <p class="mb-3">注文のステータスを変更できます。</p>
+                <div class="d-flex gap-2 flex-wrap">
+                  <% if @order.status == 'pending' %>
+                    <%= link_to process_order_admin_souvenir_order_path(@order), method: :patch, 
+                        class: "btn btn-info",
+                        confirm: "この注文を処理中にしますか？" do %>
+                      <i class="fas fa-play"></i> 処理中にする
+                    <% end %>
+                  <% elsif @order.status == 'processing' %>
+                    <%= link_to ship_admin_souvenir_order_path(@order), method: :patch, 
+                        class: "btn btn-primary",
+                        confirm: "この注文を発送済みにしますか？" do %>
+                      <i class="fas fa-shipping-fast"></i> 発送済みにする
+                    <% end %>
+                  <% elsif @order.status == 'shipped' %>
+                    <%= link_to deliver_admin_souvenir_order_path(@order), method: :patch, 
+                        class: "btn btn-success",
+                        confirm: "この注文を配達完了にしますか？" do %>
+                      <i class="fas fa-check"></i> 配達完了にする
+                    <% end %>
+                  <% end %>
+                  
+                  <%= link_to cancel_admin_souvenir_order_path(@order), method: :patch, 
+                      class: "btn btn-danger",
+                      confirm: "この注文をキャンセルしますか？\n\nキャンセル後は元に戻せません。" do %>
+                    <i class="fas fa-times"></i> 注文をキャンセル
+                  <% end %>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="alert alert-light">
+                  <h6 class="alert-heading">注文の流れ</h6>
+                  <ul class="mb-0 small">
+                    <li class="<%= 'fw-bold text-warning' if @order.status == 'pending' %>">処理待ち</li>
+                    <li class="<%= 'fw-bold text-info' if @order.status == 'processing' %>">処理中</li>
+                    <li class="<%= 'fw-bold text-primary' if @order.status == 'shipped' %>">発送済み</li>
+                    <li class="<%= 'fw-bold text-success' if @order.status == 'delivered' %>">配達完了</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- 注文履歴・メモ（将来の拡張用） -->
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">注文情報</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <h6>タイムライン</h6>
+              <ul class="list-unstyled">
+                <li class="mb-2">
+                  <i class="fas fa-plus-circle text-success"></i>
+                  <strong>注文作成</strong> - <%= @order.created_at.strftime("%Y/%m/%d %H:%M") %>
+                </li>
+                <% if @order.updated_at != @order.created_at %>
+                  <li class="mb-2">
+                    <i class="fas fa-edit text-info"></i>
+                    <strong>最終更新</strong> - <%= @order.updated_at.strftime("%Y/%m/%d %H:%M") %>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h6>注文統計</h6>
+              <ul class="list-unstyled">
+                <li>この記念品の総注文数: <strong><%= @souvenir.souvenir_orders.count %>件</strong></li>
+                <li>このお客様の総注文数: <strong><%= @user.souvenir_orders.count %>件</strong></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
