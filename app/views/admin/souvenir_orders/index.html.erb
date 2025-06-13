@@ -1,0 +1,210 @@
+<% content_for :title, "注文管理" %>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>注文管理</h2>
+        <div>
+          <span class="text-muted">記念品の注文状況を管理します</span>
+        </div>
+      </div>
+
+      <!-- 注文ステータスフィルター -->
+      <div class="mb-3">
+        <%= link_to "全て", admin_souvenir_orders_path, 
+            class: "btn btn-outline-secondary #{'active' if params[:status].blank?}" %>
+        <%= link_to "処理待ち", admin_souvenir_orders_path(status: 'pending'), 
+            class: "btn btn-outline-secondary #{'active' if params[:status] == 'pending'}" %>
+        <%= link_to "処理中", admin_souvenir_orders_path(status: 'processing'), 
+            class: "btn btn-outline-secondary #{'active' if params[:status] == 'processing'}" %>
+        <%= link_to "発送済み", admin_souvenir_orders_path(status: 'shipped'), 
+            class: "btn btn-outline-secondary #{'active' if params[:status] == 'shipped'}" %>
+        <%= link_to "配達完了", admin_souvenir_orders_path(status: 'delivered'), 
+            class: "btn btn-outline-secondary #{'active' if params[:status] == 'delivered'}" %>
+        <%= link_to "キャンセル", admin_souvenir_orders_path(status: 'cancelled'), 
+            class: "btn btn-outline-secondary #{'active' if params[:status] == 'cancelled'}" %>
+      </div>
+
+      <!-- 注文統計情報 -->
+      <div class="row mb-4">
+        <div class="col-md-2">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title"><%= SouvenirOrder.pending.count %></h5>
+              <p class="card-text text-warning">処理待ち</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title"><%= SouvenirOrder.processing.count %></h5>
+              <p class="card-text text-info">処理中</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title"><%= SouvenirOrder.shipped.count %></h5>
+              <p class="card-text text-primary">発送済み</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title"><%= SouvenirOrder.delivered.count %></h5>
+              <p class="card-text text-success">配達完了</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title"><%= SouvenirOrder.cancelled.count %></h5>
+              <p class="card-text text-danger">キャンセル</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title">¥<%= number_with_delimiter(SouvenirOrder.active.joins(:souvenir).sum('souvenirs.price')) %></h5>
+              <p class="card-text text-muted">総売上</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 注文一覧テーブル -->
+      <div class="card">
+        <div class="card-body">
+          <% if @orders.any? %>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>注文ID</th>
+                    <th>注文日</th>
+                    <th>顧客名</th>
+                    <th>記念品</th>
+                    <th>孫</th>
+                    <th>金額</th>
+                    <th>ステータス</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @orders.each do |order| %>
+                    <tr>
+                      <td>
+                        <%= link_to "##{order.id}", admin_souvenir_order_path(order), 
+                            class: "text-decoration-none fw-bold" %>
+                      </td>
+                      <td><%= order.created_at.strftime("%Y/%m/%d") %></td>
+                      <td>
+                        <div>
+                          <div class="fw-bold"><%= order.user.name %></div>
+                          <small class="text-muted"><%= order.user.email %></small>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <% if order.souvenir.image_path.present? %>
+                            <img src="<%= order.souvenir.image_path %>" alt="<%= order.souvenir.name %>" 
+                                 class="me-2" style="width: 30px; height: 30px; object-fit: cover; border-radius: 4px;">
+                          <% end %>
+                          <div>
+                            <div class="fw-bold"><%= order.souvenir.name %></div>
+                            <small class="text-muted">¥<%= number_with_delimiter(order.souvenir.price) %></small>
+                          </div>
+                        </div>
+                      </td>
+                      <td><%= order.child.name %></td>
+                      <td class="fw-bold">¥<%= number_with_delimiter(order.souvenir.price) %></td>
+                      <td>
+                        <% case order.status %>
+                        <% when 'pending' %>
+                          <span class="badge bg-warning">処理待ち</span>
+                        <% when 'processing' %>
+                          <span class="badge bg-info">処理中</span>
+                        <% when 'shipped' %>
+                          <span class="badge bg-primary">発送済み</span>
+                        <% when 'delivered' %>
+                          <span class="badge bg-success">配達完了</span>
+                        <% when 'cancelled' %>
+                          <span class="badge bg-danger">キャンセル</span>
+                        <% end %>
+                      </td>
+                      <td>
+                        <div class="btn-group" role="group">
+                          <%= link_to admin_souvenir_order_path(order), class: "btn btn-sm btn-outline-primary", title: "詳細" do %>
+                            <i class="fas fa-eye"></i>
+                          <% end %>
+                          
+                          <% unless order.status == 'cancelled' || order.status == 'delivered' %>
+                            <div class="btn-group" role="group">
+                              <button type="button" class="btn btn-sm btn-outline-success dropdown-toggle" 
+                                      data-bs-toggle="dropdown" aria-expanded="false" title="ステータス変更">
+                                <i class="fas fa-edit"></i>
+                              </button>
+                              <ul class="dropdown-menu">
+                                <% if order.status == 'pending' %>
+                                  <li>
+                                    <%= link_to process_order_admin_souvenir_order_path(order), method: :patch, 
+                                        class: "dropdown-item", confirm: "この注文を処理中にしますか？" do %>
+                                      <i class="fas fa-play text-info"></i> 処理中にする
+                                    <% end %>
+                                  </li>
+                                <% elsif order.status == 'processing' %>
+                                  <li>
+                                    <%= link_to ship_admin_souvenir_order_path(order), method: :patch, 
+                                        class: "dropdown-item", confirm: "この注文を発送済みにしますか？" do %>
+                                      <i class="fas fa-shipping-fast text-primary"></i> 発送済みにする
+                                    <% end %>
+                                  </li>
+                                <% elsif order.status == 'shipped' %>
+                                  <li>
+                                    <%= link_to deliver_admin_souvenir_order_path(order), method: :patch, 
+                                        class: "dropdown-item", confirm: "この注文を配達完了にしますか？" do %>
+                                      <i class="fas fa-check text-success"></i> 配達完了にする
+                                    <% end %>
+                                  </li>
+                                <% end %>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                  <%= link_to cancel_admin_souvenir_order_path(order), method: :patch, 
+                                      class: "dropdown-item text-danger", confirm: "この注文をキャンセルしますか？" do %>
+                                    <i class="fas fa-times"></i> キャンセル
+                                  <% end %>
+                                </li>
+                              </ul>
+                            </div>
+                          <% end %>
+                        </div>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% else %>
+            <div class="text-center py-5">
+              <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+              <h5 class="text-muted">
+                <% if params[:status].present? %>
+                  「<%= params[:status] %>」の注文がありません
+                <% else %>
+                  注文がまだありません
+                <% end %>
+              </h5>
+              <p class="text-muted">お客様からの注文をお待ちしています。</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

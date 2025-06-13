@@ -56,10 +56,12 @@
   - [x] `app/views/admin/souvenirs/_form.html.erb` - 共通フォーム部分テンプレート
   - 記念品一覧、追加、編集、削除、有効化/無効化機能のUI実装完了
 
-- [ ] 注文管理画面のUI実装
+- [x] 注文管理画面のUI実装完了（2025年6月13日）
   - [x] `app/controllers/admin/souvenir_orders_controller.rb` - 注文管理機能実装済み
-  - [ ] `app/views/admin/souvenir_orders/` - ビューファイル群の実装が必要
-  - 注文一覧、ステータス管理、詳細表示のUI
+  - [x] `app/views/admin/souvenir_orders/` - ビューファイル群の実装完了
+  - [x] `app/views/admin/souvenir_orders/index.html.erb` - 注文一覧画面（フィルタリング、統計情報）
+  - [x] `app/views/admin/souvenir_orders/show.html.erb` - 注文詳細画面（ステータス管理）
+  - 注文一覧、ステータス管理、詳細表示のUI実装完了
 
 ### テスト・品質向上
 
