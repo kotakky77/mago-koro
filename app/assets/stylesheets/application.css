@@ -1671,180 +1671,170 @@ details div {
   margin-top: 50px;
 }
 
-/* レスポンシブ対応 */
-@media (max-width: 768px) {
-  .nav-links {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background-color: white;
-    box-shadow: var(--shadow);
-    flex-direction: column;
-    padding: 20px;
-    gap: 15px;
-    z-index: 1000;
-  }
-
-  .nav-links.active {
-    display: flex;
-  }
-
-  .menu-toggle {
-    display: block;
-  }
-
-  .logout-button {
-    padding: 12px 20px;
-    font-size: 16px;
-    width: 100%;
-    margin-top: 10px;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    gap: 8px;
-  }
-
-  .logout-button:hover {
-    background-color: var(--primary-color);
-    color: white;
-    border-color: var(--primary-color);
-  }
-
-  .dashboard-cards {
-    grid-template-columns: 1fr;
-  }
-
-  .form-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-  }
-
-  .checkbox-label {
-    justify-content: flex-start;
-    width: 100%;
-  }
-
-  .forgot-password-link {
-    text-align: left;
-    padding: 5px 0;
-    width: 100%;
-  }
-
-  .login-container {
-    margin: 40px auto;
-    padding: 20px;
-  }
-
-  .photo-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .souvenir-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .how-it-works-steps {
-    flex-direction: column;
-  }
-
-  .footer-content {
-    flex-direction: column;
-    gap: 20px;
-    text-align: center;
-  }
-
-  .footer-links {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .modal-content {
-    max-width: 95%;
-    max-height: 95%;
-  }
-
-  .modal-nav button {
-    width: 35px;
-    height: 35px;
-    font-size: 16px;
-  }
-
-  .photo-filters {
-    justify-content: center;
-  }
-
-  .item-card {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 15px;
-  }
-
-  .item-actions {
-    display: flex;
-    gap: 10px;
-    justify-content: space-between;
-  }
-
-  .grandparent-card {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .invitation-share-options {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .stat-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .order-item {
-    grid-template-columns: 1fr;
-    gap: 10px;
-    text-align: center;
-  }
-  
-  .quick-actions {
-    grid-template-columns: repeat(2, 1fr);
-  }
+/* 管理者画面でのBootstrap優先スタイル */
+.admin-body .btn.btn-primary {
+  background-color: #0d6efd !important;
+  border-color: #0d6efd !important;
+  color: white !important;
 }
 
-@media (max-width: 480px) {
-  .container {
-    padding: 0 15px;
-  }
+.admin-body .btn.btn-primary:hover {
+  background-color: #0b5ed7 !important;
+  border-color: #0a58ca !important;
+}
 
-  .photo-grid {
-    grid-template-columns: 1fr;
-  }
+.admin-body .btn.btn-secondary {
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+  color: white !important;
+}
 
-  .invitation-share-options {
-    grid-template-columns: 1fr;
-  }
+.admin-body .btn.btn-secondary:hover {
+  background-color: #5c636a !important;
+  border-color: #565e64 !important;
+}
 
-  .step-card {
-    min-width: auto;
-  }
+.admin-body .btn.btn-outline-secondary {
+  color: #6c757d !important;
+  border-color: #6c757d !important;
+  background-color: transparent !important;
+}
 
-  .souvenir-actions {
-    flex-direction: column;
-    gap: 10px;
-  }
+.admin-body .btn.btn-outline-secondary:hover,
+.admin-body .btn.btn-outline-secondary.active {
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+  color: white !important;
+}
 
-  .item-actions {
-    flex-direction: column;
-  }
+.admin-body .btn.btn-outline-info {
+  color: #0dcaf0 !important;
+  border-color: #0dcaf0 !important;
+}
 
-  .quick-actions {
-    grid-template-columns: 1fr;
-  }
+.admin-body .btn.btn-outline-warning {
+  color: #ffc107 !important;
+  border-color: #ffc107 !important;
+}
+
+.admin-body .btn.btn-outline-danger {
+  color: #dc3545 !important;
+  border-color: #dc3545 !important;
+}
+
+.admin-body .btn.btn-sm {
+  padding: 0.25rem 0.5rem !important;
+  font-size: 0.875rem !important;
+  border-radius: 0.2rem !important;
+}
+
+/* 管理者画面でのBootstrapテーブルスタイル優先 */
+.admin-body .table {
+  width: 100% !important;
+  margin-bottom: 1rem !important;
+  color: #212529 !important;
+  vertical-align: top !important;
+  border-color: #dee2e6 !important;
+}
+
+.admin-body .table-striped > tbody > tr:nth-of-type(odd) > td,
+.admin-body .table-striped > tbody > tr:nth-of-type(odd) > th {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.admin-body .table-responsive {
+  overflow-x: auto !important;
+}
+
+/* 管理者画面でのBootstrapカードスタイル優先 */
+.admin-body .card {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+  word-wrap: break-word !important;
+  background-color: #fff !important;
+  background-clip: border-box !important;
+  border: 1px solid rgba(0, 0, 0, 0.125) !important;
+  border-radius: 0.375rem !important;
+}
+
+.admin-body .card-body {
+  flex: 1 1 auto !important;
+  padding: 1rem !important;
+}
+
+.admin-body .card-title {
+  margin-bottom: 0.5rem !important;
+  font-size: 1.25rem !important;
+  font-weight: 500 !important;
+  color: inherit !important;
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+}
+
+/* 管理者画面でのBootstrapバッジスタイル優先 */
+.admin-body .badge {
+  display: inline-block !important;
+  padding: 0.35em 0.65em !important;
+  font-size: 0.75em !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  color: #fff !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  vertical-align: baseline !important;
+  border-radius: 0.375rem !important;
+}
+
+.admin-body .bg-primary {
+  background-color: #0d6efd !important;
+}
+
+.admin-body .bg-success {
+  background-color: #198754 !important;
+}
+
+.admin-body .bg-danger {
+  background-color: #dc3545 !important;
+}
+
+/* 管理者画面でのBootstrapフォームスタイル優先 */
+.admin-body .form-control {
+  display: block !important;
+  width: 100% !important;
+  padding: 0.375rem 0.75rem !important;
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  color: #212529 !important;
+  background-color: #fff !important;
+  background-image: none !important;
+  border: 1px solid #ced4da !important;
+  border-radius: 0.375rem !important;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+}
+
+.admin-body .form-select {
+  display: block !important;
+  width: 100% !important;
+  padding: 0.375rem 2.25rem 0.375rem 0.75rem !important;
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  color: #212529 !important;
+  background-color: #fff !important;
+  border: 1px solid #ced4da !important;
+  border-radius: 0.375rem !important;
+}
+
+.admin-body .form-label {
+  margin-bottom: 0.5rem !important;
+  font-weight: 500 !important;
+}
+
+.admin-body .form-text {
+  margin-top: 0.25rem !important;
+  font-size: 0.875em !important;
+  color: #6c757d !important;
 }
