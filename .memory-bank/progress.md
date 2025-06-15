@@ -37,20 +37,31 @@
   - クイックアクション、システム通知機能の実装
   - 管理者向けナビゲーション・スタイリングの追加
 
-- [ ] ユーザー管理画面のUI実装
+- [x] ユーザー管理画面のUI実装完了（2025年6月9日）
   - [x] `app/controllers/admin/users_controller.rb` - CRUD機能実装済み
-  - [ ] `app/views/admin/users/` - ビューファイル群の実装が必要
-  - ユーザー一覧、検索、詳細、編集、削除機能のUI
+  - [x] `app/views/admin/users/` - ビューファイル群の実装完了
+  - [x] `app/views/admin/users/index.html.erb` - ユーザー一覧画面（フィルタリング、統計情報）
+  - [x] `app/views/admin/users/show.html.erb` - ユーザー詳細画面（関連データ表示）
+  - [x] `app/views/admin/users/edit.html.erb` - ユーザー編集画面（パスワード変更含む）
+  - [x] `app/views/admin/users/new.html.erb` - 新規ユーザー作成画面
+  - ユーザー一覧、検索、詳細、編集、削除機能のUI実装完了
 
-- [ ] 記念品管理画面のUI実装
+- [x] 記念品管理画面のUI実装完了（2025年6月12日）
   - [x] `app/controllers/admin/souvenirs_controller.rb` - CRUD機能実装済み
-  - [ ] `app/views/admin/souvenirs/` - ビューファイル群の実装が必要
-  - 記念品一覧、追加、編集、削除機能のUI
+  - [x] `app/views/admin/souvenirs/` - ビューファイル群の実装完了
+  - [x] `app/views/admin/souvenirs/index.html.erb` - 記念品一覧画面（フィルタリング、統計情報）
+  - [x] `app/views/admin/souvenirs/show.html.erb` - 記念品詳細画面（注文履歴表示）
+  - [x] `app/views/admin/souvenirs/edit.html.erb` - 記念品編集画面（プレビュー機能付き）
+  - [x] `app/views/admin/souvenirs/new.html.erb` - 新規記念品追加画面
+  - [x] `app/views/admin/souvenirs/_form.html.erb` - 共通フォーム部分テンプレート
+  - 記念品一覧、追加、編集、削除、有効化/無効化機能のUI実装完了
 
-- [ ] 注文管理画面のUI実装
+- [x] 注文管理画面のUI実装完了（2025年6月13日）
   - [x] `app/controllers/admin/souvenir_orders_controller.rb` - 注文管理機能実装済み
-  - [ ] `app/views/admin/souvenir_orders/` - ビューファイル群の実装が必要
-  - 注文一覧、ステータス管理、詳細表示のUI
+  - [x] `app/views/admin/souvenir_orders/` - ビューファイル群の実装完了
+  - [x] `app/views/admin/souvenir_orders/index.html.erb` - 注文一覧画面（フィルタリング、統計情報）
+  - [x] `app/views/admin/souvenir_orders/show.html.erb` - 注文詳細画面（ステータス管理）
+  - 注文一覧、ステータス管理、詳細表示のUI実装完了
 
 ### テスト・品質向上
 
@@ -158,7 +169,7 @@
   - 管理者専用ナビゲーション・スタイリング（admin-tagの追加）
   - レスポンシブ対応のCSS実装完了
   - 管理者向けフッタースタイリング追加
-- 次のステップ：ユーザー管理画面のUI実装
+- 次のステップ：記念品管理画面のUI実装
 - **管理者ダッシュボードUI実装完了（2025年6月5日）**
   - app/views/admin/admins/dashboard.html.erb - モックアップに基づく完全実装
   - システム統計表示（総ユーザー数、登録孫数、完了注文数、写真数）
@@ -169,7 +180,30 @@
   - 管理者専用ナビゲーション・スタイリング（admin-tagの追加）
   - レスポンシブ対応のCSS実装
   - 管理者向けフッタースタイリング
-- 次のステップ：管理者向けビューファイルのUI実装
+- **管理者ユーザー管理画面UI実装完了（2025年6月9日）**
+  - app/views/admin/users/index.html.erb - ユーザー一覧画面完全実装
+    - ユーザータイプ別フィルタリング機能（全て/親/祖父母/管理者）
+    - ユーザー情報テーブル表示（ID、名前、メール、タイプ、登録日）
+    - 詳細・編集・削除アクション機能
+    - 統計情報カード表示（総数・タイプ別カウント）
+  - app/views/admin/users/show.html.erb - ユーザー詳細画面完全実装
+    - 基本情報表示（ID、名前、メール、タイプ、登録日、更新日）
+    - 親ユーザー：子供情報テーブル表示
+    - 祖父母ユーザー：孫情報テーブル表示
+    - お土産注文履歴表示（最新10件）
+    - 危険操作ゾーン（削除機能）
+  - app/views/admin/users/edit.html.erb - ユーザー編集画面完全実装
+    - 基本情報編集フォーム（名前、メール、ユーザータイプ）
+    - パスワード変更機能（任意入力）
+    - バリデーションエラー表示
+    - ユーザー情報サマリー表示
+  - app/views/admin/users/new.html.erb - 新規ユーザー作成画面完全実装
+    - 新規ユーザー作成フォーム（名前、メール、タイプ、パスワード）
+    - ユーザータイプの詳細説明
+    - 注意事項の表示
+  - Bootstrap対応レスポンシブデザイン実装
+  - 適切なナビゲーション・エラーハンドリング実装
+- 次のステップ：記念品管理画面のUI実装
 
 ## 既知の問題
 

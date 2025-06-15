@@ -1,0 +1,92 @@
+<% content_for :title, "新規ユーザー作成" %>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>新規ユーザー作成</h2>
+        <%= link_to "一覧に戻る", admin_users_path, class: "btn btn-secondary" %>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <%= form_with model: [:admin, @user], local: true do |form| %>
+            <% if @user.errors.any? %>
+              <div class="alert alert-danger">
+                <strong><%= pluralize(@user.errors.count, "個のエラー") %>があります:</strong>
+                <ul class="mb-0">
+                  <% @user.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="mb-3">
+              <%= form.label :name, "名前", class: "form-label" %>
+              <%= form.text_field :name, class: "form-control", required: true, placeholder: "山田太郎" %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :email, "メールアドレス", class: "form-label" %>
+              <%= form.email_field :email, class: "form-control", required: true, placeholder: "user@example.com" %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :user_type, "ユーザータイプ", class: "form-label" %>
+              <%= form.select :user_type, 
+                  options_for_select([
+                    ['選択してください', ''],
+                    ['親', 'parent'],
+                    ['祖父母', 'grandparent'],
+                    ['管理者', 'admin']
+                  ]), 
+                  {}, 
+                  { class: "form-select", required: true } %>
+              <div class="form-text">
+                <strong>親:</strong> お子様の情報を管理し、祖父母を招待できます<br>
+                <strong>祖父母:</strong> 招待を受け、孫の成長記録を見たりお土産を購入できます<br>
+                <strong>管理者:</strong> システム全体を管理できます
+              </div>
+            </div>
+
+            <hr class="my-4">
+
+            <h5 class="mb-3">パスワード設定</h5>
+
+            <div class="mb-3">
+              <%= form.label :password, "パスワード", class: "form-label" %>
+              <%= form.password_field :password, class: "form-control", required: true, autocomplete: "new-password" %>
+              <div class="form-text">6文字以上で入力してください</div>
+            </div>
+
+            <div class="mb-4">
+              <%= form.label :password_confirmation, "パスワード確認", class: "form-label" %>
+              <%= form.password_field :password_confirmation, class: "form-control", required: true, autocomplete: "new-password" %>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <%= link_to "キャンセル", admin_users_path, class: "btn btn-secondary me-md-2" %>
+              <%= form.submit "作成", class: "btn btn-primary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- 注意事項 -->
+      <div class="card mt-4 border-info">
+        <div class="card-header bg-info text-white">
+          <h5 class="mb-0">注意事項</h5>
+        </div>
+        <div class="card-body">
+          <ul class="mb-0">
+            <li>作成されたユーザーには初期パスワードが設定されます。</li>
+            <li>ユーザーには初回ログイン時にパスワード変更を推奨してください。</li>
+            <li>管理者アカウントの作成は慎重に行ってください。</li>
+            <li>メールアドレスは一意である必要があります。</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

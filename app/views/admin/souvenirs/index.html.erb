@@ -1,0 +1,155 @@
+<% content_for :title, "記念品管理" %>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>記念品管理</h2>
+        <%= link_to "新規記念品追加", new_admin_souvenir_path, class: "btn btn-primary" %>
+      </div>
+
+      <!-- 記念品ステータスフィルター -->
+      <div class="mb-3">
+        <%= link_to "全て", admin_souvenirs_path, 
+            class: "btn btn-outline-secondary #{'active' if params[:status].blank?}" %>
+        <%= link_to "販売中", admin_souvenirs_path(status: 'active'), 
+            class: "btn btn-outline-secondary #{'active' if params[:status] == 'active'}" %>
+        <%= link_to "販売終了", admin_souvenirs_path(status: 'inactive'), 
+            class: "btn btn-outline-secondary #{'active' if params[:status] == 'inactive'}" %>
+      </div>
+
+      <!-- 記念品統計情報 -->
+      <div class="row mb-4">
+        <div class="col-md-3">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title"><%= @souvenirs.count %></h5>
+              <p class="card-text text-muted">総記念品数</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title"><%= @souvenirs.where(active: true).count %></h5>
+              <p class="card-text text-muted">販売中</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title"><%= @souvenirs.where(active: false).count %></h5>
+              <p class="card-text text-muted">販売終了</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title">¥<%= number_with_delimiter(@souvenirs.where(active: true).sum(:price)) %></h5>
+              <p class="card-text text-muted">販売中総額</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 記念品一覧テーブル -->
+      <div class="card">
+        <div class="card-body">
+          <% if @souvenirs.any? %>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>記念品名</th>
+                    <th>価格</th>
+                    <th>ステータス</th>
+                    <th>注文数</th>
+                    <th>登録日</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @souvenirs.each do |souvenir| %>
+                    <tr>
+                      <td><%= souvenir.id %></td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <% if souvenir.image_path.present? %>
+                            <img src="<%= souvenir.image_path %>" alt="<%= souvenir.name %>" 
+                                 class="me-2" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
+                          <% else %>
+                            <div class="me-2 d-flex align-items-center justify-content-center" 
+                                 style="width: 40px; height: 40px; background-color: #f8f9fa; border-radius: 4px;">
+                              <i class="fas fa-image text-muted"></i>
+                            </div>
+                          <% end %>
+                          <div>
+                            <div class="fw-bold"><%= souvenir.name %></div>
+                            <% if souvenir.description.present? %>
+                              <small class="text-muted"><%= truncate(souvenir.description, length: 50) %></small>
+                            <% end %>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="fw-bold">¥<%= number_with_delimiter(souvenir.price) %></td>
+                      <td>
+                        <% if souvenir.active? %>
+                          <span class="badge bg-success">販売中</span>
+                        <% else %>
+                          <span class="badge bg-secondary">販売終了</span>
+                        <% end %>
+                      </td>
+                      <td>
+                        <span class="badge bg-info"><%= souvenir.souvenir_orders.count %>件</span>
+                      </td>
+                      <td><%= souvenir.created_at.strftime("%Y/%m/%d") %></td>
+                      <td>
+                        <div class="btn-group" role="group">
+                          <%= link_to admin_souvenir_path(souvenir), class: "btn btn-sm btn-outline-primary", title: "詳細" do %>
+                            <i class="fas fa-eye"></i>
+                          <% end %>
+                          <%= link_to edit_admin_souvenir_path(souvenir), class: "btn btn-sm btn-outline-warning", title: "編集" do %>
+                            <i class="fas fa-edit"></i>
+                          <% end %>
+                          <% if souvenir.active? %>
+                            <%= link_to deactivate_admin_souvenir_path(souvenir), method: :patch, 
+                                class: "btn btn-sm btn-outline-secondary", title: "無効化",
+                                confirm: "この記念品を販売終了にしますか？" do %>
+                              <i class="fas fa-pause"></i>
+                            <% end %>
+                          <% else %>
+                            <%= link_to activate_admin_souvenir_path(souvenir), method: :patch, 
+                                class: "btn btn-sm btn-outline-success", title: "有効化",
+                                confirm: "この記念品を販売再開しますか？" do %>
+                              <i class="fas fa-play"></i>
+                            <% end %>
+                          <% end %>
+                          <%= link_to admin_souvenir_path(souvenir), method: :delete, 
+                              class: "btn btn-sm btn-outline-danger", title: "削除",
+                              confirm: "この記念品を削除しますか？この操作は取り消せません。",
+                              data: { "turbo-method": :delete } do %>
+                            <i class="fas fa-trash"></i>
+                          <% end %>
+                        </div>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% else %>
+            <div class="text-center py-5">
+              <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+              <h5 class="text-muted">記念品が登録されていません</h5>
+              <p class="text-muted">最初の記念品を追加してみましょう。</p>
+              <%= link_to "新規記念品追加", new_admin_souvenir_path, class: "btn btn-primary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
