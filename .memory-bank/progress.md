@@ -16,6 +16,11 @@
 - 基本的なコントローラー実装
 - ルーティング設定
 - シードデータ作成
+- 招待機能のビューファイル実装完了（2025年6月22日）
+  - `app/views/invitations/index.html.erb` - 子供ごとの招待管理画面
+  - `app/views/invitations/new.html.erb` - 新規招待作成画面
+  - `app/views/invitations/show.html.erb` - 招待URL表示画面（祖父母向け）
+  - `app/views/invitations/accept.html.erb` - 祖父母アカウント登録画面
 
 ## 残りの作業
 
