@@ -21,6 +21,10 @@
   - `app/views/invitations/new.html.erb` - 新規招待作成画面
   - `app/views/invitations/show.html.erb` - 招待URL表示画面（祖父母向け）
   - `app/views/invitations/accept.html.erb` - 祖父母アカウント登録画面
+- Dependabot PRマージ: debug gem 1.10.0 → 1.11.0（2025年6月24日）
+  - デバッグ機能は正常に動作
+  - アプリケーションサーバーも正常起動
+  - 破壊的変更なし
 
 ## 残りの作業
 
