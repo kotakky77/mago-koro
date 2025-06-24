@@ -19,8 +19,20 @@ class Invitation < ApplicationRecord
     expires_at < Time.current || status == 'expired'
   end
   
+  def accepted?
+    status == 'accepted'
+  end
+  
+  def pending?
+    status == 'pending'
+  end
+  
   def accept!(grandparent_user)
-    update(grandparent_id: grandparent_user.id, status: 'accepted')
+    update(
+      grandparent_id: grandparent_user.id, 
+      status: 'accepted',
+      updated_at: Time.current
+    )
   end
   
   def expire!

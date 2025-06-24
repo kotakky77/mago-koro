@@ -1,0 +1,158 @@
+<% provide(:title, "アカウント作成 - まごころおくりもの") %>
+
+<div class="container" style="padding-top: 30px;">
+  <div class="registration-header" style="text-align: center; margin-bottom: 40px;">
+    <h1 style="color: #4a6da7; font-size: 36px; margin-bottom: 10px;">
+      アカウント作成
+    </h1>
+    <p style="font-size: 18px; color: #6c757d;">
+      <%= @child.name %>の成長を一緒に見守るため、アカウントを作成してください
+    </p>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <div class="registration-card" style="background: white; border: 1px solid #dee2e6; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); overflow: hidden;">
+        <div class="card-header" style="background: linear-gradient(135deg, #4a6da7 0%, #6c8fc7 100%); color: white; padding: 20px; text-align: center;">
+          <h3 style="margin: 0; font-size: 24px;">祖父母アカウント登録</h3>
+        </div>
+        
+        <div class="card-body" style="padding: 30px;">
+          <%= form_with model: @user, url: register_invitation_path(@invitation), local: true do |form| %>
+            <% if @user.errors.any? %>
+              <div class="alert alert-danger" style="background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+                <h4>エラーが発生しました:</h4>
+                <ul style="margin: 10px 0 0 20px;">
+                  <% @user.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="form-group" style="margin-bottom: 20px;">
+              <%= form.label :name, "お名前", style: "display: block; font-weight: bold; margin-bottom: 8px; color: #333;" %>
+              <%= form.text_field :name, class: "form-control", style: "width: 100%; padding: 12px; border: 1px solid #ced4da; border-radius: 4px; font-size: 16px;", placeholder: "例：田中 太郎" %>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 20px;">
+              <%= form.label :email, "メールアドレス", style: "display: block; font-weight: bold; margin-bottom: 8px; color: #333;" %>
+              <%= form.email_field :email, class: "form-control", style: "width: 100%; padding: 12px; border: 1px solid #ced4da; border-radius: 4px; font-size: 16px;", placeholder: "例：example@email.com" %>
+              <small style="color: #6c757d; font-size: 14px;">ログイン時に使用します</small>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 20px;">
+              <%= form.label :password, "パスワード", style: "display: block; font-weight: bold; margin-bottom: 8px; color: #333;" %>
+              <%= form.password_field :password, class: "form-control", style: "width: 100%; padding: 12px; border: 1px solid #ced4da; border-radius: 4px; font-size: 16px;", placeholder: "8文字以上のパスワード" %>
+              <small style="color: #6c757d; font-size: 14px;">8文字以上で設定してください</small>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 20px;">
+              <%= form.label :password_confirmation, "パスワード（確認）", style: "display: block; font-weight: bold; margin-bottom: 8px; color: #333;" %>
+              <%= form.password_field :password_confirmation, class: "form-control", style: "width: 100%; padding: 12px; border: 1px solid #ced4da; border-radius: 4px; font-size: 16px;", placeholder: "パスワードを再入力" %>
+            </div>
+
+            <div class="child-info" style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e9ecef;">
+              <h4 style="margin: 0 0 15px 0; color: #4a6da7;">
+                <i class="fas fa-baby"></i> お孫さんの情報
+              </h4>
+              <div class="child-details">
+                <p style="margin: 5px 0; font-size: 16px;"><strong>お名前:</strong> <%= @child.name %></p>
+                <p style="margin: 5px 0; font-size: 16px;"><strong>年齢:</strong> <%= @child.age %>歳</p>
+                <% if @child.birthday.present? %>
+                  <p style="margin: 5px 0; font-size: 16px;"><strong>お誕生日:</strong> <%= @child.birthday.strftime('%Y年%m月%d日') %></p>
+                <% end %>
+                <p style="margin: 5px 0; font-size: 16px;"><strong>ご両親:</strong> <%= @child.user.name %></p>
+              </div>
+            </div>
+
+            <div class="terms-info" style="background-color: #e3f2fd; border: 1px solid #bbdefb; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+              <p style="margin: 0; color: #1565c0; font-size: 14px;">
+                <i class="fas fa-info-circle"></i>
+                アカウント作成により、利用規約とプライバシーポリシーに同意したものとみなされます。
+              </p>
+            </div>
+
+            <div class="form-actions" style="text-align: center;">
+              <%= form.submit "アカウントを作成", class: "btn btn-primary btn-lg", style: "background-color: #4a6da7; border: none; padding: 15px 30px; font-size: 18px; border-radius: 8px; width: 100%; margin-bottom: 15px;" %>
+            </div>
+          <% end %>
+          
+          <div style="text-align: center; margin-top: 20px;">
+            <p style="color: #6c757d; font-size: 14px;">
+              既にアカウントをお持ちの場合は <%= link_to "こちらからログイン", login_path, style: "color: #4a6da7;" %>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.registration-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-control {
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+  border-color: #4a6da7;
+  box-shadow: 0 0 0 0.2rem rgba(74, 109, 167, 0.25);
+  outline: none;
+}
+
+.btn-primary:hover {
+  background-color: #3d5a94 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 109, 167, 0.3);
+  transition: all 0.3s ease;
+}
+
+.child-info {
+  border-left: 4px solid #4a6da7;
+}
+
+.terms-info {
+  font-size: 13px;
+}
+
+.alert ul {
+  padding-left: 20px;
+}
+
+.alert li {
+  margin-bottom: 5px;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // パスワード強度チェック（簡易版）
+  const passwordField = document.querySelector('input[type="password"]');
+  const confirmField = document.querySelector('input[name="user[password_confirmation]"]');
+  
+  if (passwordField && confirmField) {
+    confirmField.addEventListener('input', function() {
+      if (passwordField.value !== confirmField.value) {
+        confirmField.setCustomValidity('パスワードが一致しません');
+      } else {
+        confirmField.setCustomValidity('');
+      }
+    });
+  }
+});
+</script>

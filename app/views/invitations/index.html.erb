@@ -1,0 +1,183 @@
+<% provide(:title, "#{@child.name}への招待管理 - まごころおくりもの") %>
+
+<div class="container" style="padding-top: 30px;">
+  <div class="page-header" style="margin-bottom: 30px;">
+    <h1 style="color: #4a6da7; font-size: 36px;"><%= @child.name %>への招待管理</h1>
+    <p style="font-size: 18px; color: #6c757d;">祖父母を招待して、<%= @child.name %>の成長を共有しましょう</p>
+  </div>
+
+  <div class="action-buttons" style="margin-bottom: 30px;">
+    <%= link_to "新しい招待を作成", new_child_invitation_path(@child), class: "btn btn-primary", style: "background-color: #4a6da7; border: none; padding: 12px 24px; font-size: 18px; border-radius: 4px;" %>
+    <%= link_to "#{@child.name}の管理ページに戻る", edit_child_path(@child), class: "btn btn-outline-secondary", style: "border: 1px solid #6c757d; padding: 12px 24px; font-size: 18px; border-radius: 4px; margin-left: 10px; color: #6c757d; text-decoration: none;" %>
+  </div>
+
+  <% if @invitations.empty? %>
+    <div class="no-invitations-message" style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 8px;">
+      <h2 style="color: #6c757d; margin-bottom: 20px;">まだ招待が作成されていません</h2>
+      <p style="font-size: 18px; color: #6c757d;">「新しい招待を作成」ボタンから、祖父母への招待を作成してください。</p>
+    </div>
+  <% else %>
+    <div class="invitations-list">
+      <% @invitations.each do |invitation| %>
+        <div class="invitation-card" style="border: 1px solid #dee2e6; border-radius: 8px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); background: white;">
+          <div class="invitation-header" style="background-color: <%= invitation.accepted? ? '#d1e7dd' : '#fff3cd' %>; padding: 15px;">
+            <div class="row">
+              <div class="col-md-8">
+                <h3 style="margin: 0; font-size: 20px; color: <%= invitation.accepted? ? '#198754' : '#b06014' %>;">
+                  招待 #<%= invitation.id %>
+                </h3>
+                <p style="margin: 5px 0 0 0; font-size: 14px;">
+                  作成日: <%= invitation.created_at.strftime('%Y年%m月%d日 %H:%M') %>
+                </p>
+              </div>
+              <div class="col-md-4 text-right">
+                <span class="status-badge" style="display: inline-block; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; color: white; background-color: <%= invitation.accepted? ? '#198754' : '#ffc107' %>;">
+                  <%= invitation.accepted? ? '承諾済み' : '招待中' %>
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="invitation-body" style="padding: 20px;">
+            <div class="row">
+              <div class="col-md-8">
+                <div class="invitation-details">
+                  <p style="font-size: 16px; margin-bottom: 10px;">
+                    <strong>招待URL:</strong>
+                  </p>
+                  <div class="url-container" style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <input type="text" class="form-control" value="<%= invitation_url(invitation) %>" readonly style="font-family: monospace; font-size: 14px;">
+                    <button class="btn btn-outline-secondary copy-btn" data-clipboard-text="<%= invitation_url(invitation) %>" style="white-space: nowrap;">
+                      <i class="fas fa-copy"></i> コピー
+                    </button>
+                  </div>
+                  
+                  <% if invitation.accepted? %>
+                    <p style="font-size: 16px; margin-bottom: 10px; color: #198754;">
+                      <strong><i class="fas fa-check-circle"></i> 承諾日:</strong>
+                      <%= invitation.updated_at.strftime('%Y年%m月%d日 %H:%M') %>
+                    </p>
+                    <% if invitation.grandparent %>
+                      <p style="font-size: 16px; margin-bottom: 10px;">
+                        <strong>祖父母:</strong>
+                        <%= invitation.grandparent.name %>
+                      </p>
+                    <% end %>
+                  <% else %>
+                    <p style="font-size: 16px; margin-bottom: 10px; color: #b06014;">
+                      <strong><i class="fas fa-clock"></i> ステータス:</strong>
+                      招待待ち
+                    </p>
+                    <p style="font-size: 14px; color: #6c757d;">
+                      この招待URLを祖父母に共有してください
+                    </p>
+                  <% end %>
+                </div>
+              </div>
+              
+              <div class="col-md-4">
+                <div class="invitation-actions" style="display: flex; flex-direction: column; gap: 10px;">
+                  <% unless invitation.accepted? %>
+                    <button class="btn btn-outline-info share-btn" data-url="<%= invitation_url(invitation) %>" style="border: 1px solid #0dcaf0; color: #0dcaf0; padding: 10px; border-radius: 4px;">
+                      <i class="fas fa-share-alt"></i> 共有
+                    </button>
+                    <%= button_to "削除", child_invitation_path(@child, invitation), method: :delete, class: "btn btn-outline-danger", style: "border: 1px solid #dc3545; color: #dc3545; padding: 10px; border-radius: 4px; border: none; background: none;", data: { confirm: "この招待を削除しますか？" } %>
+                  <% else %>
+                    <button class="btn btn-outline-success" disabled style="border: 1px solid #198754; color: #198754; padding: 10px; border-radius: 4px;">
+                      <i class="fas fa-check"></i> 承諾済み
+                    </button>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<style>
+.copy-btn {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.copy-btn:hover {
+  background-color: #e9ecef !important;
+}
+
+.copy-btn:active {
+  background-color: #dee2e6 !important;
+}
+
+.share-btn {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.share-btn:hover {
+  background-color: #0dcaf0;
+  color: white !important;
+}
+
+.url-container input {
+  flex: 1;
+}
+
+.invitation-card {
+  transition: box-shadow 0.2s;
+}
+
+.invitation-card:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.status-badge {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // コピー機能
+  document.querySelectorAll('.copy-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const text = this.dataset.clipboardText || this.previousElementSibling.value;
+      navigator.clipboard.writeText(text).then(function() {
+        btn.innerHTML = '<i class="fas fa-check"></i> コピー済み';
+        btn.style.backgroundColor = '#198754';
+        btn.style.color = 'white';
+        btn.style.borderColor = '#198754';
+        
+        setTimeout(function() {
+          btn.innerHTML = '<i class="fas fa-copy"></i> コピー';
+          btn.style.backgroundColor = '';
+          btn.style.color = '';
+          btn.style.borderColor = '';
+        }, 2000);
+      });
+    });
+  });
+
+  // 共有機能（シンプルな実装）
+  document.querySelectorAll('.share-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const url = this.dataset.url;
+      if (navigator.share) {
+        navigator.share({
+          title: 'まごころおくりもの - 招待',
+          text: 'お孫さんの成長を一緒に見守りませんか？',
+          url: url
+        });
+      } else {
+        // フォールバック: URLをコピー
+        navigator.clipboard.writeText(url).then(function() {
+          alert('招待URLをコピーしました');
+        });
+      }
+    });
+  });
+});
+</script>

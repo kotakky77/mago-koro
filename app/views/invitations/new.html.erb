@@ -1,0 +1,110 @@
+<% provide(:title, "新しい招待を作成 - まごころおくりもの") %>
+
+<div class="container" style="padding-top: 30px;">
+  <div class="page-header" style="margin-bottom: 30px;">
+    <h1 style="color: #4a6da7; font-size: 36px;">新しい招待を作成</h1>
+    <p style="font-size: 18px; color: #6c757d;"><%= @child.name %>への祖父母招待を作成します</p>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card" style="border: 1px solid #dee2e6; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <div class="card-header" style="background-color: #f8f9fa; padding: 20px; border-bottom: 1px solid #dee2e6;">
+          <h2 style="margin: 0; color: #4a6da7;">招待情報</h2>
+        </div>
+        
+        <div class="card-body" style="padding: 30px;">
+          <%= form_with model: [@child, @invitation], local: true do |form| %>
+            <% if @invitation.errors.any? %>
+              <div class="alert alert-danger" style="background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+                <h4>エラーが発生しました:</h4>
+                <ul style="margin: 10px 0 0 20px;">
+                  <% @invitation.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="form-group" style="margin-bottom: 25px;">
+              <label style="display: block; font-weight: bold; margin-bottom: 8px; color: #333;">招待する祖父母について</label>
+              <div class="info-box" style="background-color: #e3f2fd; border: 1px solid #bbdefb; padding: 20px; border-radius: 4px;">
+                <p style="margin: 0; color: #1565c0;">
+                  <i class="fas fa-info-circle"></i>
+                  この招待を使用して、祖父母は<%= @child.name %>の成長記録や「ほしいものリスト」を閲覧できるようになります。
+                </p>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 25px;">
+              <label style="display: block; font-weight: bold; margin-bottom: 8px; color: #333;">招待の有効期限</label>
+              <div class="expiry-info" style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 4px;">
+                <p style="margin: 0; color: #856404;">
+                  <i class="fas fa-clock"></i>
+                  招待URLは作成から<strong>30日間</strong>有効です
+                </p>
+              </div>
+            </div>
+
+            <div class="child-info" style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+              <h3 style="margin: 0 0 15px 0; color: #4a6da7;">招待対象のお子さん</h3>
+              <div class="child-details">
+                <p style="margin: 5px 0;"><strong>お名前:</strong> <%= @child.name %></p>
+                <p style="margin: 5px 0;"><strong>年齢:</strong> <%= @child.age %>歳</p>
+                <% if @child.birthday.present? %>
+                  <p style="margin: 5px 0;"><strong>お誕生日:</strong> <%= @child.birthday.strftime('%Y年%m月%d日') %></p>
+                <% end %>
+              </div>
+            </div>
+
+            <div class="form-actions" style="text-align: center; margin-top: 30px;">
+              <%= form.submit "招待を作成", class: "btn btn-primary", style: "background-color: #4a6da7; border: none; padding: 15px 30px; font-size: 18px; border-radius: 4px; margin-right: 15px;" %>
+              <%= link_to "キャンセル", child_invitations_path(@child), class: "btn btn-outline-secondary", style: "border: 1px solid #6c757d; padding: 15px 30px; font-size: 18px; border-radius: 4px; color: #6c757d; text-decoration: none;" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.card {
+  background: white;
+}
+
+.card-header {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.form-group label {
+  font-size: 16px;
+}
+
+.info-box, .expiry-info {
+  font-size: 14px;
+}
+
+.child-info {
+  border: 1px solid #e9ecef;
+}
+
+.child-details p {
+  font-size: 16px;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #3d5a94 !important;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #6c757d;
+  color: white !important;
+}
+</style>

@@ -16,6 +16,11 @@
 - 基本的なコントローラー実装
 - ルーティング設定
 - シードデータ作成
+- 招待機能のビューファイル実装完了（2025年6月22日）
+  - `app/views/invitations/index.html.erb` - 子供ごとの招待管理画面
+  - `app/views/invitations/new.html.erb` - 新規招待作成画面
+  - `app/views/invitations/show.html.erb` - 招待URL表示画面（祖父母向け）
+  - `app/views/invitations/accept.html.erb` - 祖父母アカウント登録画面
 
 ## 残りの作業
 
@@ -78,6 +83,13 @@
 - データベース設計と基本的なモデル実装完了
 - コントローラーとルーティングの設定完了
 - ログイン画面のデザイン更新完了（2025年5月25日）
+- **管理者向け画面のBootstrap対応修正完了（2025年6月15日）**
+  - Bootstrap 5のCDN導入（CSS・JavaScript）
+  - 管理者画面用のBootstrap優先スタイル追加
+  - ユーザー管理画面のデザイン修正（ボタン、テーブル、統計カード）
+  - Rails 7対応の削除ボタン修正（button_to + turbo-method）
+  - アクションボタンのグループ化とスペーシング改善
+  - レスポンシブ対応の強化
 - **CSSアセットパイプライン問題の解決完了（2025年5月25日）**
   - Sprockets-railsの導入
   - アセットマニフェストファイルの作成
