@@ -27,9 +27,14 @@ parent = User.create!(
 )
 
 # 子供（孫）作成
-child = parent.children.create!(
+child1 = parent.children.create!(
   name: "山田花子",
   birthdate: 3.years.ago
+)
+
+child2 = parent.children.create!(
+  name: "山田太一",
+  birthdate: 5.years.ago
 )
 
 # 祖父母ユーザー作成
@@ -41,16 +46,24 @@ grandparent = User.create!(
   user_type: "grandparent"
 )
 
-# 招待作成と承諾
-invitation = child.invitations.create!(
+# 招待作成と承諾（子供1）
+invitation1 = child1.invitations.create!(
   parent_id: parent.id,
   expires_at: 7.days.from_now,
   status: "accepted",
   grandparent_id: grandparent.id
 )
 
-# ほしいものリストアイテム作成
-wishlist_items = [
+# 招待作成と承諾（子供2）
+invitation2 = child2.invitations.create!(
+  parent_id: parent.id,
+  expires_at: 7.days.from_now,
+  status: "accepted",
+  grandparent_id: grandparent.id
+)
+
+# ほしいものリストアイテム作成（子供1：山田花子）
+wishlist_items_child1 = [
   {
     name: "アンパンマン おおきなよくばりボックス",
     url: "https://example.com/item1",
@@ -80,13 +93,54 @@ wishlist_items = [
   }
 ]
 
-wishlist_items.each do |item_data|
-  child.wishlist_items.create!(item_data)
+wishlist_items_child1.each do |item_data|
+  child1.wishlist_items.create!(item_data)
 end
 
-# 購入通知作成
-notification = parent.purchase_notifications.create!(
-  wishlist_item_id: child.wishlist_items.where(purchased: true).first.id,
+# ほしいものリストアイテム作成（子供2：山田太一）
+wishlist_items_child2 = [
+  {
+    name: "レゴ クラシック 基本セット",
+    url: "https://example.com/item4",
+    price: 5800,
+    description: "創造力を育むレゴブロックの基本セットです。色々な形を作って遊べます。",
+    category: "おもちゃ",
+    quantity: 1
+  },
+  {
+    name: "スニーカー（17cm）",
+    url: "https://example.com/item5",
+    price: 3500,
+    description: "運動用のスニーカーです。サイズは17cmです。",
+    category: "衣類",
+    quantity: 1
+  },
+  {
+    name: "図鑑「恐竜のひみつ」",
+    url: "https://example.com/item6",
+    price: 1200,
+    description: "恐竜好きの子供におすすめの図鑑です。写真がたくさん載っています。",
+    category: "本",
+    quantity: 1,
+    purchased: true,
+    purchased_by_id: grandparent.id,
+    purchased_at: 1.day.ago
+  }
+]
+
+wishlist_items_child2.each do |item_data|
+  child2.wishlist_items.create!(item_data)
+end
+
+# 購入通知作成（子供1の購入済みアイテム）
+notification1 = parent.purchase_notifications.create!(
+  wishlist_item_id: child1.wishlist_items.where(purchased: true).first.id,
+  grandparent_id: grandparent.id
+)
+
+# 購入通知作成（子供2の購入済みアイテム）
+notification2 = parent.purchase_notifications.create!(
+  wishlist_item_id: child2.wishlist_items.where(purchased: true).first.id,
   grandparent_id: grandparent.id
 )
 
@@ -119,12 +173,23 @@ souvenirs.each do |souvenir_data|
   Souvenir.create!(souvenir_data)
 end
 
-# 記念品注文作成
-order = SouvenirOrder.create!(
+# 記念品注文作成（子供1の記念品）
+order1 = SouvenirOrder.create!(
   user_id: grandparent.id,
   souvenir_id: Souvenir.first.id,
-  child_id: child.id,
+  child_id: child1.id,
   status: "pending",
+  shipping_address: "東京都渋谷区○○1-2-3",
+  recipient_name: "山田義男",
+  contact_phone: "090-1234-5678"
+)
+
+# 記念品注文作成（子供2の記念品）
+order2 = SouvenirOrder.create!(
+  user_id: grandparent.id,
+  souvenir_id: Souvenir.second.id,
+  child_id: child2.id,
+  status: "delivered",
   shipping_address: "東京都渋谷区○○1-2-3",
   recipient_name: "山田義男",
   contact_phone: "090-1234-5678"
