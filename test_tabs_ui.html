@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>タブ実装テスト</title>
+    <style>
+        /* まごころおくりもの アプリ共通スタイル */
+        :root {
+          --primary-color: #FF9E80; /* 暖かみのあるオレンジ色 */
+          --primary-color-rgb: 255, 158, 128; /* RGB値（透明度用） */
+          --secondary-color: #64B5F6; /* 明るいブルー */
+          --accent-color: #FFD54F; /* 明るい黄色 */
+          --text-color: #333333;
+          --light-bg: #F5F5F5;
+          --border-color: #E0E0E0;
+          --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+          --font-family: 'Noto Sans JP', sans-serif;
+        }
+
+        * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+        }
+
+        body {
+          font-family: var(--font-family);
+          color: var(--text-color);
+          background-color: var(--light-bg);
+          line-height: 1.6;
+          padding: 20px;
+        }
+
+        .container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 20px;
+        }
+
+        /* 孫選択タブスタイル */
+        .children-tabs {
+          margin-bottom: 30px;
+        }
+
+        .tab-nav {
+          display: flex;
+          gap: 10px;
+          border-bottom: 2px solid var(--border-color);
+          margin-bottom: 20px;
+          overflow-x: auto;
+          scrollbar-width: thin;
+        }
+
+        .tab-nav::-webkit-scrollbar {
+          height: 4px;
+        }
+
+        .tab-nav::-webkit-scrollbar-track {
+          background: #f1f1f1;
+        }
+
+        .tab-nav::-webkit-scrollbar-thumb {
+          background: var(--primary-color);
+          border-radius: 2px;
+        }
+
+        .tab-button {
+          padding: 12px 20px;
+          border: none;
+          background: none;
+          border-bottom: 3px solid transparent;
+          cursor: pointer;
+          font-size: 16px;
+          font-weight: 500;
+          color: #666;
+          transition: all 0.3s ease;
+          text-decoration: none;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          white-space: nowrap;
+          min-width: fit-content;
+        }
+
+        .tab-button:hover {
+          color: var(--primary-color);
+          background-color: rgba(var(--primary-color-rgb), 0.05);
+        }
+
+        .tab-button:focus {
+          outline: 2px solid var(--primary-color);
+          outline-offset: 2px;
+        }
+
+        .tab-button.active {
+          color: var(--primary-color);
+          border-bottom-color: var(--primary-color);
+          background-color: rgba(var(--primary-color-rgb), 0.05);
+        }
+
+        .tab-button.add-child {
+          color: #888;
+          font-style: italic;
+          border: 2px dashed #ccc;
+          border-radius: 8px;
+          margin-left: 10px;
+        }
+
+        .tab-button.add-child:hover {
+          border-color: var(--primary-color);
+          color: var(--primary-color);
+          background-color: rgba(var(--primary-color-rgb), 0.05);
+        }
+
+        .child-age {
+          font-size: 14px;
+          color: #888;
+          font-weight: normal;
+        }
+
+        /* モバイル用ドロップダウン */
+        .mobile-child-selector {
+          display: none;
+          gap: 10px;
+          margin-bottom: 20px;
+        }
+
+        .mobile-add-child {
+          flex-shrink: 0;
+        }
+
+        /* コンテンツ表示制御 */
+        .child-content {
+          display: none;
+        }
+
+        .child-content.active {
+          display: block;
+        }
+
+        .card {
+          background: white;
+          border-radius: 8px;
+          padding: 20px;
+          margin-bottom: 20px;
+          box-shadow: var(--shadow);
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+          .tab-nav {
+            display: none;
+          }
+          
+          .mobile-child-selector {
+            display: flex;
+          }
+          
+          .mobile-child-selector select {
+            flex: 1;
+          }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Parent/Dashboard タブUI実装テスト</h1>
+        
+        <!-- 孫選択タブ -->
+        <div class="children-tabs">
+            <div class="tab-nav" role="tablist" aria-label="お子様の選択">
+                <button class="tab-button active" 
+                        type="button"
+                        role="tab"
+                        aria-selected="true"
+                        aria-controls="child-content-1"
+                        id="tab-1">
+                    山田花子
+                    <span class="child-age">（3歳）</span>
+                </button>
+                <button class="tab-button" 
+                        type="button"
+                        role="tab"
+                        aria-selected="false"
+                        aria-controls="child-content-2"
+                        id="tab-2">
+                    山田太一
+                    <span class="child-age">（5歳）</span>
+                </button>
+                <a href="#" class="tab-button add-child">
+                    <i class="fas fa-plus" aria-hidden="true"></i> 新しい孫を追加
+                </a>
+            </div>
+            
+            <!-- モバイル用ドロップダウン -->
+            <div class="mobile-child-selector">
+                <select class="form-control" aria-label="お子様を選択">
+                    <option value="1" selected>山田花子（3歳）</option>
+                    <option value="2">山田太一（5歳）</option>
+                </select>
+                <a href="#" class="btn btn-secondary btn-sm mobile-add-child">
+                    <i class="fas fa-plus" aria-hidden="true"></i> 新しい孫を追加
+                </a>
+            </div>
+        </div>
+
+        <!-- 孫の情報コンテンツ -->
+        <div class="child-content active" 
+             role="tabpanel"
+             aria-labelledby="tab-1"
+             id="child-content-1"
+             aria-hidden="false">
+            <div class="card">
+                <h2>山田花子ちゃんの情報</h2>
+                <p>こちらが山田花子ちゃん（3歳）の情報です。</p>
+                <p>ダッシュボードカード、写真、通知などが表示されます。</p>
+            </div>
+        </div>
+
+        <div class="child-content" 
+             role="tabpanel"
+             aria-labelledby="tab-2"
+             id="child-content-2"
+             aria-hidden="true">
+            <div class="card">
+                <h2>山田太一くんの情報</h2>
+                <p>こちらが山田太一くん（5歳）の情報です。</p>
+                <p>ダッシュボードカード、写真、通知などが表示されます。</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 簡単なタブ切り替えのテスト用JavaScript
+        document.querySelectorAll('.tab-button:not(.add-child)').forEach(button => {
+            button.addEventListener('click', function() {
+                const childId = this.id.split('-')[1];
+                
+                // タブボタンのアクティブ状態更新
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.setAttribute('aria-selected', 'false');
+                });
+                this.classList.add('active');
+                this.setAttribute('aria-selected', 'true');
+                
+                // コンテンツの表示切り替え
+                document.querySelectorAll('.child-content').forEach(content => {
+                    content.classList.remove('active');
+                    content.setAttribute('aria-hidden', 'true');
+                });
+                
+                const targetContent = document.getElementById(`child-content-${childId}`);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                    targetContent.setAttribute('aria-hidden', 'false');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
