@@ -13,15 +13,73 @@
     <% end %>
 
     <% if @children.present? %>
-      <% @children.each do |child| %>
-        <div class="card">
-          <h2 style="margin-bottom: 15px;">孫の情報</h2>
+      <!-- 孫選択タブ -->
+      <div class="children-tabs" data-controller="children-tabs">
+        <div class="tab-nav" role="tablist" aria-label="お子様の選択">
+          <% @children.each_with_index do |child, index| %>
+            <button class="tab-button <%= 'active' if index == 0 %>" 
+                    data-children-tabs-target="tabButton"
+                    data-action="click->children-tabs#switchTab"
+                    data-child-id="<%= child.id %>"
+                    type="button"
+                    role="tab"
+                    aria-selected="<%= index == 0 ? 'true' : 'false' %>"
+                    aria-controls="child-content-<%= child.id %>"
+                    id="tab-<%= child.id %>">
+              <%= child.name %>
+              <% if child.birthdate %>
+                <span class="child-age">（<%= ((Date.today - child.birthdate).to_i / 365.25).floor %>歳）</span>
+              <% end %>
+            </button>
+          <% end %>
+          <%= link_to new_child_path, class: "tab-button add-child", 
+                      data: { children_tabs_target: "tabButton" } do %>
+            <i class="fas fa-plus" aria-hidden="true"></i> 新しい孫を追加
+          <% end %>
+        </div>
+        
+        <!-- モバイル用ドロップダウン -->
+        <div class="mobile-child-selector">
+          <label for="mobile-child-select" class="sr-only">お子様を選択</label>
+          <select data-children-tabs-target="mobileSelect" 
+                  data-action="change->children-tabs#switchTabMobile"
+                  id="mobile-child-select"
+                  class="form-control"
+                  aria-label="お子様を選択">
+            <% @children.each_with_index do |child, index| %>
+              <option value="<%= child.id %>" <%= 'selected' if index == 0 %>>
+                <%= child.name %>
+                <% if child.birthdate %>
+                  （<%= ((Date.today - child.birthdate).to_i / 365.25).floor %>歳）
+                <% end %>
+              </option>
+            <% end %>
+          </select>
+          <%= link_to new_child_path, class: "btn btn-secondary btn-sm mobile-add-child" do %>
+            <i class="fas fa-plus" aria-hidden="true"></i> 新しい孫を追加
+          <% end %>
+        </div>
+
+        <!-- 孫の情報コンテンツ -->
+        <% @children.each_with_index do |child, index| %>
+        <div class="child-content <%= 'active' if index == 0 %>" 
+             data-children-tabs-target="content" 
+             data-child-id="<%= child.id %>"
+             role="tabpanel"
+             aria-labelledby="tab-<%= child.id %>"
+             id="child-content-<%= child.id %>"
+             aria-hidden="<%= index == 0 ? 'false' : 'true' %>">
+          <div class="card">
+            <h2 style="margin-bottom: 15px;">孫の情報</h2>
           <div style="display: flex; flex-wrap: wrap; gap: 30px; align-items: center;">
             <div style="flex: 0 0 150px;">
               <% if child.photos.attached? %>
                 <%= image_tag child.photos.first, alt: "#{child.name}の写真", style: "width: 100%; border-radius: 10px;" %>
               <% else %>
-                <img src="https://via.placeholder.com/150" alt="孫の写真" style="width: 100%; border-radius: 10px;">
+                <div style="width: 100%; height: 150px; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #666; font-size: 14px;">
+                  <i class="fas fa-camera" style="font-size: 24px; margin-bottom: 5px;"></i><br>
+                  写真なし
+                </div>
               <% end %>
             </div>
             <div style="flex: 1;">
@@ -104,11 +162,12 @@
           </div>
         </div>
         
-        <% if @recent_notifications.any? %>
+        <% child_notifications = @recent_notifications.select { |notification| notification.wishlist_item&.child_id == child.id } %>
+        <% if child_notifications.any? %>
           <div class="card" style="margin-top: 30px;">
-            <h2 style="margin-bottom: 15px;">最近の購入通知</h2>
+            <h2 style="margin-bottom: 15px;"><%= child.name %>の最近の購入通知</h2>
             <div class="item-list">
-              <% @recent_notifications.limit(2).each do |notification| %>
+              <% child_notifications.first(2).each do |notification| %>
                 <div class="item-card">
                   <div class="item-details">
                     <div class="item-title">「<%= notification.item_name %>」が購入されました</div>
@@ -133,7 +192,7 @@
         
         <% if child.photos.any? %>
           <div class="card" style="margin-top: 30px;">
-            <h2 style="margin-bottom: 15px;">最近アップロードした写真</h2>
+            <h2 style="margin-bottom: 15px;"><%= child.name %>の最近アップロードした写真</h2>
             <div class="photo-grid">
               <% child.photos.limit(4).each do |photo| %>
                 <div class="photo-item">
@@ -149,7 +208,11 @@
             </div>
           </div>
         <% end %>
-      <% end %>
+        
+      </div>  <!-- child-content終了 -->
+    <% end %>
+    
+    </div>  <!-- children-tabs終了 -->
     <% else %>
       <div class="card" style="text-align: center; padding: 60px 20px;">
         <i class="fas fa-child" style="font-size: 64px; color: var(--primary-color); margin-bottom: 20px;"></i>

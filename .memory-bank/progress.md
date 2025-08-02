@@ -220,6 +220,15 @@
   - Bootstrap対応レスポンシブデザイン実装
   - 適切なナビゲーション・エラーハンドリング実装
 - 次のステップ：記念品管理画面のUI実装
+- **Parent/Dashboard UI改善（2025年6月28日完了）**
+  - [x] 複数孫対応のタブベースUI実装
+    - [x] `app/views/parents/dashboard.html.erb` - タブベースの孫選択UI
+    - [x] `app/javascript/controllers/children_tabs_controller.js` - Stimulus.jsコントローラー
+    - [x] `app/assets/stylesheets/application.css` - タブUI専用CSS
+    - [x] レスポンシブ対応（モバイルでのドロップダウン形式）
+    - [x] アクセシビリティ強化（ARIA属性、キーボードナビゲーション）
+    - [x] URLハッシュでの状態管理（ブラウザ戻る/進む対応）
+    - **問題解決**: 複数の孫がいる場合の縦スクロール問題を解決
 
 ## 既知の問題
 

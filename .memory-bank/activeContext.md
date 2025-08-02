@@ -2,6 +2,75 @@
 
 ## 作業の焦点
 
+Parent/Dashboardの複数孫対応UI改善実装（2025年6月28日）
+
+**🎉 実装完了・動作確認済み！**
+
+複数の孫がいる場合に二人目以降の情報を見るために下にスクロールが必要で見にくいという課題を解決するため、タブベースの切り替えUIを実装し、**完全に動作することを確認しました**。
+
+**実装方針:**
+- 案1: タブベースの切り替えを採用
+- 上部に孫選択タブを配置
+- 一度に一人の孫の情報のみ表示
+- JavaScriptで動的にコンテンツを切り替え
+
+**✅ 技術的課題解決:**
+最大の問題は、古い `app/assets/javascripts/application.js` が残っていて、新しい importmap ベースの JavaScript (`app/javascript/application.js`) が読み込まれていなかったことでした。
+
+**解決手順:**
+1. `app/assets/javascripts/application.js` を `application.js.bak` にリネーム
+2. `config/environments/development.rb` で `config.assets.debug = false` に変更
+3. Railsサーバー再起動
+4. importmap ベースの JavaScript が正常に読み込まれるようになった
+
+**動作確認済み機能:**
+- ✅ Stimulus コントローラーの正常な初期化・接続
+- ✅ タブクリック時の切り替え動作
+- ✅ コンテンツエリアの表示/非表示切り替え
+- ✅ アクセシビリティ属性の動的更新
+- ✅ URLハッシュでの状態管理
+- ✅ モバイルドロップダウンとの同期
+
+**実装完了:**
+
+1. **タブベースUIの実装**
+   - 上部に孫選択タブを配置（`app/views/parents/dashboard.html.erb`）
+   - 一度に一人の孫の情報のみ表示
+   - アクティブタブの視覚的強調表示
+
+2. **JavaScriptコントローラーの実装**
+   - Stimulus.jsフレームワークを使用（`app/javascript/controllers/children_tabs_controller.js`）
+   - タブクリックでコンテンツエリア切り替え
+   - URLハッシュでの状態管理（`#child-{id}`）
+   - 初期表示は最初の孫または指定の孫
+
+3. **レスポンシブ対応**
+   - モバイルではドロップダウン形式に変更
+   - タブの横スクロール対応（CSS Grid Layout）
+
+4. **アクセシビリティ強化**
+   - ARIA属性の適切な設定（role="tablist", aria-selected, aria-controls等）
+   - キーボードナビゲーション対応（矢印キー、Home/End）
+   - スクリーンリーダー対応（sr-only クラス）
+   - フォーカス状態の視覚的表示
+
+5. **CSSデザイン**
+   - 既存のデザインシステムに統一（`app/assets/stylesheets/application.css`）
+   - タブホバー・アクティブ状態のアニメーション
+   - 「新しい孫を追加」ボタンの点線スタイル
+
+**解決した課題:**
+- 複数の孫がいる場合の縦スクロール問題を解決
+- 情報の整理・管理が効率的になり、ユーザビリティが大幅向上
+- どの情報がどの孫のものか一目で識別可能
+
+**技術実装の詳細:**
+- HTML: セマンティックなタブリスト構造とARIA属性
+- CSS: CSS変数とGrid Layout活用のレスポンシブデザイン
+- JavaScript: Stimulus.jsでのイベント管理とキーボードサポート
+- 既存のコントローラー構造は変更せず、フロントエンドのみで解決
+
+**以前の作業:**
 DependabotのPRマージ完了（debug gem 1.10.0 → 1.11.0）（2025年6月24日）
 
 Dependabotから指摘があった「Bump debug from 1.10.0 to 1.11.0」のPRをマージした後の確認作業を実施しました。

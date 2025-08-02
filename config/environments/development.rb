@@ -71,6 +71,6 @@ Rails.application.configure do
   # config.generators.apply_rubocop_autocorrect_after_generate!
 
   # Asset pipeline configuration
-  config.assets.debug = true
+  config.assets.debug = true  # development環境ではtrueに戻す
   config.assets.quiet = false
 end
