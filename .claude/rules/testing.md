@@ -2,151 +2,58 @@
 
 ## テストフレームワーク
 
-- **Minitest**（Rails デフォルト）を使用。RSpec は使わない
-- **Capybara + Selenium** (headless Chrome) でシステムテスト
-- **fixtures** でテストデータを管理（FactoryBot は未導入）
-- 並列実行有効: `parallelize(workers: :number_of_processors)`
+- **Vitest** を使用（`test/*.test.ts`）。Node上で純粋ロジックだけをテストする
+- D1・R2・Honoルートの結合確認は **`docker compose up`（wrangler dev）+ curl/ブラウザ**で行う
+  （D1/R2はローカルにエミュレートされるので、Cloudflareアカウント不要）
 
 ## テスト実行コマンド
 
 ```bash
-# Docker 環境
-docker compose exec web bin/rails test              # ユニット/コントローラー
-docker compose exec web bin/rails test:system        # システムテスト
-docker compose exec web bin/rails test test:system   # 全テスト
-
-# 単体ファイル実行
-docker compose exec web bin/rails test test/models/user_test.rb
-docker compose exec web bin/rails test test/controllers/sessions_controller_test.rb
+docker compose run --rm dev npm test           # 全テスト
+docker compose run --rm dev npm run typecheck  # 型チェック（テストとセットで回す）
+docker compose run --rm dev npx vitest run test/auth.test.ts  # 単体ファイル
 ```
 
-## テストファイルの配置
+## 何をVitestでテストするか
 
-```
-test/
-├── models/           # モデルテスト (ActiveSupport::TestCase)
-├── controllers/      # コントローラーテスト (ActionDispatch::IntegrationTest)
-├── system/           # システムテスト (ApplicationSystemTestCase)
-├── mailers/          # メーラーテスト (ActionMailer::TestCase)
-├── helpers/          # ヘルパーテスト
-├── integration/      # 統合テスト
-└── fixtures/         # YAML フィクスチャ
-```
+DBに触らない純粋関数を対象にする。ルートハンドラ自体はテストしない。
 
-## テストの書き方
+- `src/lib/auth.ts`: hashPassword/verifyPassword、validateNewUser、メール正規化
+- `src/lib/db.ts` の純粋部分: invitationExpired 等（クエリ関数は対象外）
+- `src/routes/*.tsx` からエクスポートしたバリデーション関数:
+  parseWishlistForm、validatePhotoFile 等
+- `src/lib/gmail.ts` / `mail-templates.ts`: MIME組み立て・文面
 
-### モデルテスト
+テストしやすくするため、**バリデーションはハンドラに埋め込まず関数に切り出して
+エクスポートする**（parseWishlistForm 方式）。
 
-```ruby
-require "test_helper"
+## 結合確認（wrangler dev + curl）
 
-class UserTest < ActiveSupport::TestCase
-  # フィクスチャの参照
-  setup do
-    @user = users(:parent_user)
-  end
+POSTにはCSRF対策で `Origin: http://localhost:8787` ヘッダが必須。
+セッションは `-c jar` / `-b jar` でCookieを持ち回す。
 
-  # バリデーションテスト
-  test "should not save user without name" do
-    @user.name = nil
-    assert_not @user.valid?
-  end
-
-  # 関連テスト
-  test "parent should have children" do
-    assert_respond_to @user, :children
-  end
-
-  # メソッドテスト
-  test "should return correct user type" do
-    assert @user.parent?
-  end
-end
+```bash
+curl -s -c parent.jar -H "Origin: http://localhost:8787" \
+  -d "name=太郎&email=p@example.com&password=password&password_confirmation=password" \
+  http://localhost:8787/signup
+curl -s -b parent.jar http://localhost:8787/parent/dashboard
 ```
 
-### コントローラーテスト
+## 必ず確認すべき項目
 
-```ruby
-require "test_helper"
+### 認証・認可（変更のたびに）
 
-class ParentsControllerTest < ActionDispatch::IntegrationTest
-  setup do
-    @parent = users(:parent_user)
-    # ログインが必要なコントローラーではセッションをセットアップ
-    post login_url, params: { session: { email: @parent.email, password: "password" } }
-  end
-
-  test "should get dashboard" do
-    get parent_dashboard_url
-    assert_response :success
-  end
-
-  test "should redirect when not logged in" do
-    delete logout_url
-    get parent_dashboard_url
-    assert_redirected_to login_url
-  end
-end
-```
-
-### システムテスト
-
-```ruby
-require "application_system_test_case"
-
-class LoginTest < ApplicationSystemTestCase
-  test "user can log in and see dashboard" do
-    visit login_url
-    fill_in "メールアドレス", with: "parent@example.com"
-    fill_in "パスワード", with: "password"
-    click_on "ログイン"
-    assert_text "ダッシュボード"
-  end
-end
-```
-
-## フィクスチャの書き方
-
-`test/fixtures/users.yml` の例:
-
-```yaml
-parent_user:
-  name: "テスト太郎"
-  email: "parent@example.com"
-  password_digest: <%= BCrypt::Password.create("password") %>
-  user_type: parent
-
-grandparent_user:
-  name: "テスト義男"
-  email: "grandparent@example.com"
-  password_digest: <%= BCrypt::Password.create("password") %>
-  user_type: grandparent
-
-admin_user:
-  name: "管理者"
-  email: "admin@example.com"
-  password_digest: <%= BCrypt::Password.create("password") %>
-  user_type: admin
-```
-
-## テストで必ず確認すべき項目
-
-### 認証・認可
-
-- 未ログイン時にログインページへリダイレクトされること
-- 権限のないロールでアクセスした場合に拒否されること（親が管理者画面にアクセスできない等）
-- 他ユーザーのリソースにアクセスできないこと（他の親の子ども情報にアクセスできない等）
+- 未ログイン時に `/login` へリダイレクトされること
+- 権限のないロールでアクセスした場合に拒否されること（祖父母が親画面等）
+- **他ユーザーのリソースにアクセスできないこと**（別の親の子ども、招待されていない
+  祖父母からの写真URL直叩き→404）
 
 ### データ操作
 
-- CRUD 操作が正しく動作すること
-- `assert_difference("Model.count")` でレコード数の増減を検証
-- バリデーションエラー時に適切なレスポンスが返ること
+- CRUDの正常系 + バリデーションエラー時に422でフォーム再表示されること
+- 上限系: ほしいもの10件/子ども、写真10MB・JPEG/PNGのみ
+- 招待: 使用済み/期限切れトークンの拒否
 
-### 現在のテスト状況
+## 過去の一気通貫チェックリスト
 
-ほとんどのテストファイルはスケルトン状態（空）。以下の優先度で実装する:
-
-1. **モデルテスト**: バリデーション・関連・メソッドの検証
-2. **コントローラーテスト**: 認証・認可・CRUD の検証
-3. **システムテスト**: 主要ユーザーフロー（ログイン、写真アップロード、購入）の検証
+NOTES.md の「検証記録」参照。新機能追加時も同じ粒度（正常系＋拒否系）で確認する。

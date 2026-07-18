@@ -2,120 +2,74 @@
 
 ## 認証
 
-- **bcrypt** (`has_secure_password`) によるパスワードハッシュ化
-- セッションベース認証: `session[:user_id]` でログイン状態を管理
-- パスワードリセット: トークンベース、2時間で有効期限切れ
-- パスワード要件: 最低6文字（`validates :password, length: { minimum: 6 }`）
+- パスワード: **PBKDF2-SHA256 100,000回**（`src/lib/auth.ts`）。bcryptはWorkersの
+  CPU制限で使えない。形式 `pbkdf2-sha256$<iter>$<salt>$<hash>`
+- セッション: ランダム256bitトークンを `sessions.token` に保存して照合。
+  Cookieは `httpOnly / secure / sameSite=Lax`
+- パスワードリセット: 256bitトークンをメールにのみ含め、DBには **SHA-256ダイジェスト**
+  （`reset_digest`）を保存。有効期限2時間。使用後は必ずNULLクリア
+- パスワード要件: 最低6文字（`PASSWORD_MIN_LENGTH`）
 
 ### コード変更時の注意
 
-- パスワードは**絶対に平文で保存しない**（`has_secure_password` を維持）
-- セッション情報に機密データを格納しない（`user_id` のみ）
-- パスワードリセットトークンは `SecureRandom.urlsafe_base64` で生成し、BCrypt でダイジェスト化して保存
+- パスワード・トークンの生値をDBやログに保存しない
+- 認証比較は timing-safe（`auth.ts` の実装を使う。ユーザー不在時のダミー検証も維持）
+- 乱数は必ず `crypto.getRandomValues`（`generateToken()`）
 
 ## 認可
 
 ### ロールベースアクセス制御
 
-`ApplicationController` の before_action フィルターで制御:
+`app.tsx` のルート合成順が防御の土台（公開ルート → ログイン必須ミドルウェア → 各ルート群）。
 
-```ruby
-before_action :require_login        # 全アクション共通
-before_action :require_parent       # 親専用アクション
-before_action :require_grandparent  # 祖父母専用アクション
-before_action :require_admin        # 管理者専用アクション
-```
+- **重要**: Honoのサブルーター `use("*")` は合成後の全パスに効く。ロールガードは
+  `use("/children/*", requireParent())` のようにパスを限定して掛ける
+- ロールガード: `requireParent()`（routes/children.tsx）、祖父母は
+  `use("/grandparent/*", ...)`（routes/grandparents.tsx）
 
 ### リソースの所有権チェック
 
-各コントローラーで `correct_parent` / `correct_user` 等のフィルターを実装し、他ユーザーのリソースへのアクセスを防ぐ:
+- 親: `loadOwnChild(c, childId)` — 自分の子どもでなければ null → `deniedRedirect(c)`
+- 祖父母: `grandparentHasChild(db, grandparentId, childId)` — accepted な招待の有無
+- 写真配信 `/photos/:id/file` は認可拒否を **404** で返す（存在の有無も漏らさない）
 
-```ruby
-# 例: 自分の子どもの情報のみアクセス可能
-def correct_parent
-  unless current_user == @child.user
-    flash[:danger] = "アクセス権限がありません"
-    redirect_to parent_dashboard_path
-  end
-end
-```
+### 新しいルート追加時のチェックリスト
 
-### 新しいコントローラー追加時のチェックリスト
-
-- [ ] `before_action :require_login` が適用されているか（または明示的に skip しているか）
-- [ ] 適切なロールフィルター (`require_parent` 等) を設定しているか
-- [ ] リソース所有権チェック (`correct_parent` 等) を実装しているか
-- [ ] `skip_before_action` は必要最小限か（招待受諾、パスワードリセット等のみ）
+- [ ] 公開ルートにする明確な理由があるか（招待受諾・パスワードリセットのみ）
+- [ ] ロールガードのパスパターンが他ルート群を巻き込んでいないか
+- [ ] 所有権チェック（loadOwnChild / grandparentHasChild）を通しているか
+- [ ] 更新系はPOSTか（GETで状態変更しない）
 
 ## 入力バリデーション
 
-### 既存のバリデーションパターン
+- ユーザー入力は必ず検証する。バリデーションは関数に切り出してエクスポート
+  （`validateNewUser` / `parseWishlistForm` / `validatePhotoFile` 方式）
+- ファイルアップロード: content-type（JPEG/PNGのみ）とサイズ（10MB以下）をサーバー側で検証
+  （client.js の縮小はあくまで補助）
+- URL入力は `http(s)://` で始まることを検証（javascript: スキーム対策）
+- SQLは必ず prepared statement の `.bind()`（文字列連結禁止）。`src/lib/db.ts` に集約
 
-```ruby
-# User
-validates :name, presence: true, length: { maximum: 50 }
-validates :email, presence: true, length: { maximum: 255 },
-                  format: { with: /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i },
-                  uniqueness: { case_sensitive: false }
-validates :user_type, inclusion: { in: %w(parent grandparent admin) }
+## CSRF対策
 
-# Child - 写真バリデーション
-# サイズ: 10MB以下、形式: JPEG/PNG のみ
+- `hono/csrf` ミドルウェア（Originヘッダ検証）を全ルートに適用（`app.tsx`）
+- フォームは同一オリジンからの通常のPOSTのみ。curlで叩くときは
+  `Origin: http://localhost:8787` を付ける
 
-# Invitation
-validates :token, presence: true, uniqueness: true
-validates :status, inclusion: { in: %w(pending accepted expired) }
+## トークン設計
 
-# WishlistItem
-# 子ども1人あたり最大10件
-```
+| 用途 | 生成 | 保存 | 期限 |
+|------|------|------|------|
+| セッション | 256bit | 生値（token列） | Cookie 1年 |
+| パスワードリセット | 256bit | SHA-256ダイジェスト | 2時間 |
+| 招待 | 128bit | 生値（URL共有が前提のため） | 7日 + pending/accepted/expired 管理 |
 
-### 新機能追加時の原則
+## レート制限
 
-- ユーザー入力は**必ずバリデーション**する（presence, format, length, inclusion）
-- ファイルアップロードは**サイズと形式を制限**する
-- `params.require(:model).permit(:field1, :field2)` で Strong Parameters を使用
-- URL パラメータやクエリ文字列も信頼しない
+- ログインとパスワードリセット申請: IP単位 10回/3分（`src/lib/rate-limit.ts`、
+  D1 の `login_attempts`）
 
-## CSRF 対策
+## 秘密情報
 
-- Rails デフォルトの CSRF 保護を使用
-- レイアウトに `csrf_meta_tags` を含める
-- フォームは Rails のフォームヘルパー (`form_with`) を使用（自動でトークン付与）
-- DELETE 等は `button_to` + `data: { "turbo-method": :delete }` で実装（GET リンクにしない）
-
-## ログ・情報漏洩防止
-
-`config/initializers/filter_parameter_logging.rb` でフィルタ済み:
-
-```ruby
-:passw, :email, :secret, :token, :_key, :crypt, :salt, :certificate, :otp, :ssn, :cvv, :cvc
-```
-
-### 注意
-
-- ログに個人情報やトークンを出力しない
-- エラーメッセージでシステム内部情報を露出しない
-- 本番環境では `config.consider_all_requests_local = false`
-
-## 招待トークン
-
-- `SecureRandom.urlsafe_base64(16)` で生成
-- DB のユニーク制約で重複防止
-- 有効期限: 7日間
-- ステータス管理: pending → accepted / expired
-- 招待受諾は `skip_before_action :require_login` で未ログインからアクセス可能
-
-## 本番環境
-
-- `force_ssl = true`（HTTPS 強制）
-- `assume_ssl = true`（ロードバランサー背後を想定）
-- エラー詳細は非表示
-- `active_record.attributes_for_inspect = [:id]`（ログにIDのみ表示）
-
-## 既知の改善検討事項
-
-- CSP（Content Security Policy）が無効化されている（`content_security_policy.rb` がコメントアウト）
-- ログイン試行のレート制限が未実装
-- アカウントロックアウト機能が未実装
-- 招待トークンがDBに平文保存されている（パスワードリセットトークンはハッシュ化済み）
+- Gmail認証情報は `wrangler secret put`（本番）/ `.dev.vars`（ローカル、gitignore済み）
+- `wrangler.jsonc` にsecretを書かない（varsは公開情報のみ）
+- ログに個人情報・トークンを出力しない

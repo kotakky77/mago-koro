@@ -11,9 +11,7 @@
     {
       "binding": "DB",
       "database_name": "mago-koro",
-      // ローカル開発ではこのIDは使われない。本番デプロイ前に
-      // `wrangler d1 create mago-koro` で発行されたIDに差し替えること。
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "6342f5a3-aa07-4ad0-9fcf-493643ba7be6",
       "migrations_dir": "migrations"
     }
   ],

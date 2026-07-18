@@ -41,3 +41,20 @@
 /node_modules
 /.wrangler
 /.dev.vars
+
+# 旧Rails版アーカイブ内の生成物・秘密鍵（移動前のルート指定ルールを引き継ぐ）
+/archive/rails/.bundle
+/archive/rails/log/*
+!/archive/rails/log/.keep
+/archive/rails/tmp/*
+!/archive/rails/tmp/.keep
+!/archive/rails/tmp/pids/
+/archive/rails/tmp/pids/*
+!/archive/rails/tmp/pids/.keep
+!/archive/rails/tmp/storage/
+/archive/rails/tmp/storage/*
+!/archive/rails/tmp/storage/.keep
+/archive/rails/storage/*
+!/archive/rails/storage/.keep
+/archive/rails/public/assets
+/archive/rails/config/master.key
