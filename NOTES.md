@@ -119,21 +119,14 @@ wrangler dev / test / deploy を全て実行する。
 - デプロイはホストのwrangler認証をコンテナにマウントして実行:
   `docker compose run --rm -v "$HOME/Library/Preferences/.wrangler:/root/.config/.wrangler" dev npx wrangler deploy`
 
-### 残タスク: Gmail シークレット登録（パスワードリセットメール用）
+### Gmail シークレット登録（2026-07-18 完了）
 
-本物の認証情報が手元のファイルには無い（上記ハマりどころ7参照）ため未登録。
-**現状、パスワードリセットのメール送信だけが本番で動かない**（他は全機能動作）。
-
-手順: Google Cloud Console の `birthday-reminder` プロジェクトから取得した実値を
-`.dev.vars` に貼り付け（ローカル送信テスト用）、本番へは:
-
-```bash
-docker compose run --rm -v "$HOME/Library/Preferences/.wrangler:/root/.config/.wrangler" \
-  dev sh -c 'npx wrangler secret put GMAIL_CLIENT_ID'   # 以下3点を対話で投入
-# GMAIL_CLIENT_SECRET / GMAIL_REFRESH_TOKEN も同様
-```
-
-登録後、本番の `/password_resets/new` から自分宛てに送って実受信を確認する。
+- birthday-reminder と同じ Google Cloud プロジェクトの認証情報3点
+  （GMAIL_CLIENT_ID / GMAIL_CLIENT_SECRET / GMAIL_REFRESH_TOKEN）を
+  `wrangler secret put` で登録済み。`.dev.vars` にも実値あり（ローカル送信テスト可）
+- 本番からパスワードリセットメールの実送信を確認（302 = Gmail API 送信成功。
+  失敗時は500になる実装）。確認後のテストユーザーは削除済み
+- **これで全機能が本番で動作。移行は完了**
 
 ### 本番の運用メモ
 
