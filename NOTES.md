@@ -107,17 +107,40 @@ wrangler dev / test / deploy を全て実行する。
   （edit表示 → パスワード変更 → 新パスワードでログイン → トークン再利用拒否）は
   ダイジェストをローカルD1に直接仕込んで検証済み
 
-## 本番セットアップ記録
+## 本番セットアップ記録（2026-07-18 実施）
 
-- 2026-07-18: D1 作成（`mago-koro`, id: 6342f5a3-aa07-4ad0-9fcf-493643ba7be6, APAC）、
+**本番URL: <https://mago-koro.kotakky.workers.dev>**
+
+- D1 作成（`mago-koro`, id: 6342f5a3-aa07-4ad0-9fcf-493643ba7be6, APAC）+
   リモートマイグレーション適用済み
-- **R2 はアカウント未有効化のため保留** → Cloudflare ダッシュボードで R2 を有効化
-  （支払い方法の登録が必要。無料枠内なら請求ゼロ）後に:
-  1. `wrangler r2 bucket create mago-koro-photos`
-  2. `wrangler deploy`
-  3. Gmail シークレット3点を `wrangler secret put`（birthday-reminder と同じ値。
-     手元の `birthday-reminder/.dev.vars` にある）
-  4. 本番URLで主要フロー再確認（特にパスワードリセットメールの実受信）
+- R2 有効化（ダッシュボードで支払い方法登録）→ `mago-koro-photos` バケット作成
+- `wrangler deploy` 完了。本番でサインアップ → 子ども登録 → 写真アップロード
+  （実R2）→ 配信 → 削除まで確認し、テストデータは全削除済み（users/children/photos = 0件）
+- デプロイはホストのwrangler認証をコンテナにマウントして実行:
+  `docker compose run --rm -v "$HOME/Library/Preferences/.wrangler:/root/.config/.wrangler" dev npx wrangler deploy`
+
+### 残タスク: Gmail シークレット登録（パスワードリセットメール用）
+
+本物の認証情報が手元のファイルには無い（上記ハマりどころ7参照）ため未登録。
+**現状、パスワードリセットのメール送信だけが本番で動かない**（他は全機能動作）。
+
+手順: Google Cloud Console の `birthday-reminder` プロジェクトから取得した実値を
+`.dev.vars` に貼り付け（ローカル送信テスト用）、本番へは:
+
+```bash
+docker compose run --rm -v "$HOME/Library/Preferences/.wrangler:/root/.config/.wrangler" \
+  dev sh -c 'npx wrangler secret put GMAIL_CLIENT_ID'   # 以下3点を対話で投入
+# GMAIL_CLIENT_SECRET / GMAIL_REFRESH_TOKEN も同様
+```
+
+登録後、本番の `/password_resets/new` から自分宛てに送って実受信を確認する。
+
+### 本番の運用メモ
+
+- ログ確認: `npx wrangler tail mago-koro`（observability有効）
+- 本番DBを直接見る: `npx wrangler d1 execute mago-koro --remote --command "SELECT ..."`
+- 費用: Workers/D1/R2 いずれも無料枠内の想定。R2 の使用量はダッシュボードの
+  R2 概要ページで確認できる
 
 ## 後始末
 
