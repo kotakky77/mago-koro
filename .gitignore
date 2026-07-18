@@ -36,3 +36,8 @@
 # Ignore macOS system files
 .DS_Store
 **/.DS_Store
+
+# Cloudflare Workers 開発環境
+/node_modules
+/.wrangler
+/.dev.vars
