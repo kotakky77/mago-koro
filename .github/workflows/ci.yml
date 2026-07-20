@@ -1,0 +1,29 @@
+# PR と main への push で型チェックとテストを回す。
+# ローカルは Docker（compose.yml）だが、CI はランナーに直接 Node を入れる。
+# Dockerfile.dev の ca-certificates 対応は wrangler dev（外部TLS接続）用で CI には不要。
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # package.json の engines（>=22）と Dockerfile.dev の node:22 に合わせる
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - name: 型チェック
+        run: npm run typecheck
+
+      - name: テスト
+        run: npm test
