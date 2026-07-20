@@ -10,6 +10,11 @@ updates:
       time: "09:00"
       timezone: Asia/Tokyo
     open-pull-requests-limit: 5
+    # 実行環境は node:22（Dockerfile.dev / package.json の engines >=22）。
+    # 型だけ先行して上げると Node 22 にない API が typecheck を通ってしまうので major は無視する
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     # マイナー・パッチはまとめて1本のPRにしてノイズを減らす
     groups:
       npm-minor-patch:
@@ -17,7 +22,7 @@ updates:
           - minor
           - patch
 
-  # ルートに .github/workflows/ を追加したら効く（現状は対象なし）
+  # .github/workflows/ci.yml の actions バージョンを監視する
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
