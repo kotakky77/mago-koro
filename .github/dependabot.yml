@@ -1,12 +1,25 @@
 version: 2
 updates:
-- package-ecosystem: bundler
-  directory: "/"
-  schedule:
-    interval: daily
-  open-pull-requests-limit: 10
-- package-ecosystem: github-actions
-  directory: "/"
-  schedule:
-    interval: daily
-  open-pull-requests-limit: 10
+  # Cloudflare Workers 版の依存（hono / wrangler / vitest 等）
+  # Rails 版は archive/rails/ にアーカイブ済みのため bundler は監視しない
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: Asia/Tokyo
+    open-pull-requests-limit: 5
+    # マイナー・パッチはまとめて1本のPRにしてノイズを減らす
+    groups:
+      npm-minor-patch:
+        update-types:
+          - minor
+          - patch
+
+  # ルートに .github/workflows/ を追加したら効く（現状は対象なし）
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 3

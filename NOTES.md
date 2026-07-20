@@ -184,3 +184,12 @@ docker compose run --rm dev npx wrangler d1 execute mago-koro --local --command 
   住所なし(422) / 価格0(422) / 親→/admin/* / 親→/grandparent/souvenirs /
   祖父母→/admin/* / 未ログインの商品画像 → すべて拒否を確認
 - ローカルD1に検証用データ（admin@example.com / adminpass 等）が残っている
+
+### フェーズ2の本番反映（2026-07-20 実施）
+
+- mainマージだけでは本番反映されない（CI/CDなし。デプロイは手動 `wrangler deploy`）
+- リモートD1に 0002_souvenirs.sql 適用 → `wrangler deploy`（Version 884b60bd）
+- 本番admin投入: `geiruzusi+admin@gmail.com`（Gmailの+付きエイリアス。
+  email一意制約のため親アカウントと同一アドレスは不可、user_typeは単一値のため
+  親兼任も不可 → 別アカウントとした）。ログイン・ダッシュボード表示確認済み
+- 記念品カタログは未登録のため、admin で `/admin/souvenirs/new` から登録が必要
