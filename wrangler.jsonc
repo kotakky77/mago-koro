@@ -1,0 +1,32 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mago-koro",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-01",
+  // CSS/JS/SVGは文字列としてimportできるようにする（src/app.css, src/client.js, src/assets/）
+  "rules": [
+    { "type": "Text", "globs": ["**/*.css", "**/*.svg", "**/client.js"], "fallthrough": true }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "mago-koro",
+      "database_id": "6342f5a3-aa07-4ad0-9fcf-493643ba7be6",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "PHOTOS",
+      // 本番デプロイ前に `wrangler r2 bucket create mago-koro-photos` を実行すること。
+      "bucket_name": "mago-koro-photos"
+    }
+  ],
+  "vars": {
+    // パスワードリセットメールの送信元Gmailアドレス
+    "GMAIL_FROM": "geiruzusi@gmail.com"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
