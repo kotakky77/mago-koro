@@ -402,3 +402,273 @@ export async function findNotification(
     .bind(id)
     .first<{ id: number; user_id: number }>();
 }
+
+// ---- souvenirs（記念品カタログ）----
+
+export type SouvenirRow = {
+  id: number;
+  name: string;
+  description: string | null;
+  price: number; // 円
+  active: number;
+  image_r2_key: string | null;
+  image_content_type: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type SouvenirInput = {
+  name: string;
+  description: string | null;
+  price: number;
+};
+
+export async function listSouvenirs(
+  db: D1Database,
+  filter: "all" | "active" | "inactive",
+): Promise<SouvenirRow[]> {
+  const where = filter === "active" ? "WHERE active = 1" : filter === "inactive" ? "WHERE active = 0" : "";
+  const { results } = await db
+    .prepare(`SELECT * FROM souvenirs ${where} ORDER BY created_at DESC, id DESC`)
+    .all<SouvenirRow>();
+  return results;
+}
+
+export async function findSouvenir(db: D1Database, id: number): Promise<SouvenirRow | null> {
+  return db.prepare("SELECT * FROM souvenirs WHERE id = ?").bind(id).first<SouvenirRow>();
+}
+
+export async function createSouvenir(
+  db: D1Database,
+  input: SouvenirInput,
+  image: { r2_key: string; content_type: string } | null,
+): Promise<void> {
+  await db
+    .prepare(
+      "INSERT INTO souvenirs (name, description, price, image_r2_key, image_content_type) VALUES (?, ?, ?, ?, ?)",
+    )
+    .bind(input.name, input.description, input.price, image?.r2_key ?? null, image?.content_type ?? null)
+    .run();
+}
+
+export async function updateSouvenir(
+  db: D1Database,
+  id: number,
+  input: SouvenirInput,
+): Promise<void> {
+  await db
+    .prepare("UPDATE souvenirs SET name = ?, description = ?, price = ?, updated_at = ? WHERE id = ?")
+    .bind(input.name, input.description, input.price, nowIso(), id)
+    .run();
+}
+
+export async function updateSouvenirImage(
+  db: D1Database,
+  id: number,
+  image: { r2_key: string; content_type: string },
+): Promise<void> {
+  await db
+    .prepare("UPDATE souvenirs SET image_r2_key = ?, image_content_type = ?, updated_at = ? WHERE id = ?")
+    .bind(image.r2_key, image.content_type, nowIso(), id)
+    .run();
+}
+
+export async function setSouvenirActive(
+  db: D1Database,
+  id: number,
+  active: boolean,
+): Promise<void> {
+  await db
+    .prepare("UPDATE souvenirs SET active = ?, updated_at = ? WHERE id = ?")
+    .bind(active ? 1 : 0, nowIso(), id)
+    .run();
+}
+
+export async function deleteSouvenir(db: D1Database, id: number): Promise<void> {
+  await db.prepare("DELETE FROM souvenirs WHERE id = ?").bind(id).run();
+}
+
+export async function countOrdersForSouvenir(db: D1Database, souvenirId: number): Promise<number> {
+  const row = await db
+    .prepare("SELECT COUNT(*) AS c FROM souvenir_orders WHERE souvenir_id = ?")
+    .bind(souvenirId)
+    .first<{ c: number }>();
+  return row?.c ?? 0;
+}
+
+// ---- souvenir_orders（記念品の注文）----
+
+export const ORDER_STATUSES = ["pending", "processing", "shipped", "delivered", "cancelled"] as const;
+export type OrderStatus = (typeof ORDER_STATUSES)[number];
+
+// Rails版の process!/ship!/deliver!/cancel! は無制限だったが、逆行や
+// 完了後の変更は事故のもとなので一方向の遷移だけ許可する
+const ORDER_TRANSITIONS: Record<OrderStatus, readonly OrderStatus[]> = {
+  pending: ["processing", "cancelled"],
+  processing: ["shipped", "cancelled"],
+  shipped: ["delivered"],
+  delivered: [],
+  cancelled: [],
+};
+
+export function nextOrderStatuses(from: string): readonly OrderStatus[] {
+  return ORDER_TRANSITIONS[from as OrderStatus] ?? [];
+}
+
+export function canTransitionOrderStatus(from: string, to: string): boolean {
+  return (nextOrderStatuses(from) as readonly string[]).includes(to);
+}
+
+export type SouvenirOrderRow = {
+  id: number;
+  user_id: number;
+  souvenir_id: number;
+  child_id: number;
+  status: OrderStatus;
+  shipping_address: string;
+  recipient_name: string;
+  contact_phone: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+// 一覧表示用（JOIN で付けるフィールド込み）
+export type SouvenirOrderListRow = SouvenirOrderRow & {
+  souvenir_name: string;
+  souvenir_price: number;
+  child_name: string;
+  orderer_name: string;
+  orderer_email: string;
+};
+
+export type SouvenirOrderInput = {
+  child_id: number;
+  recipient_name: string;
+  shipping_address: string;
+  contact_phone: string | null;
+};
+
+export async function createSouvenirOrder(
+  db: D1Database,
+  grandparentId: number,
+  souvenirId: number,
+  input: SouvenirOrderInput,
+): Promise<void> {
+  await db
+    .prepare(
+      `INSERT INTO souvenir_orders (user_id, souvenir_id, child_id, shipping_address, recipient_name, contact_phone)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+    )
+    .bind(
+      grandparentId,
+      souvenirId,
+      input.child_id,
+      input.shipping_address,
+      input.recipient_name,
+      input.contact_phone,
+    )
+    .run();
+}
+
+const ORDER_LIST_SELECT = `
+  SELECT o.*, s.name AS souvenir_name, s.price AS souvenir_price,
+         c.name AS child_name, u.name AS orderer_name, u.email AS orderer_email
+  FROM souvenir_orders o
+  JOIN souvenirs s ON s.id = o.souvenir_id
+  JOIN children c ON c.id = o.child_id
+  JOIN users u ON u.id = o.user_id`;
+
+export async function listOrdersForGrandparent(
+  db: D1Database,
+  grandparentId: number,
+): Promise<SouvenirOrderListRow[]> {
+  const { results } = await db
+    .prepare(`${ORDER_LIST_SELECT} WHERE o.user_id = ? ORDER BY o.created_at DESC, o.id DESC`)
+    .bind(grandparentId)
+    .all<SouvenirOrderListRow>();
+  return results;
+}
+
+export async function listAllOrders(
+  db: D1Database,
+  status: OrderStatus | null,
+): Promise<SouvenirOrderListRow[]> {
+  const stmt = status
+    ? db.prepare(`${ORDER_LIST_SELECT} WHERE o.status = ? ORDER BY o.created_at DESC, o.id DESC`).bind(status)
+    : db.prepare(`${ORDER_LIST_SELECT} ORDER BY o.created_at DESC, o.id DESC`);
+  const { results } = await stmt.all<SouvenirOrderListRow>();
+  return results;
+}
+
+export async function findOrder(db: D1Database, id: number): Promise<SouvenirOrderRow | null> {
+  return db.prepare("SELECT * FROM souvenir_orders WHERE id = ?").bind(id).first<SouvenirOrderRow>();
+}
+
+export async function updateOrderStatus(
+  db: D1Database,
+  id: number,
+  status: OrderStatus,
+): Promise<void> {
+  await db
+    .prepare("UPDATE souvenir_orders SET status = ?, updated_at = ? WHERE id = ?")
+    .bind(status, nowIso(), id)
+    .run();
+}
+
+// ---- 管理者向け ----
+
+export type UserListRow = {
+  id: number;
+  name: string;
+  email: string;
+  user_type: string;
+  created_at: string;
+};
+
+export async function listUsers(
+  db: D1Database,
+  userType: "parent" | "grandparent" | "admin" | null,
+): Promise<UserListRow[]> {
+  const stmt = userType
+    ? db
+        .prepare(
+          "SELECT id, name, email, user_type, created_at FROM users WHERE user_type = ? ORDER BY created_at DESC, id DESC",
+        )
+        .bind(userType)
+    : db.prepare("SELECT id, name, email, user_type, created_at FROM users ORDER BY created_at DESC, id DESC");
+  const { results } = await stmt.all<UserListRow>();
+  return results;
+}
+
+export type AdminDashboardCounts = {
+  parents: number;
+  grandparents: number;
+  children: number;
+  orders: number;
+  pendingOrders: number;
+};
+
+export async function adminDashboardCounts(db: D1Database): Promise<AdminDashboardCounts> {
+  const results = await db.batch([
+    db.prepare("SELECT user_type, COUNT(*) AS c FROM users GROUP BY user_type"),
+    db.prepare("SELECT COUNT(*) AS c FROM children"),
+    db.prepare(
+      "SELECT COUNT(*) AS c, COALESCE(SUM(status = 'pending'), 0) AS p FROM souvenir_orders",
+    ),
+  ]);
+  const byType = new Map(
+    ((results[0]?.results ?? []) as { user_type: string; c: number }[]).map((r) => [
+      r.user_type,
+      r.c,
+    ]),
+  );
+  const childRow = (results[1]?.results[0] ?? { c: 0 }) as { c: number };
+  const orderRow = (results[2]?.results[0] ?? { c: 0, p: 0 }) as { c: number; p: number };
+  return {
+    parents: byType.get("parent") ?? 0,
+    grandparents: byType.get("grandparent") ?? 0,
+    children: childRow.c,
+    orders: orderRow.c,
+    pendingOrders: orderRow.p,
+  };
+}

@@ -141,3 +141,46 @@ wrangler dev / test / deploy を全て実行する。
   本番稼働していなかったので停止作業は無し
 - 旧 docker-compose.yml（web+MySQL）もアーカイブ内。ローカルの MySQL ボリュームが
   不要になったら `docker compose -p mago-koro down -v` 等で掃除してよい
+
+## フェーズ2: 記念品（おみやげ）注文 + 管理者画面（2026-07-20 実装）
+
+`archive/rails/` の souvenirs / souvenir_orders / admin 系を移植した。
+仕様の出どころ: `docs/product-spec.md` 4.4節、`docs/screen-design.md` 3〜4節、
+`docs/screen-design-mock/`（grandparent-souvenirs / admin-*.html）。
+
+### Rails版からの変更点
+
+- `price` は decimal → INTEGER（円）
+- `image_path`（実体管理が曖昧な文字列）→ `image_r2_key`（実体は R2 の
+  `souvenirs/<uuid>`。写真と同じバケットを共用）
+- 注文ステータスは一方向の遷移のみ許可（pending → processing → shipped →
+  delivered、cancel は pending/processing からのみ）。Rails版は無制限だった
+- 記念品の削除は注文0件のときのみ（履歴保護。通常は非掲載 `active=0` で運用）
+- 管理者のユーザー管理は Rails 版同様に閲覧のみ（削除はカスケード + R2 掃除が
+  絡むため、必要になったら別途）
+- 商品画像の配信 `/souvenirs/:id/image` はログインのみ要求（カタログは全ロール
+  共通の公開情報なので所有権チェックなし）
+
+### 管理者アカウントの投入手順（サインアップ経路は無い）
+
+```bash
+# 1. パスワードダイジェストを生成
+docker compose run --rm dev node scripts/hash-password.mjs '<パスワード>'
+
+# 2. SQL で直接投入（ローカル。本番は --local を --remote に）
+docker compose run --rm dev npx wrangler d1 execute mago-koro --local --command \
+  "INSERT INTO users (name, email, password_digest, user_type) VALUES ('管理者', 'admin@example.com', '<1の出力>', 'admin')"
+```
+
+### 検証記録（2026-07-20、ローカル wrangler dev）
+
+- typecheck / vitest 40件（新規13件含む）全パス
+- curl 一気通貫: admin投入（スクリプト+SQL）→ adminログイン → 記念品登録
+  （画像付き・なし）→ 非掲載切替 → 祖父母カタログ（activeのみ表示）→ 注文
+  （孫選択・配送先）→ 注文履歴 → admin注文一覧 → pending→processing→shipped→
+  delivered → 画像差し替え（R2キー更新）まで成功
+- 拒否系: 不正遷移（pending→delivered / pending→shipped / delivered→cancelled）/
+  注文のある記念品の削除 / 非掲載品の注文 / 招待外の child_id 注文(422) /
+  住所なし(422) / 価格0(422) / 親→/admin/* / 親→/grandparent/souvenirs /
+  祖父母→/admin/* / 未ログインの商品画像 → すべて拒否を確認
+- ローカルD1に検証用データ（admin@example.com / adminpass 等）が残っている

@@ -7,8 +7,10 @@ import faviconSvg from "./assets/favicon.svg";
 import type { AppEnv } from "./app-env";
 import { RETURN_TO_COOKIE, SESSION_COOKIE } from "./app-env";
 import { findSessionUser } from "./lib/auth";
+import { adminRoutes } from "./routes/admin";
 import { childrenRoutes } from "./routes/children";
 import { grandparentRoutes } from "./routes/grandparents";
+import { souvenirRoutes } from "./routes/souvenirs";
 import { inviteManageRoutes, invitePublicRoutes } from "./routes/invitations";
 import { notificationRoutes } from "./routes/purchase-notifications";
 import { photoRoutes } from "./routes/photos";
@@ -79,3 +81,7 @@ app.route("/", inviteManageRoutes);
 app.route("/", notificationRoutes);
 // 祖父母向け（/wishlist_items/:id/purchase を含む）
 app.route("/", grandparentRoutes);
+// 記念品: 祖父母のカタログ・注文 + 商品画像配信（画像は全ロール共通）
+app.route("/", souvenirRoutes);
+// 管理者向け
+app.route("/", adminRoutes);

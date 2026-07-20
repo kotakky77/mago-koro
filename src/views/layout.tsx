@@ -48,6 +48,15 @@ const Nav: FC<{ user: SessionUser | null; unread: number; currentPath: string }>
           {link("/grandparent/dashboard", "マイページ")}
           {link("/grandparent/photos", "写真を見る")}
           {link("/grandparent/wishlist_items", "ほしいもの")}
+          {link("/grandparent/souvenirs", "記念品")}
+        </>
+      )}
+      {user.userType === "admin" && (
+        <>
+          {link("/admin/dashboard", "ダッシュボード")}
+          {link("/admin/users", "ユーザー")}
+          {link("/admin/souvenirs", "カタログ")}
+          {link("/admin/orders", "注文")}
         </>
       )}
       <form action="/logout" method="post">

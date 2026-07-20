@@ -25,6 +25,8 @@ export function dashboardPath(userType: string): string {
       return "/parent/dashboard";
     case "grandparent":
       return "/grandparent/dashboard";
+    case "admin":
+      return "/admin/dashboard";
     default:
       return "/";
   }
