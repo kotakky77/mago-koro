@@ -168,7 +168,7 @@ export const SouvenirOrderFormPage: FC<{
 
 export const GrandparentOrdersPage: FC<{ orders: SouvenirOrderListRow[] }> = ({ orders }) => (
   <>
-    <a href="/grandparent/souvenirs" class="back-link">← 記念品のご案内に戻る</a>
+    <a href="/grandparent/dashboard" class="back-link">← マイページに戻る</a>
     <h1>📦 注文の履歴</h1>
 
     {orders.length === 0 ? (
