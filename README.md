@@ -49,9 +49,17 @@ docker compose run --rm dev npm run typecheck
 ## デプロイ
 
 ```bash
-# ホストの wrangler 認証をコンテナに渡してデプロイ
-docker compose run --rm -v "$HOME/Library/Preferences/.wrangler:/root/.config/.wrangler" dev npx wrangler deploy
+# .env の CLOUDFLARE_API_TOKEN を使ってデプロイ（compose が env_file として読む）
+docker compose run --rm dev npx wrangler whoami   # 認証確認
+docker compose run --rm dev npx wrangler deploy
 ```
+
+トークンは Cloudflare ダッシュボード（マイプロフィール → API トークン）で
+テンプレート「Edit Cloudflare Workers」から発行し、`.env` に
+`CLOUDFLARE_API_TOKEN=...` として置く（`.gitignore` の `/.env*` で除外済み）。
+D1 と R2 をバインドしているので、Workers スクリプトだけの権限では deploy に失敗する。
+コンテナ内で `wrangler login`（OAuth）は使えない（コールバックが
+コンテナの 127.0.0.1 にバインドされるため、ホストのブラウザから届かない）。
 
 必要な事前準備（済んでいれば不要）:
 
