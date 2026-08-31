@@ -44,6 +44,23 @@ export const GrandparentDashboard: FC<{ userName: string; grandchildren: ChildRo
             </div>
           ))}
         </div>
+
+        {/* 記念品は孫を選んで注文する作りなので、孫カードとは別に1枚だけ置く */}
+        <div class="card">
+          <h3>🎁 記念品をおくる</h3>
+          <p class="card-sub">
+            お孫さんの写真からイラストを制作し、そのイラスト入りのマグカップや
+            Tシャツをお作りしてお届けします。
+          </p>
+          <div class="card-actions">
+            <a href="/grandparent/souvenirs" class="btn btn-primary btn-lg">
+              🎁 記念品を見る
+            </a>
+            <a href="/grandparent/orders" class="btn btn-secondary">
+              📦 注文の履歴
+            </a>
+          </div>
+        </div>
       </>
     )}
 
@@ -53,6 +70,7 @@ export const GrandparentDashboard: FC<{ userName: string; grandchildren: ChildRo
         <li>「写真を見る」を押すと、お孫さんの写真が見られます。写真を押すと大きく表示されます</li>
         <li>「ほしいものを見る」を押すと、お孫さんがほしいものの一覧が見られます</li>
         <li>プレゼントを買ったら「購入したことを知らせる」ボタンで親御さんにお知らせできます</li>
+        <li>「記念品を見る」を押すと、お孫さんのイラスト入りの記念品を注文できます</li>
       </ul>
     </details>
   </>
