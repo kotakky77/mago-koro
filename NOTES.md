@@ -193,3 +193,41 @@ docker compose run --rm dev npx wrangler d1 execute mago-koro --local --command 
   email一意制約のため親アカウントと同一アドレスは不可、user_typeは単一値のため
   親兼任も不可 → 別アカウントとした）。ログイン・ダッシュボード表示確認済み
 - 記念品カタログは未登録のため、admin で `/admin/souvenirs/new` から登録が必要
+  → 2026-08-31 に登録済み（下記）
+
+## 記念品カタログの初期登録（2026-08-31 実施）
+
+Rails版 seeds（`archive/rails/db/seeds.rb`）と同じ3点を、本番 admin の
+`/admin/souvenirs/new` から手動登録した。コード変更・デプロイは不要な運用作業。
+
+| 商品名 | 価格 | 画像 |
+|---|---|---|
+| 子供の絵付きマグカップ | 2,500円 | souvenir-mug.jpg |
+| 子供の絵付きTシャツ | 3,500円 | souvenir-tshirt.jpg |
+| 子供の絵付きカレンダー | 2,000円 | souvenir-calendar.jpg |
+
+- 一覧は `created_at DESC, id DESC` 順なので、**カレンダー → Tシャツ → マグカップ**の
+  順に登録して、カタログの表示順をマグカップ→Tシャツ→カレンダーにした
+  （本番の souvenir id は 1=カレンダー / 2=Tシャツ / 3=マグカップ）
+
+### 商品画像の出典（すべて Pexels ライセンス。商用利用可・クレジット不要）
+
+| 画像 | 出典 | 撮影者 |
+|---|---|---|
+| マグカップ | <https://www.pexels.com/photo/beverage-caffeine-coffee-cup-606542/> | Jessica Lewis |
+| Tシャツ | <https://www.pexels.com/photo/white-t-shirt-hanging-on-a-rack-11671964/> | Marina Podrez |
+| カレンダー | <https://www.pexels.com/photo/rustic-december-calendar-page-with-vintage-style-35013837/> | Marina Endzhirgli |
+
+いずれも `.souvenir-image` の表示枠（`aspect-ratio: 4/3` / `object-fit: cover`）に
+合わせて 4:3 にトリミング済み（macOS の `sips`、長辺853〜960px・JPEG・30〜250KB）。
+ロゴ入りのマグカップや年号（2020/2021等）が写り込む候補は避けた。差し替えるときも
+Pexels / Unsplash のようにライセンスの明確な素材を使うこと。
+
+### 検証記録
+
+- ローカル（wrangler dev）: admin で3点登録 → 祖父母アカウントでカタログ表示 →
+  `/souvenirs/:id/image` が3件とも 200 image/jpeg。PC幅・390px幅ともレイアウト崩れなし
+- 本番: `/admin/souvenirs` で3件「掲載中・画像あり・注文0件」、
+  `/souvenirs/{1,2,3}/image` が表示されること（R2の実体まで）を確認
+- 本番では試し注文をしていない（`souvenir_orders` に実データを残さないため）。
+  注文フローの検証は 2026-07-20 のローカル一気通貫を参照
