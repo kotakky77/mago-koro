@@ -85,3 +85,52 @@ archive/rails/        # 旧Rails版（触らない）
 1. `docker compose run --rm dev npm run typecheck && docker compose run --rm dev npm test`
 2. `docker compose up` で対象フローを手で確認（curl でも可。POSTには
    `Origin: http://localhost:8787` ヘッダが必要 = CSRF対策）
+
+## コードグラフ（graphify）— 任意ツール
+
+**このリポジトリの開発に graphify は必須ではない。** 入れなくても通常の開発・
+テスト・デプロイはすべて成立する。コード構造を俯瞰したいときだけ使う補助ツール。
+
+以下のコマンドは graphify を導入した環境でのみ有効。未導入なら読み飛ばしてよい。
+
+### 導入（各自のマシンで1回、host側。Dockerは不要）
+
+```bash
+uv tool install "graphifyy[sql]"   # uv 未導入なら brew install uv
+uv tool update-shell               # ~/.local/bin を PATH に通す（要ターミナル再起動）
+graphify install --project         # /graphify スキルを .claude/skills/ に配置（gitignore済み）
+graphify extract . --code-only     # グラフ構築（AST のみ・API費用なし・5秒程度）
+graphify cluster-only . --resolution 1.5 --no-label
+```
+
+`graphify install --project` はルート `CLAUDE.md` の作成と `.claude/settings.json` への
+PreToolUse フック登録も同時に行う。**このリポジトリでは両方とも削除する方針**
+（規約は `.claude/CLAUDE.md` に集約する。フックは87ファイル規模ではノイズになる）。
+
+自動更新が欲しければ `graphify hook install`（post-commit / post-checkout）。
+git hooks はバージョン管理できないので各自で実行すること。
+`.gitattributes` に merge driver 行が追記されるが、`graphify-out/` は
+gitignore しているので不要。戻すこと。
+
+### 使い方
+
+- `graphify affected "<関数名>" --depth 1` — これを変更したら影響が及ぶファイル。
+  **`--depth 2` 以上は誤検出が混じる**（同じモジュールから別の物を import しただけで拾う）
+- `graphify explain "<関数名>"` — 定義位置と参照元ファイルの列挙。
+  認可関数（`grandparentHasChild` / `loadOwnChild` / `requireParent`）の
+  呼び出し元監査に有効。ただし表示される行番号は**import行**であって呼び出し箇所ではない
+- `graphify path "<A>" "<B>"` — 2つのシンボル間の最短経路
+- `graphify export callflow-html` — ファイル単位に区切った Mermaid の呼び出しフロー図。
+  アーキテクチャの俯瞰にはこれが一番読みやすい（`graph.html` のヘアボールより有用）。
+  自動再生成されないので、見る前に叩き直すこと
+- `graphify update .` — コード変更後の再構築（AST のみ、API費用なし）
+
+### 制約
+
+- グラフは `--code-only` で構築している。`.md` / モックHTML は LLM の意味解析パスが
+  必要なため含まれない。`src/app.css` は CSS grammar が無く**どの構成でも解析対象外**
+- `graphify query`（自然言語質問）は LLM バックエンド未設定だとキーワード起点の
+  BFS に退化して使い物にならない。`explain` / `path` / `affected` を使うこと
+- `graphify-out/` と `.claude/skills/` は gitignore 済み（生成物・ベンダーのコピーのため）
+- `.graphifyignore` で `archive/`（旧Rails版）と設定ファイル類を除外している。
+  これを外すとグラフが旧実装で埋まる

@@ -42,6 +42,11 @@
 /.wrangler
 /.dev.vars
 
+# Graphify のグラフ出力（毎コミット再生成されるためローカル限定）
+/graphify-out
+# Graphify 同梱スキルのコピー（`graphify install --project` で再生成できる）
+/.claude/skills/
+
 # 旧Rails版アーカイブ内の生成物・秘密鍵（移動前のルート指定ルールを引き継ぐ）
 /archive/rails/.bundle
 /archive/rails/log/*
