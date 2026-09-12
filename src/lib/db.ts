@@ -42,6 +42,11 @@ export type WishlistItemRow = {
   purchased: number;
   purchased_by_id: number | null;
   purchased_at: string | null;
+  // 「これを贈ります」の事前表明（フェーズ3）。買う前におさえるための列
+  reserved_by_id: number | null;
+  reserved_at: string | null;
+  // JOINで持ってくる表示用。おさえた人の名前
+  reserved_by_name: string | null;
   child_id: number;
   created_at: string;
 };
@@ -256,7 +261,13 @@ export async function listWishlistItems(
   childId: number,
 ): Promise<WishlistItemRow[]> {
   const { results } = await db
-    .prepare("SELECT * FROM wishlist_items WHERE child_id = ? ORDER BY created_at DESC")
+    .prepare(
+      `SELECT w.*, u.name AS reserved_by_name
+         FROM wishlist_items w
+         LEFT JOIN users u ON u.id = w.reserved_by_id
+        WHERE w.child_id = ?
+        ORDER BY w.created_at DESC`,
+    )
     .bind(childId)
     .all<WishlistItemRow>();
   return results;
@@ -274,7 +285,15 @@ export async function findWishlistItem(
   db: D1Database,
   id: number,
 ): Promise<WishlistItemRow | null> {
-  return db.prepare("SELECT * FROM wishlist_items WHERE id = ?").bind(id).first<WishlistItemRow>();
+  return db
+    .prepare(
+      `SELECT w.*, u.name AS reserved_by_name
+         FROM wishlist_items w
+         LEFT JOIN users u ON u.id = w.reserved_by_id
+        WHERE w.id = ?`,
+    )
+    .bind(id)
+    .first<WishlistItemRow>();
 }
 
 export type WishlistItemInput = {
@@ -748,4 +767,48 @@ export async function releaseBirthdayNotification(
     )
     .bind(input.childId, input.grandparentId, input.kind, input.sentOn)
     .run();
+}
+
+/**
+ * 「これを贈ります」の事前表明。おさえられたら true。
+ * すでに誰かがおさえている／購入済みなら何もせず false（あとから来た人が黙って上書きしない）。
+ */
+export async function reserveWishlistItem(
+  db: D1Database,
+  itemId: number,
+  grandparentId: number,
+): Promise<boolean> {
+  const now = nowIso();
+  const row = await db
+    .prepare(
+      `UPDATE wishlist_items
+          SET reserved_by_id = ?, reserved_at = ?, updated_at = ?
+        WHERE id = ? AND purchased = 0 AND reserved_by_id IS NULL
+        RETURNING id`,
+    )
+    .bind(grandparentId, now, now, itemId)
+    .first<{ id: number }>();
+  return row !== null;
+}
+
+/**
+ * 事前表明の取り消し。onlyBy を渡すと、その人がおさえた品だけを外す（祖父母は自分の分だけ）。
+ * 親は onlyBy なしで外せる（祖父母が操作に詰まったときの逃げ道）。
+ */
+export async function unreserveWishlistItem(
+  db: D1Database,
+  itemId: number,
+  onlyBy?: number,
+): Promise<boolean> {
+  const now = nowIso();
+  const sql = `UPDATE wishlist_items
+                  SET reserved_by_id = NULL, reserved_at = NULL, updated_at = ?
+                WHERE id = ? AND reserved_by_id IS NOT NULL${onlyBy === undefined ? "" : " AND reserved_by_id = ?"}
+                RETURNING id`;
+  const stmt = db.prepare(sql);
+  const row = await (onlyBy === undefined
+    ? stmt.bind(now, itemId)
+    : stmt.bind(now, itemId, onlyBy)
+  ).first<{ id: number }>();
+  return row !== null;
 }

@@ -10,6 +10,7 @@ import {
   deleteWishlistItem,
   findWishlistItem,
   listWishlistItems,
+  unreserveWishlistItem,
   updateWishlistItem,
 } from "../lib/db";
 import { setFlash } from "../lib/flash";
@@ -180,4 +181,22 @@ wishlistRoutes.post("/wishlist_items/:id/delete", async (c) => {
   await deleteWishlistItem(c.env.DB, item.id);
   setFlash(c, { notice: "ほしいものリストから削除しました" });
   return c.redirect(`/children/${child.id}/wishlist_items`);
+});
+
+// 親による事前表明の解除（フェーズ3）。
+// 祖父母が操作に詰まったとき（押し間違えた・自分で外せない）の逃げ道として、
+// 親はおさえた人に関係なく外せる。祖父母自身の取り消しは grandparents.tsx にある。
+wishlistRoutes.post("/wishlist_items/:id/reserve/clear", async (c) => {
+  const item = await findWishlistItem(c.env.DB, Number(c.req.param("id")));
+  if (!item) return deniedRedirect(c);
+  const child = await loadOwnChild(c, item.child_id);
+  if (!child) return deniedRedirect(c);
+
+  const backTo = `/children/${child.id}/wishlist_items`;
+  if (!(await unreserveWishlistItem(c.env.DB, item.id))) {
+    setFlash(c, { alert: "取り消しできませんでした" });
+    return c.redirect(backTo);
+  }
+  setFlash(c, { notice: `「${item.name}」の「贈る予定」を取り消しました。` });
+  return c.redirect(backTo);
 });

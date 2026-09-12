@@ -33,6 +33,8 @@ export const WishlistIndexPage: FC<{ child: ChildRow; items: WishlistItemRow[] }
               <h3>{item.name}</h3>
               {item.purchased ? (
                 <span class="tag tag-purchased">購入済み</span>
+              ) : item.reserved_by_id !== null ? (
+                <span class="tag tag-accepted">贈る予定あり</span>
               ) : (
                 <span class="tag tag-pending">ほしいもの</span>
               )}
@@ -58,10 +60,27 @@ export const WishlistIndexPage: FC<{ child: ChildRow; items: WishlistItemRow[] }
             {item.purchased === 1 && item.purchased_at && (
               <p class="item-meta">{formatDate(item.purchased_at)}に購入されました</p>
             )}
+            {/* 事前表明（フェーズ3）。自分たちが同じものを買わないための表示でもある */}
+            {item.purchased === 0 && item.reserved_by_id !== null && (
+              <p class="item-meta">
+                <span class="tag tag-accepted">{item.reserved_by_name}さんが贈る予定</span>
+              </p>
+            )}
             <div class="card-actions">
               <a href={`/wishlist_items/${item.id}/edit`} class="btn btn-outline">
                 編集
               </a>
+              {item.purchased === 0 && item.reserved_by_id !== null && (
+                <form
+                  action={`/wishlist_items/${item.id}/reserve/clear`}
+                  method="post"
+                  data-confirm={`「${item.name}」の「贈る予定」を取り消します。よろしいですか？`}
+                >
+                  <button type="submit" class="btn btn-outline">
+                    贈る予定を取り消す
+                  </button>
+                </form>
+              )}
               <form
                 action={`/wishlist_items/${item.id}/delete`}
                 method="post"
