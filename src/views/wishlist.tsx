@@ -48,11 +48,13 @@ export const WishlistIndexPage: FC<{ child: ChildRow; items: WishlistItemRow[] }
               )}
             </p>
             {item.description && <p>{item.description}</p>}
-            <p class="item-meta">
-              <a href={item.url} target="_blank" rel="noopener noreferrer">
-                商品ページを見る ↗
-              </a>
-            </p>
+            {item.url !== "" && (
+              <p class="item-meta">
+                <a href={item.url} target="_blank" rel="noopener noreferrer">
+                  商品ページを見る ↗
+                </a>
+              </p>
+            )}
             {item.purchased === 1 && item.purchased_at && (
               <p class="item-meta">{formatDate(item.purchased_at)}に購入されました</p>
             )}
@@ -110,9 +112,12 @@ export const WishlistFormPage: FC<{
             <input type="text" id="name" name="name" value={values.name} required />
           </div>
           <div class="form-group">
-            <label for="url">商品ページのURL</label>
-            <input type="url" id="url" name="url" value={values.url} required />
-            <p class="form-hint">通販サイトなどの商品ページのアドレスを貼り付けてください</p>
+            <label for="url">商品ページのURL（任意）</label>
+            <input type="url" id="url" name="url" value={values.url} />
+            <p class="form-hint">
+              通販サイトなどの商品ページのアドレスがあれば貼り付けてください。
+              商品が決まっていなければ、空のままで構いません
+            </p>
           </div>
           <div class="form-group">
             <label for="price">価格（円・任意）</label>

@@ -168,9 +168,13 @@ export const GrandparentWishlistPage: FC<{
               </p>
               {item.description && <p>{item.description}</p>}
               <p class="item-meta">
-                <a href={item.url} target="_blank" rel="noopener noreferrer">
-                  商品ページを見る ↗
-                </a>
+                {item.url !== "" ? (
+                  <a href={item.url} target="_blank" rel="noopener noreferrer">
+                    商品ページを見る ↗
+                  </a>
+                ) : (
+                  <>商品ページの指定はありません。お店で選んでください</>
+                )}
               </p>
               {!item.purchased && (
                 <form

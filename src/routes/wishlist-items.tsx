@@ -52,9 +52,9 @@ export function parseWishlistForm(form: Record<string, unknown>): {
 
   const errors: string[] = [];
   if (values.name === "") errors.push("商品名を入力してください");
-  if (values.url === "") {
-    errors.push("商品ページのURLを入力してください");
-  } else if (!/^https?:\/\//.test(values.url)) {
+  // URLは任意（2026-09-12）。「スマホかタブレット」「ウォーキングの靴」のように
+  // 商品が特定されていないものを登録できるようにするため。入力があったときだけ形式を見る
+  if (values.url !== "" && !/^https?:\/\//.test(values.url)) {
     errors.push("URLは http:// または https:// で始まる必要があります");
   }
   const quantity = Number(values.quantity);

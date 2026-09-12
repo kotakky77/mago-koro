@@ -51,12 +51,19 @@ describe("parseWishlistForm（Rails の WishlistItem バリデーション相当
     expect(input.category).toBeNull();
   });
 
-  it("商品名・URL必須", () => {
+  it("商品名は必須", () => {
     expect(parseWishlistForm({ ...valid, name: "" }).errors).toHaveLength(1);
-    expect(parseWishlistForm({ ...valid, url: "" }).errors).toHaveLength(1);
   });
 
-  it("http(s)以外のURLを拒否", () => {
+  // URLは任意（2026-09-12）。商品が特定されていないもの（「スマホかタブレット」等）を
+  // 登録できるようにするため、必須から外した
+  it("URLは任意。空でもエラーにならない", () => {
+    const { input, errors } = parseWishlistForm({ ...valid, url: "" });
+    expect(errors).toEqual([]);
+    expect(input.url).toBe("");
+  });
+
+  it("URLを入力した場合は http(s) 以外を拒否", () => {
     expect(parseWishlistForm({ ...valid, url: "javascript:alert(1)" }).errors).toHaveLength(1);
     expect(parseWishlistForm({ ...valid, url: "example.com" }).errors).toHaveLength(1);
   });
