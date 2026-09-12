@@ -24,7 +24,14 @@
   ],
   "vars": {
     // パスワードリセットメールの送信元Gmailアドレス
-    "GMAIL_FROM": "geiruzusi@gmail.com"
+    "GMAIL_FROM": "geiruzusi@gmail.com",
+    // メール本文に載せるリンクの起点。Cronにはリクエストが無く origin を作れないため
+    "APP_BASE_URL": "https://mago-koro.kotakky.workers.dev"
+  },
+  // 誕生日お知らせメール。JST 8:00（= UTC 23:00）。
+  // birthday-reminder が JST 7:00 なので、2通が同時に着かないよう1時間ずらしている
+  "triggers": {
+    "crons": ["0 23 * * *"]
   },
   "observability": {
     "enabled": true

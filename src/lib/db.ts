@@ -672,3 +672,80 @@ export async function adminDashboardCounts(db: D1Database): Promise<AdminDashboa
     pendingOrders: orderRow.p,
   };
 }
+
+// ---- birthday_notifications（誕生日お知らせメール）----
+
+export type BirthdayRecipient = {
+  child_id: number;
+  child_name: string;
+  birthdate: string;
+  grandparent_id: number;
+  grandparent_name: string;
+  grandparent_email: string;
+};
+
+/**
+ * 指定した月日（"MM-DD"）が誕生日の子と、その子に招待を承諾済みの祖父母の組を返す。
+ * 招待が複数あっても1組は1行になるよう GROUP BY している。
+ */
+export async function listBirthdayRecipients(
+  db: D1Database,
+  monthDays: string[],
+): Promise<BirthdayRecipient[]> {
+  if (monthDays.length === 0) return [];
+  const placeholders = monthDays.map(() => "?").join(", ");
+  const { results } = await db
+    .prepare(
+      `SELECT c.id AS child_id, c.name AS child_name, c.birthdate AS birthdate,
+              u.id AS grandparent_id, u.name AS grandparent_name, u.email AS grandparent_email
+         FROM children c
+         JOIN invitations i ON i.child_id = c.id AND i.status = 'accepted'
+         JOIN users u ON u.id = i.grandparent_id AND u.user_type = 'grandparent'
+        WHERE c.birthdate IS NOT NULL
+          AND substr(c.birthdate, 6) IN (${placeholders})
+        GROUP BY c.id, u.id
+        ORDER BY c.id, u.id`,
+    )
+    .bind(...monthDays)
+    .all<BirthdayRecipient>();
+  return results ?? [];
+}
+
+/**
+ * 送信ログに席を取る。すでに同じ日に同じ種類を送っていれば false（＝送らない）。
+ * 送信の「前」に呼ぶこと。Cronの再試行で2通目が飛ぶのを、UNIQUE制約で止めるのが目的。
+ *
+ * ⚠️ 挿入できたかの判定に meta.changes を使わないこと。
+ * ローカル検証で changes が取れないケースを踏んだ。取り違えると claim が常に false になり、
+ * 「1通も送られないのに、エラーも出ない」という一番見つけにくい壊れ方をする。
+ * RETURNING で行が返ったかどうかで判定する。
+ */
+export async function claimBirthdayNotification(
+  db: D1Database,
+  input: { childId: number; grandparentId: number; kind: string; sentOn: string },
+): Promise<boolean> {
+  const row = await db
+    .prepare(
+      `INSERT INTO birthday_notifications (child_id, grandparent_id, kind, sent_on)
+       VALUES (?, ?, ?, ?)
+       ON CONFLICT (child_id, grandparent_id, kind, sent_on) DO NOTHING
+       RETURNING id`,
+    )
+    .bind(input.childId, input.grandparentId, input.kind, input.sentOn)
+    .first<{ id: number }>();
+  return row !== null;
+}
+
+/** 送信に失敗したとき、取った席を戻す（再試行で拾い直せるように） */
+export async function releaseBirthdayNotification(
+  db: D1Database,
+  input: { childId: number; grandparentId: number; kind: string; sentOn: string },
+): Promise<void> {
+  await db
+    .prepare(
+      `DELETE FROM birthday_notifications
+        WHERE child_id = ? AND grandparent_id = ? AND kind = ? AND sent_on = ?`,
+    )
+    .bind(input.childId, input.grandparentId, input.kind, input.sentOn)
+    .run();
+}

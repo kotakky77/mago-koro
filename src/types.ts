@@ -7,4 +7,6 @@ export type Env = {
   GMAIL_REFRESH_TOKEN: string;
   // wrangler.jsonc の vars
   GMAIL_FROM: string;
+  // 本番URL。Cronにはリクエストが無く origin を作れないので、変数で持つ
+  APP_BASE_URL: string;
 };
