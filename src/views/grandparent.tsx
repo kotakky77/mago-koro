@@ -126,7 +126,9 @@ export const GrandparentWishlistPage: FC<{
   children_: ChildRow[];
   child: ChildRow | null;
   items: WishlistItemRow[];
-}> = ({ children_, child, items }) => (
+  /** 見ている祖父母自身のID。自分がおさえた品かどうかの判定に使う */
+  viewerId: number;
+}> = ({ children_, child, items, viewerId }) => (
   <>
     <a href="/grandparent/dashboard" class="back-link">← マイページに戻る</a>
     <h1>{child ? `${child.name}さんのほしいもの` : "ほしいものを見る"}</h1>
@@ -142,8 +144,9 @@ export const GrandparentWishlistPage: FC<{
     ) : (
       <>
         <p class="page-lead">
-          プレゼントを買ったら「購入したことを知らせる」ボタンを押してください。
-          親御さんにお知らせが届き、同じものが重ならないようになります。
+          贈るものを決めたら、まず「これを贈ります」を押してください。
+          ほかの方に「もう決まっている」と伝わり、同じものが重ならないようになります。
+          買ったあとに「購入したことを知らせる」を押すと、親御さんにお知らせが届きます。
         </p>
         <ul class="item-list">
           {items.map((item) => (
@@ -152,6 +155,12 @@ export const GrandparentWishlistPage: FC<{
                 <h3>{item.name}</h3>
                 {item.purchased ? (
                   <span class="tag tag-purchased">購入済み</span>
+                ) : item.reserved_by_id !== null ? (
+                  <span class="tag tag-accepted">
+                    {item.reserved_by_id === viewerId
+                      ? "あなたが贈る予定"
+                      : `${item.reserved_by_name}さんが贈る予定`}
+                  </span>
                 ) : (
                   <span class="tag tag-pending">ほしいもの</span>
                 )}
@@ -168,11 +177,39 @@ export const GrandparentWishlistPage: FC<{
               </p>
               {item.description && <p>{item.description}</p>}
               <p class="item-meta">
-                <a href={item.url} target="_blank" rel="noopener noreferrer">
-                  商品ページを見る ↗
-                </a>
+                {item.url !== "" ? (
+                  <a href={item.url} target="_blank" rel="noopener noreferrer">
+                    商品ページを見る ↗
+                  </a>
+                ) : (
+                  <>商品ページの指定はありません。お店で選んでください</>
+                )}
               </p>
-              {!item.purchased && (
+              {/* まだ誰もおさえていなければ「これを贈ります」を出す */}
+              {!item.purchased && item.reserved_by_id === null && (
+                <form action={`/wishlist_items/${item.id}/reserve`} method="post">
+                  <button type="submit" class="btn btn-primary btn-lg">
+                    🎀 これを贈ります
+                  </button>
+                </form>
+              )}
+
+              {/* 自分がおさえた分は取り消せる。押し間違いは前提なので必ず逃げ道を置く */}
+              {!item.purchased && item.reserved_by_id === viewerId && (
+                <form
+                  action={`/wishlist_items/${item.id}/unreserve`}
+                  method="post"
+                  data-confirm={`「${item.name}」を贈る予定を取り消します。よろしいですか？`}
+                >
+                  <button type="submit" class="btn btn-outline">
+                    贈る予定を取り消す
+                  </button>
+                </form>
+              )}
+
+              {/* ほかの方が贈る予定の品には、購入報告を出さない（重ねて買わせないため） */}
+              {!item.purchased &&
+                (item.reserved_by_id === null || item.reserved_by_id === viewerId) && (
                 <form
                   action={`/wishlist_items/${item.id}/purchase`}
                   method="post"

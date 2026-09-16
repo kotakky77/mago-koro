@@ -42,6 +42,11 @@ export type WishlistItemRow = {
   purchased: number;
   purchased_by_id: number | null;
   purchased_at: string | null;
+  // 「これを贈ります」の事前表明（フェーズ3）。買う前におさえるための列
+  reserved_by_id: number | null;
+  reserved_at: string | null;
+  // JOINで持ってくる表示用。おさえた人の名前
+  reserved_by_name: string | null;
   child_id: number;
   created_at: string;
 };
@@ -256,7 +261,13 @@ export async function listWishlistItems(
   childId: number,
 ): Promise<WishlistItemRow[]> {
   const { results } = await db
-    .prepare("SELECT * FROM wishlist_items WHERE child_id = ? ORDER BY created_at DESC")
+    .prepare(
+      `SELECT w.*, u.name AS reserved_by_name
+         FROM wishlist_items w
+         LEFT JOIN users u ON u.id = w.reserved_by_id
+        WHERE w.child_id = ?
+        ORDER BY w.created_at DESC`,
+    )
     .bind(childId)
     .all<WishlistItemRow>();
   return results;
@@ -274,7 +285,15 @@ export async function findWishlistItem(
   db: D1Database,
   id: number,
 ): Promise<WishlistItemRow | null> {
-  return db.prepare("SELECT * FROM wishlist_items WHERE id = ?").bind(id).first<WishlistItemRow>();
+  return db
+    .prepare(
+      `SELECT w.*, u.name AS reserved_by_name
+         FROM wishlist_items w
+         LEFT JOIN users u ON u.id = w.reserved_by_id
+        WHERE w.id = ?`,
+    )
+    .bind(id)
+    .first<WishlistItemRow>();
 }
 
 export type WishlistItemInput = {
@@ -671,4 +690,125 @@ export async function adminDashboardCounts(db: D1Database): Promise<AdminDashboa
     orders: orderRow.c,
     pendingOrders: orderRow.p,
   };
+}
+
+// ---- birthday_notifications（誕生日お知らせメール）----
+
+export type BirthdayRecipient = {
+  child_id: number;
+  child_name: string;
+  birthdate: string;
+  grandparent_id: number;
+  grandparent_name: string;
+  grandparent_email: string;
+};
+
+/**
+ * 指定した月日（"MM-DD"）が誕生日の子と、その子に招待を承諾済みの祖父母の組を返す。
+ * 招待が複数あっても1組は1行になるよう GROUP BY している。
+ */
+export async function listBirthdayRecipients(
+  db: D1Database,
+  monthDays: string[],
+): Promise<BirthdayRecipient[]> {
+  if (monthDays.length === 0) return [];
+  const placeholders = monthDays.map(() => "?").join(", ");
+  const { results } = await db
+    .prepare(
+      `SELECT c.id AS child_id, c.name AS child_name, c.birthdate AS birthdate,
+              u.id AS grandparent_id, u.name AS grandparent_name, u.email AS grandparent_email
+         FROM children c
+         JOIN invitations i ON i.child_id = c.id AND i.status = 'accepted'
+         JOIN users u ON u.id = i.grandparent_id AND u.user_type = 'grandparent'
+        WHERE c.birthdate IS NOT NULL
+          AND substr(c.birthdate, 6) IN (${placeholders})
+        GROUP BY c.id, u.id
+        ORDER BY c.id, u.id`,
+    )
+    .bind(...monthDays)
+    .all<BirthdayRecipient>();
+  return results ?? [];
+}
+
+/**
+ * 送信ログに席を取る。すでに同じ日に同じ種類を送っていれば false（＝送らない）。
+ * 送信の「前」に呼ぶこと。Cronの再試行で2通目が飛ぶのを、UNIQUE制約で止めるのが目的。
+ *
+ * ⚠️ 挿入できたかの判定に meta.changes を使わないこと。
+ * ローカル検証で changes が取れないケースを踏んだ。取り違えると claim が常に false になり、
+ * 「1通も送られないのに、エラーも出ない」という一番見つけにくい壊れ方をする。
+ * RETURNING で行が返ったかどうかで判定する。
+ */
+export async function claimBirthdayNotification(
+  db: D1Database,
+  input: { childId: number; grandparentId: number; kind: string; sentOn: string },
+): Promise<boolean> {
+  const row = await db
+    .prepare(
+      `INSERT INTO birthday_notifications (child_id, grandparent_id, kind, sent_on)
+       VALUES (?, ?, ?, ?)
+       ON CONFLICT (child_id, grandparent_id, kind, sent_on) DO NOTHING
+       RETURNING id`,
+    )
+    .bind(input.childId, input.grandparentId, input.kind, input.sentOn)
+    .first<{ id: number }>();
+  return row !== null;
+}
+
+/** 送信に失敗したとき、取った席を戻す（再試行で拾い直せるように） */
+export async function releaseBirthdayNotification(
+  db: D1Database,
+  input: { childId: number; grandparentId: number; kind: string; sentOn: string },
+): Promise<void> {
+  await db
+    .prepare(
+      `DELETE FROM birthday_notifications
+        WHERE child_id = ? AND grandparent_id = ? AND kind = ? AND sent_on = ?`,
+    )
+    .bind(input.childId, input.grandparentId, input.kind, input.sentOn)
+    .run();
+}
+
+/**
+ * 「これを贈ります」の事前表明。おさえられたら true。
+ * すでに誰かがおさえている／購入済みなら何もせず false（あとから来た人が黙って上書きしない）。
+ */
+export async function reserveWishlistItem(
+  db: D1Database,
+  itemId: number,
+  grandparentId: number,
+): Promise<boolean> {
+  const now = nowIso();
+  const row = await db
+    .prepare(
+      `UPDATE wishlist_items
+          SET reserved_by_id = ?, reserved_at = ?, updated_at = ?
+        WHERE id = ? AND purchased = 0 AND reserved_by_id IS NULL
+        RETURNING id`,
+    )
+    .bind(grandparentId, now, now, itemId)
+    .first<{ id: number }>();
+  return row !== null;
+}
+
+/**
+ * 事前表明の取り消し。onlyBy を渡すと、その人がおさえた品だけを外す（祖父母は自分の分だけ）。
+ * 親は onlyBy なしで外せる（祖父母が操作に詰まったときの逃げ道）。
+ */
+export async function unreserveWishlistItem(
+  db: D1Database,
+  itemId: number,
+  onlyBy?: number,
+): Promise<boolean> {
+  const now = nowIso();
+  const sql = `UPDATE wishlist_items
+                  SET reserved_by_id = NULL, reserved_at = NULL, updated_at = ?
+                WHERE id = ? AND reserved_by_id IS NOT NULL${onlyBy === undefined ? "" : " AND reserved_by_id = ?"}
+                RETURNING id`;
+  const stmt = db.prepare(sql);
+  const row = await (onlyBy === undefined
+    ? stmt.bind(now, itemId)
+    : stmt.bind(now, itemId, onlyBy)
+  ).first<{ id: number }>();
+  return row !== null;
 }

@@ -58,6 +58,8 @@ docker compose run --rm dev npx wrangler deploy
 テンプレート「Edit Cloudflare Workers」から発行し、`.env` に
 `CLOUDFLARE_API_TOKEN=...` として置く（`.gitignore` の `/.env*` で除外済み）。
 D1 と R2 をバインドしているので、Workers スクリプトだけの権限では deploy に失敗する。
+**テンプレートには D1 の権限が入っていないので「アカウント → D1 → 編集」を手で足す**
+（足し忘れると deploy は通るのにリモートマイグレーションだけが落ちる）。
 コンテナ内で `wrangler login`（OAuth）は使えない（コールバックが
 コンテナの 127.0.0.1 にバインドされるため、ホストのブラウザから届かない）。
 

@@ -1,0 +1,16 @@
+# Graphify のグラフ構築から除外するパス（.gitignore と同じ書式）
+# .gitignore は自動で尊重されるので、ここには「Git管理下だが解析したくないもの」だけ書く
+
+# 旧Rails版アーカイブ（メンテ対象外。グラフが旧実装で埋まるため必ず除外）
+archive/
+
+# 画面モックHTML: ローカルAST解析ではなくLLMの意味解析パスにかかるため既定では除外
+# 仕様⇔実装のエッジが欲しくなったらこの行を外して Claude Code から /graphify . を実行する
+docs/screen-design-mock/
+
+# 設定ファイル: compilerOptions や依存パッケージ名が個別ノード化して
+# god node ランキングを汚染するため除外（コード構造の可視化には寄与しない）
+package.json
+package-lock.json
+tsconfig.json
+vitest.config.ts
