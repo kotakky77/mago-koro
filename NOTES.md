@@ -90,8 +90,8 @@ wrangler dev / test / deploy を全て実行する。
 - `node_modules` は名前付きボリューム（workerd バイナリがプラットフォーム別のため、
   ホストと共有してはいけない）
 - wrangler dev は `--ip 0.0.0.0` が必要（コンテナ外からのアクセス）
-- デプロイ時はホストの wrangler OAuth 認証をマウントして使う:
-  `docker compose run --rm -v "$HOME/Library/Preferences/.wrangler:/root/.config/.wrangler" dev npx wrangler deploy`
+- デプロイの認証は `.env` の `CLOUDFLARE_API_TOKEN`（2026-08-31 に切り替え。後述）:
+  `docker compose run --rm dev npx wrangler deploy`
 
 ## 検証記録（2026-07-18、ローカル wrangler dev）
 
@@ -232,6 +232,41 @@ Pexels / Unsplash のようにライセンスの明確な素材を使うこと�
 - 本番では試し注文をしていない（`souvenir_orders` に実データを残さないため）。
   注文フローの検証は 2026-07-20 のローカル一気通貫を参照
 
+## デプロイ認証を API トークン方式に変更（2026-08-31）
+
+ホストの wrangler OAuth トークン（`~/Library/Preferences/.wrangler/config/default.toml`）は
+2026-07-20 で期限切れになり、マウント方式では
+「非対話環境では CLOUDFLARE_API_TOKEN が必要」と言われて deploy も remote D1 も通らなくなった。
+
+**コンテナ内 `wrangler login` は使えない。** OAuth のコールバックサーバーが
+コンテナ内の `127.0.0.1:8976` にバインドされるため、`-p 8976:8976` で転送しても
+（転送先はコンテナの外部インターフェース）届かず ERR_CONNECTION_RESET になる。
+ブラウザ側の Authorize 自体は成功しているのに受け取りだけが落ちる、という紛らわしい失敗をする。
+
+そこで API トークン方式に切り替えた:
+
+1. ダッシュボード（マイプロフィール → API トークン）でテンプレート
+   「Edit Cloudflare Workers」からトークンを発行。Account Resources は kotakky Account に限定
+   （最小構成なら Account の Workers Scripts:Edit / D1:Edit / Workers R2 Storage:Edit /
+   Account Settings:Read。**D1・R2 の権限は必須** — バインドしているため）
+   - ⚠️ **このテンプレートには D1 が入っていない。**「アカウント → D1 → 編集」を手で足すこと
+     （足し忘れても deploy は通り、リモートマイグレーションだけが落ちる。2026-09-16 に踏んだ。後述）
+2. `.env` に `CLOUDFLARE_API_TOKEN=...`（`compose.yml` の `env_file` が読む。
+   `.gitignore` の `/.env*` で除外済み）
+3. `docker compose run --rm dev npx wrangler whoami` で確認 →
+   `docker compose run --rm dev npx wrangler deploy`
+
+これで `-v "$HOME/Library/Preferences/.wrangler:..."` のマウントは不要になった。
+トークンが漏れたらダッシュボードから Roll / Delete で即失効できる。
+
+### 祖父母マイページに記念品導線を追加（2026-08-31 デプロイ）
+
+- カタログを公開しても祖父母の導線がヘッダーのリンクだけだったため、マイページに
+  「🎁 記念品をおくる」カード（記念品を見る / 注文の履歴）を追加（PR #83）。
+  注文履歴の戻りリンクも「← マイページに戻る」に統一
+- `.claude/rules/ui-guidelines.md` の祖父母メニューの記述をフェーズ2後の実態に更新
+- `wrangler deploy` 実行（Version 55805dd8-3558-47a7-b462-dca48b57d434）
+
 ## フェーズ3: 贈り物の調整（2026-09-12 着手）
 
 **要件の正は [docs/requirements-phase3.md](docs/requirements-phase3.md)。** ここには実装の記録だけ置く。
@@ -316,3 +351,15 @@ URL必須のままでは、**子どもに聞いて代理入力する運用の初
 - 検証後、宛先・誕生日・送信ログは元に戻した
 - ハマりどころ: 祖父母の宛先を親と同じアドレスにすると `index_users_on_lower_email` の
   UNIQUE制約で落ちる。Gmailの `+` エイリアスで回避する
+
+## フェーズ3 本番反映（2026-09-16 実施）
+
+- リモートD1に `0003_birthday_notifications` / `0004_wishlist_reserved` を適用 → `wrangler deploy`
+  （Version a851a22c-2724-4352-b794-0bce28999395、Cron `0 23 * * *` 登録）。トップ・ログイン 200 を確認
+- **`.env` の `CLOUDFLARE_API_TOKEN` に D1 の権限が無く、リモートマイグレーションが
+  `Authentication error [code: 10000]` で落ちた。** Workers・R2・Secret は通るので、
+  8/31 にトークン方式へ切り替えてから D1 を触っていなかったため気づかなかった
+  （テンプレート「Edit Cloudflare Workers」に D1 が含まれていない）。
+  トークンに「アカウント → D1 → 編集」を追加して解決（トークン文字列は変わらない）
+- デプロイ前に `docker compose run --rm dev npx wrangler d1 migrations list mago-koro --remote` で
+  未適用を確かめると、権限不足もここで先に分かる。**マイグレーションが先、deploy は後**
