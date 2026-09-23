@@ -59,3 +59,33 @@ export function formatMonthDay(monthDay: string): string {
   const [m, d] = monthDay.split("-");
   return `${Number(m)}月${Number(d)}日`;
 }
+
+export type BirthdayCountdown = {
+  /** 次の誕生日まで何日か。当日は0 */
+  days: number;
+  /** その誕生日で何歳になるか */
+  age: number;
+  /** 表示用の誕生日 例: 「10月9日」 */
+  birthdayText: string;
+};
+
+/**
+ * 画面に出す「お誕生日まで あと◯日」。JSTの暦日で数える。
+ * 2月29日生まれは、平年だと3月1日を誕生日として数える（誕生日メールの救済とそろえる）。
+ */
+export function birthdayCountdown(birthdate: string, now: Date): BirthdayCountdown {
+  const today = jstYmd(now);
+  const monthDay = birthdate.slice(5);
+  const targetIn = (year: number) =>
+    monthDay === "02-29" && !isLeapYear(year) ? `${year}-03-01` : `${year}-${monthDay}`;
+
+  const thisYear = Number(today.slice(0, 4));
+  let target = targetIn(thisYear);
+  if (target < today) target = targetIn(thisYear + 1);
+
+  return {
+    days: Math.round((Date.parse(`${target}T00:00:00Z`) - Date.parse(`${today}T00:00:00Z`)) / DAY_MS),
+    age: upcomingAge(birthdate, target),
+    birthdayText: formatMonthDay(monthDay),
+  };
+}

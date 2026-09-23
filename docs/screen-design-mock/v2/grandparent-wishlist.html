@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>そうたさんのほしいもの | まごころおくりもの</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@500&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- v2 モック:祖父母の「ほしいもの」。サンプルの名前・品は架空 -->
+  <header class="site-header">
+    <div class="container">
+      <a href="#" class="brand">
+        <svg viewBox="0 0 40 40" aria-hidden="true">
+          <rect x="5" y="15" width="30" height="21" rx="3" fill="#c2452d"/>
+          <rect x="3" y="10" width="34" height="8" rx="2" fill="#9f3522"/>
+          <rect x="17.5" y="10" width="5" height="26" fill="#f7d98b"/>
+          <path d="M20 10c-4-7-12-6-9 0zM20 10c4-7 12-6 9 0z" fill="#f7d98b"/>
+        </svg>
+        まごころおくりもの
+      </a>
+      <nav class="site-nav">
+        <a href="#">マイページ</a>
+        <a href="#" class="active">ほしいもの</a>
+        <a href="#">写真を見る</a>
+        <a href="#">記念品</a>
+        <button type="button" class="logout">ログアウト</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <a href="#" class="back-link">← マイページに戻る</a>
+
+    <!-- 誕生日までのカウントダウン -->
+    <section class="countdown" aria-label="お誕生日まで">
+      <div class="countdown-icon" aria-hidden="true">🎂</div>
+      <div>
+        <p class="countdown-label">そうたさんのお誕生日まで</p>
+        <p class="countdown-days">あと<strong>16</strong>日</p>
+        <p class="countdown-sub">10月9日で 11歳になります</p>
+      </div>
+    </section>
+
+    <!-- 孫からの手紙 -->
+    <section class="letter">
+      <div class="letter-head">
+        <div class="child-hero" aria-hidden="true">そ</div>
+        <div>
+          <h1 class="letter-to">おじいちゃん、おばあちゃんへ</h1>
+          <p class="letter-body">
+            そうたさんが いま ほしいものを まとめました。<br>
+            おくりものを えらぶときの 手がかりにしてください。
+          </p>
+        </div>
+      </div>
+      <ol class="steps" aria-label="おくりものの流れ">
+        <li>ほしいものを えらぶ</li>
+        <li>「これを贈ります」を押す</li>
+        <li>買ったら お知らせする</li>
+      </ol>
+    </section>
+
+    <ul class="onegai-list">
+      <!-- まだ誰も選んでいない品 -->
+      <li class="onegai-card">
+        <p class="onegai-no">おねがい その1</p>
+        <h3>ウォーキングの靴</h3>
+        <p class="onegai-meta">
+          <span>🏬 商品の指定はありません。お店で選んでください</span>
+          <span>サイズ 23cm</span>
+        </p>
+        <p class="speech">
+          じいじと いっしょに ウォーキングしたい!
+          <span class="speech-from">— そうたより</span>
+        </p>
+        <div class="onegai-actions">
+          <button type="button" class="btn btn-primary btn-lg">🎀 これを贈ります</button>
+          <p class="onegai-note">押すと、ほかの方と 重ならないように なります</p>
+        </div>
+        <details class="report">
+          <summary>もう買った方は こちら(購入したことを知らせる)</summary>
+          <label for="m1">メッセージ(任意)</label>
+          <textarea id="m1" placeholder="例: お誕生日に贈ります"></textarea>
+          <button type="button" class="btn btn-outline">購入したことを知らせる</button>
+        </details>
+      </li>
+
+      <!-- 自分が贈る予定の品(リボンがかかる) -->
+      <li class="onegai-card is-reserved">
+        <svg class="bow" viewBox="0 0 88 56" aria-hidden="true">
+          <path d="M44 26C30 4 6 6 10 22c3 12 22 10 34 4z" fill="#a8323e"/>
+          <path d="M44 26C58 4 82 6 78 22c-3 12-22 10-34 4z" fill="#a8323e"/>
+          <path d="M40 28l-10 26 8-4 6 6 2-28zM48 28l10 26-8-4-6 6-2-28z" fill="#8c2632"/>
+          <circle cx="44" cy="27" r="7" fill="#c24a55"/>
+        </svg>
+        <p class="onegai-no">おねがい その2</p>
+        <h3>タブレット(スマホでも可)</h3>
+        <p class="onegai-meta">
+          <span>🔗 <a href="#">商品ページを見る ↗</a></span>
+          <span class="price">¥39,800</span>
+        </p>
+        <p class="speech">
+          じゅけんの べんきょうに つかいたいです
+          <span class="speech-from">— そうたより</span>
+        </p>
+        <div class="onegai-actions">
+          <span class="ribbon-label">🎀 あなたが贈る予定です</span>
+          <button type="button" class="btn btn-quiet">贈る予定を取り消す</button>
+        </div>
+        <details class="report" open>
+          <summary>買ったら こちら(購入したことを知らせる)</summary>
+          <label for="m2">メッセージ(任意)</label>
+          <textarea id="m2" placeholder="例: お誕生日に贈ります"></textarea>
+          <button type="button" class="btn btn-primary">購入したことを知らせる</button>
+        </details>
+      </li>
+
+      <!-- もう贈った品 -->
+      <li class="onegai-card is-given">
+        <div class="stamp" aria-hidden="true"><strong>贈</strong>ありがとう</div>
+        <p class="onegai-no">おねがい その3</p>
+        <h3>宇宙の図鑑</h3>
+        <p class="speech">
+          ほしの なまえを おぼえたい
+          <span class="speech-from">— そうたより</span>
+        </p>
+        <p class="given-note">✓ おくりもの済みです(9月20日に お知らせが届きました)</p>
+      </li>
+    </ul>
+
+    <nav class="subnav" aria-label="ほかのページ">
+      <a href="#"><span class="icon" aria-hidden="true">📷</span><span>写真を見る<small>そうたさんの写真</small></span></a>
+      <a href="#"><span class="icon" aria-hidden="true">🎁</span><span>記念品をおくる<small>イラスト入りのマグカップなど</small></span></a>
+    </nav>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">まごころおくりもの — お孫さんへの おくりものを、いっしょに</div>
+  </footer>
+</body>
+</html>

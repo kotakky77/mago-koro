@@ -6,13 +6,14 @@ import type { AppEnv } from "../app-env";
 import { dashboardPath } from "../app-env";
 import {
   ChildRow,
-  countWishlistItems,
   createChild,
   deleteChild,
   findChild,
   listChildren,
+  listNotifications,
   listPhotoKeys,
   listPhotos,
+  listWishlistItems,
   updateChild,
 } from "../lib/db";
 import { setFlash } from "../lib/flash";
@@ -53,20 +54,32 @@ childrenRoutes.use("/parent/*", requireParent());
 childrenRoutes.use("/children/*", requireParent());
 
 childrenRoutes.get("/parent/dashboard", async (c) => {
-  const children = await listChildren(c.env.DB, c.var.user.userId);
+  const [children, notifications] = await Promise.all([
+    listChildren(c.env.DB, c.var.user.userId),
+    listNotifications(c.env.DB, c.var.user.userId, "all"),
+  ]);
   const summaries = await Promise.all(
     children.map(async (child) => {
-      const [photos, wishlistCount] = await Promise.all([
+      const [photos, items] = await Promise.all([
         listPhotos(c.env.DB, child.id),
-        countWishlistItems(c.env.DB, child.id),
+        listWishlistItems(c.env.DB, child.id),
       ]);
-      return { ...child, photoCount: photos.length, wishlistCount };
+      return {
+        ...child,
+        photoCount: photos.length,
+        photoId: photos[0]?.id ?? null,
+        items,
+      };
     }),
   );
   return renderPage(
     c,
     { title: "マイページ", user: c.var.user },
-    <ParentDashboard userName={c.var.user.name} children_={summaries} />,
+    <ParentDashboard
+      userName={c.var.user.name}
+      children_={summaries}
+      latestNotification={notifications[0] ?? null}
+    />,
   );
 });
 

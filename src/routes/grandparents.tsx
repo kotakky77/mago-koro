@@ -6,6 +6,7 @@ import { dashboardPath } from "../app-env";
 import {
   ChildRow,
   findChild,
+  findLatestPhoto,
   findWishlistItem,
   grandparentHasChild,
   listGrandchildren,
@@ -37,10 +38,16 @@ grandparentRoutes.use("/grandparent/*", async (c, next) => {
 
 grandparentRoutes.get("/grandparent/dashboard", async (c) => {
   const grandchildren = await listGrandchildren(c.env.DB, c.var.user.userId);
+  const summaries = await Promise.all(
+    grandchildren.map(async (child) => ({
+      ...child,
+      photoId: (await findLatestPhoto(c.env.DB, child.id))?.id ?? null,
+    })),
+  );
   return renderPage(
     c,
     { title: "マイページ", user: c.var.user },
-    <GrandparentDashboard userName={c.var.user.name} grandchildren={grandchildren} />,
+    <GrandparentDashboard userName={c.var.user.name} grandchildren={summaries} />,
   );
 });
 
@@ -77,15 +84,18 @@ grandparentRoutes.get("/grandparent/wishlist_items", async (c) => {
     setFlash(c, { alert: "アクセス権限がありません" });
     return c.redirect("/grandparent/dashboard");
   }
-  const items = child ? await listWishlistItems(c.env.DB, child.id) : [];
+  const [items, photo] = child
+    ? await Promise.all([listWishlistItems(c.env.DB, child.id), findLatestPhoto(c.env.DB, child.id)])
+    : [[], null];
   return renderPage(
     c,
-    { title: "ほしいものを見る", user: c.var.user },
+    { title: child ? `${child.name}さんのほしいもの` : "ほしいものを見る", user: c.var.user },
     <GrandparentWishlistPage
       children_={grandchildren}
       child={child}
       items={items}
       viewerId={c.var.user.userId}
+      photoId={photo?.id ?? null}
     />,
   );
 });
@@ -125,7 +135,7 @@ grandparentRoutes.post("/wishlist_items/:id/purchase", async (c) => {
     messageRaw === "" ? null : messageRaw,
   );
 
-  setFlash(c, { notice: "購入操作を完了しました。親御さんに通知が送られました。" });
+  setFlash(c, { notice: "ありがとうございます。親御さんにお知らせを送りました。" });
   return c.redirect(backTo);
 });
 
@@ -158,7 +168,7 @@ grandparentRoutes.post("/wishlist_items/:id/reserve", async (c) => {
     return c.redirect(backTo);
   }
   setFlash(c, {
-    notice: `「${item.name}」を贈る予定にしました。気が変わったら取り消せます。`,
+    notice: `🎀「${item.name}」にリボンをかけました。贈る予定です（気が変わったら取り消せます）`,
   });
   return c.redirect(backTo);
 });
