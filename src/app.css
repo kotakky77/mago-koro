@@ -1,33 +1,40 @@
-/* まごころおくりもの — 温かみのあるモダンデザイン
+/* まごころおくりもの —「孫からのおねがい帳」
  *
- * 旧Rails版の暖色オレンジ基調を引き継ぎつつ、クリーム背景 + 大きめ角丸 +
- * 柔らかい影で刷新。高齢者向けガイドライン準拠:
- *   - 本文16px以上 / 見出し20px以上 / 行間1.6
+ * 生成りの便箋 + 朱色 + リボンの深紅。祖父母が「贈りたくなる」ことを目的に、
+ * 孫の写真・ひとこと・誕生日までの日数を主役にしている（2026-09 リニューアル）。
+ * 高齢者向けガイドライン準拠:
+ *   - 本文16px以上 / 見出し20px以上 / 行間1.7
  *   - タッチターゲット44px以上
  *   - テキストと背景のコントラスト比4.5:1以上（薄グレー文字は使わない）
  *   - フォーカスインジケータを消さない
  */
 
 :root {
-  --primary: #e0552f;        /* ボタン等。白文字で4.5:1以上 */
-  --primary-dark: #c44523;
-  --primary-soft: #ffe8de;   /* 淡いオレンジ背景 */
-  --secondary: #1d6fa5;      /* リンク・副次ボタン。白文字/クリーム上で十分な比 */
-  --secondary-dark: #175a86;
-  --accent-soft: #fff3d6;    /* 淡いイエロー背景 */
-  --text: #3d3a36;
-  --text-sub: #6b645c;       /* 補足文。#999は使わない */
-  --bg: #fdf8f3;             /* クリーム背景 */
-  --surface: #ffffff;
-  --border: #e8ded4;
-  --danger: #c0392b;
+  --primary: #c2452d;        /* 朱。ボタン等。白文字で5.0:1 */
+  --primary-dark: #9f3522;
+  --primary-soft: #fbe9e1;
+  --secondary: #2b4a6f;      /* 紺。リンク・副次ボタン */
+  --secondary-dark: #203a58;
+  --accent-soft: #fbf1dc;    /* 淡い金茶（ガイド枠・吹き出し） */
+  --ribbon: #a8323e;         /* リボン（贈る予定）。白文字で6.4:1 */
+  --ribbon-soft: #f8e4e6;
+  --gold: #8a5a12;           /* 金茶（文字用）。生成り上で5.5:1 */
+  --gold-line: #d9b56c;      /* 金茶（線・飾り用。文字には使わない） */
+  --text: #3b332b;
+  --text-sub: #665b4f;       /* 補足文。生成り上で5.8:1。これより薄くしない */
+  --bg: #f7f0e4;             /* 生成り */
+  --surface: #fffdf8;        /* 便箋 */
+  --border: #eadfcb;
+  --danger: #b3261e;
   --danger-soft: #fdecea;
-  --success: #2e7d4f;
-  --success-soft: #e6f4ea;
-  --radius: 14px;
-  --radius-sm: 10px;
-  --shadow: 0 2px 10px rgba(93, 64, 39, 0.08);
-  --shadow-hover: 0 4px 16px rgba(93, 64, 39, 0.14);
+  --success: #2f6b3f;
+  --success-soft: #e5f1e7;
+  --radius: 18px;
+  --radius-sm: 12px;
+  --shadow: 0 2px 0 rgba(120, 90, 50, 0.06), 0 8px 24px rgba(120, 90, 50, 0.08);
+  --shadow-hover: 0 4px 0 rgba(120, 90, 50, 0.08), 0 12px 28px rgba(120, 90, 50, 0.14);
+  /* 見出しだけ丸い和文フォント。読み込めなければシステムの丸ゴ→ゴシックに落ちる */
+  --font-heading: "Kiwi Maru", "Hiragino Maru Gothic ProN", "Noto Sans JP", "Hiragino Sans", Meiryo, sans-serif;
 }
 
 * {
@@ -38,10 +45,18 @@ body {
   margin: 0;
   font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo,
     system-ui, sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 17px;
+  line-height: 1.7;
   color: var(--text);
   background: var(--bg);
+}
+
+h1,
+h2,
+h3,
+.brand {
+  font-family: var(--font-heading);
+  font-weight: 500;
 }
 
 .container {
@@ -54,8 +69,7 @@ body {
 
 .site-header {
   background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  box-shadow: var(--shadow);
+  border-bottom: 3px double var(--gold-line); /* 水引の2本線 */
 }
 
 .site-header .container {
@@ -64,19 +78,23 @@ body {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 8px;
-  min-height: 64px;
+  min-height: 72px;
   padding-top: 8px;
   padding-bottom: 8px;
 }
 
 .brand {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--primary);
+  font-size: 24px;
+  color: var(--primary-dark);
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+}
+
+.brand svg {
+  width: 36px;
+  height: 36px;
 }
 
 .site-nav {
@@ -89,12 +107,12 @@ body {
 .site-nav a {
   display: inline-flex;
   align-items: center;
-  min-height: 44px;
-  padding: 8px 14px;
-  border-radius: var(--radius-sm);
+  min-height: 48px;
+  padding: 8px 16px;
+  border-radius: 999px;
   color: var(--text);
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .site-nav a:hover {
@@ -113,9 +131,9 @@ body {
   padding: 0 7px;
   margin-left: 6px;
   border-radius: 12px;
-  background: var(--danger);
+  background: var(--ribbon);
   color: #fff;
-  font-size: 14px;
+  font-size: 15px;
   text-align: center;
 }
 
@@ -127,13 +145,14 @@ main.container {
 }
 
 h1 {
-  font-size: 26px;
-  margin: 0 0 8px;
+  font-size: 30px;
+  line-height: 1.4;
+  margin: 4px 0 12px;
 }
 
 h2 {
-  font-size: 21px;
-  margin: 28px 0 12px;
+  font-size: 23px;
+  margin: 36px 0 14px;
 }
 
 .page-lead {
@@ -227,12 +246,12 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  min-height: 44px;
-  padding: 10px 22px;
+  gap: 8px;
+  min-height: 48px;
+  padding: 10px 24px;
   border: 2px solid transparent;
-  border-radius: var(--radius-sm);
-  font-size: 16px;
+  border-radius: 999px;
+  font-size: 17px;
   font-weight: 700;
   font-family: inherit;
   line-height: 1.4;
@@ -244,11 +263,11 @@ a {
 .btn-primary {
   background: var(--primary);
   color: #fff;
+  box-shadow: 0 3px 0 var(--primary-dark);
 }
 
 .btn-primary:hover {
   background: var(--primary-dark);
-  box-shadow: var(--shadow-hover);
 }
 
 .btn-secondary {
@@ -282,9 +301,20 @@ a {
 }
 
 .btn-lg {
-  min-height: 56px;
-  padding: 15px 30px;
-  font-size: 18px;
+  min-height: 60px;
+  padding: 14px 34px;
+  font-size: 20px;
+}
+
+/* 控えめな操作（取り消し・編集など） */
+.btn-quiet {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.btn-quiet:hover {
+  border-color: var(--primary);
 }
 
 /* ---- フォーム ---- */
@@ -338,6 +368,12 @@ select:focus,
 textarea:focus,
 .btn:focus,
 a:focus {
+  outline: 3px solid var(--secondary);
+  outline-offset: 2px;
+}
+
+button:focus,
+summary:focus {
   outline: 3px solid var(--secondary);
   outline-offset: 2px;
 }
@@ -470,7 +506,7 @@ a:focus {
 
 .tag-pending {
   background: var(--accent-soft);
-  color: #8a6d1a;
+  color: var(--gold);
 }
 
 .tag-accepted {
@@ -491,11 +527,11 @@ a:focus {
 /* 記念品注文のステータス */
 .tag-order-pending {
   background: var(--accent-soft);
-  color: #8a6d1a;
+  color: var(--gold);
 }
 
 .tag-order-processing {
-  background: #e3eff8;
+  background: #e3eaf3;
   color: var(--secondary-dark);
 }
 
@@ -579,7 +615,7 @@ th {
 }
 
 .notification-unread {
-  border-left: 6px solid var(--primary);
+  border-left: 8px solid var(--ribbon);
 }
 
 /* ---- 記念品 ---- */
@@ -615,6 +651,7 @@ th {
 
 .guide {
   background: var(--accent-soft);
+  border: 2px dashed var(--gold-line);
   border-radius: var(--radius);
   padding: 18px 22px;
   margin: 24px 0;
@@ -693,10 +730,675 @@ th {
 /* ---- フッター ---- */
 
 .site-footer {
-  border-top: 1px solid var(--border);
+  border-top: 3px double var(--gold-line);
   padding: 24px 0 40px;
   text-align: center;
   color: var(--text-sub);
+}
+
+/* ==== おねがい帳（2026-09 リニューアル）==== */
+
+/* ---- 誕生日カウントダウン ---- */
+
+.countdown {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 26px;
+  margin: 8px 0 24px;
+  background: var(--accent-soft);
+  border: 2px dashed var(--gold-line);
+  border-radius: var(--radius);
+}
+
+.countdown-icon {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.countdown p {
+  margin: 0;
+}
+
+.countdown-label {
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.countdown-days {
+  font-family: var(--font-heading);
+  font-size: 22px;
+}
+
+.countdown-days strong {
+  font-size: 44px;
+  font-weight: 500;
+  color: var(--primary-dark);
+  margin: 0 4px;
+}
+
+.countdown-sub {
+  color: var(--text-sub);
+}
+
+/* 小さい版（親のマイページ・祖父母のマイページのカード内） */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  border: 2px dashed var(--gold-line);
+  color: var(--gold);
+  font-weight: 700;
+}
+
+/* ---- 便箋（孫からの手紙） ---- */
+
+.letter {
+  position: relative;
+  background:
+    repeating-linear-gradient(transparent 0 38px, var(--border) 38px 39px) 0 22px / 100% calc(100% - 44px) no-repeat,
+    var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 34px 36px 28px;
+  margin-bottom: 28px;
+  overflow: hidden;
+}
+
+/* エアメール封筒のふち */
+.letter::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 8px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--ribbon) 0 14px,
+    var(--surface) 14px 22px,
+    var(--secondary) 22px 36px,
+    var(--surface) 36px 44px
+  );
+}
+
+.letter-head {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.letter-to {
+  margin: 0;
+  font-size: 28px;
+}
+
+.letter-body {
+  margin: 6px 0 0;
+  font-size: 18px;
+}
+
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.steps li {
+  counter-increment: step;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px 6px 6px;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.steps li::before {
+  content: counter(step);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+}
+
+/* ---- 孫の丸い写真（写真がなければ名前の頭文字） ---- */
+
+.child-hero {
+  flex: 0 0 auto;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 5px solid var(--surface);
+  box-shadow: 0 0 0 3px var(--gold-line), var(--shadow);
+  overflow: hidden;
+  background: linear-gradient(135deg, #f6c9a8, #e8918a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-size: 52px;
+  color: #fff;
+}
+
+.child-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.child-hero.sm {
+  width: 88px;
+  height: 88px;
+  font-size: 38px;
+  border-width: 4px;
+}
+
+/* ---- おねがいカード ---- */
+
+.onegai-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.onegai-card {
+  position: relative;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 26px 30px;
+  overflow: hidden;
+}
+
+.onegai-no {
+  display: inline-block;
+  margin: 0 0 6px;
+  padding: 2px 14px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+  font-family: var(--font-heading);
+  font-size: 16px;
+}
+
+.onegai-card h2 {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.4;
+}
+
+.onegai-meta {
+  margin: 8px 0 0;
+  color: var(--text-sub);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+}
+
+.onegai-meta .price {
+  color: var(--primary-dark);
+  font-weight: 700;
+  font-size: 19px;
+}
+
+/* ひとことの吹き出し */
+.speech {
+  position: relative;
+  margin: 18px 0 4px 16px;
+  padding: 14px 20px;
+  background: var(--accent-soft);
+  border-radius: 16px;
+  font-size: 19px;
+  white-space: pre-line;
+}
+
+.speech::before {
+  content: "";
+  position: absolute;
+  left: -12px;
+  top: 18px;
+  border: 8px solid transparent;
+  border-right: 14px solid var(--accent-soft);
+  border-left: 0;
+}
+
+.speech-from {
+  display: block;
+  margin-top: 4px;
+  text-align: right;
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 16px;
+  white-space: normal;
+}
+
+/* 親の画面だけ: ひとことが空のときの催促 */
+.speech-empty {
+  margin: 18px 0 4px;
+  padding: 12px 18px;
+  border: 2px dashed var(--gold-line);
+  border-radius: 16px;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.onegai-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 2px dotted var(--border);
+}
+
+.onegai-actions form {
+  margin: 0;
+}
+
+.onegai-note {
+  margin: 0;
+  font-weight: 700;
+}
+
+/* 購入報告（贈る予定でないうちは畳んでおく） */
+.report {
+  margin-top: 16px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 4px 18px;
+}
+
+.report summary {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.report .btn {
+  margin-bottom: 14px;
+}
+
+/* ---- リボン（贈る予定の品） ---- */
+
+.onegai-card.is-reserved {
+  border-color: var(--ribbon);
+  padding-right: 130px;
+}
+
+/* 縦のリボン */
+.onegai-card.is-reserved::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 52px;
+  width: 16px;
+  background: var(--ribbon);
+  opacity: 0.9;
+}
+
+.bow {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  width: 88px;
+  height: 56px;
+}
+
+.ribbon-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 6px 18px;
+  border-radius: 999px;
+  background: var(--ribbon);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* ---- 贈った品 ---- */
+
+.onegai-card.is-given {
+  background: var(--success-soft);
+  border-color: #b9d8bf;
+  padding-right: 150px;
+}
+
+.onegai-card.is-given .onegai-no {
+  background: #fff;
+  color: var(--success);
+}
+
+.stamp {
+  position: absolute;
+  top: 20px;
+  right: 26px;
+  width: 104px;
+  height: 104px;
+  border: 4px double var(--primary);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-dark);
+  font-family: var(--font-heading);
+  font-size: 18px;
+  line-height: 1.3;
+  transform: rotate(-12deg);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.stamp strong {
+  font-size: 30px;
+  font-weight: 500;
+}
+
+.given-note {
+  margin: 16px 0 0;
+  color: var(--success);
+  font-weight: 700;
+  font-size: 18px;
+}
+
+/* 親のプレビュー: 押せない状態で祖父母の画面を見せる */
+.preview-banner {
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  background: var(--secondary);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+}
+
+.preview-banner a {
+  color: #fff;
+}
+
+/* おねがいカードの一覧を包む fieldset（プレビューでまとめて disabled にするため） */
+fieldset.onegai-fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+fieldset.onegai-fieldset:disabled .btn {
+  cursor: not-allowed;
+}
+
+/* ---- ページ下のサブ導線 ---- */
+
+.subnav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 36px;
+}
+
+.subnav a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 72px;
+  padding: 14px 22px;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.subnav a:hover {
+  border-color: var(--primary);
+}
+
+.subnav .icon {
+  font-size: 30px;
+}
+
+.subnav small {
+  display: block;
+  color: var(--text-sub);
+  font-weight: 400;
+  font-size: 16px;
+}
+
+/* ---- 孫ごとの大きなカード（両方のマイページ） ---- */
+
+.child-panel {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.child-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 26px 30px;
+  border-bottom: 2px dotted var(--border);
+}
+
+.child-panel-head h2 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.child-panel-head p {
+  margin: 2px 0 0;
+  color: var(--text-sub);
+}
+
+.child-panel-body {
+  padding: 24px 30px 28px;
+}
+
+.board-title {
+  margin: 0 0 12px;
+  font-size: 20px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.stat {
+  padding: 14px 18px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border);
+  background: var(--bg);
+}
+
+.stat p {
+  margin: 0;
+}
+
+.stat-label {
+  font-weight: 700;
+}
+
+.stat-num {
+  font-family: var(--font-heading);
+  font-size: 36px;
+  line-height: 1.2;
+  color: var(--primary-dark);
+}
+
+.stat-num small {
+  font-size: 18px;
+  margin-left: 2px;
+}
+
+.stat.reserved {
+  border-color: var(--ribbon);
+  background: var(--ribbon-soft);
+}
+
+.stat.reserved .stat-num {
+  color: var(--ribbon);
+}
+
+.stat.given {
+  border-color: #b9d8bf;
+  background: var(--success-soft);
+}
+
+.stat.given .stat-num {
+  color: var(--success);
+}
+
+.mini-list {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  border-top: 1px solid var(--border);
+}
+
+.mini-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.mini-list .name {
+  font-weight: 700;
+}
+
+.mini-list .missing {
+  color: var(--gold);
+  font-size: 16px;
+  font-weight: 400;
+  margin-left: 8px;
+}
+
+.pill {
+  display: inline-block;
+  padding: 2px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.pill-wish {
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+}
+
+.pill-reserved {
+  background: var(--ribbon);
+  color: #fff;
+}
+
+.pill-given {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.hint {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 14px 18px;
+  background: var(--accent-soft);
+  border-radius: var(--radius-sm);
+}
+
+.hint p {
+  margin: 0;
+}
+
+.panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.panel-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  margin-top: 12px;
+}
+
+.panel-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 10px;
+  font-weight: 700;
+}
+
+/* ---- ありがとうのお知らせ（購入通知） ---- */
+
+.thanks-card {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  background: var(--surface);
+  border-left: 8px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  padding: 20px 24px;
+}
+
+.thanks-card.unread {
+  border-left-color: var(--ribbon);
+}
+
+.thanks-card .icon {
+  font-size: 34px;
+  line-height: 1;
+}
+
+.thanks-card p {
+  margin: 0;
+}
+
+.thanks-card .msg {
+  margin-top: 6px;
+  font-size: 18px;
+}
+
+.thanks-card .when {
+  color: var(--text-sub);
+  font-size: 16px;
+  margin-top: 4px;
+}
+
+.thanks-card form {
+  margin-top: 10px;
 }
 
 /* ---- レスポンシブ ---- */
@@ -721,6 +1423,78 @@ th {
   }
 
   h1 {
-    font-size: 23px;
+    font-size: 25px;
+  }
+
+  /* おねがい帳 */
+  body {
+    font-size: 16px;
+  }
+
+  .letter {
+    padding: 28px 20px 22px;
+  }
+
+  .letter-head,
+  .child-panel-head {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .onegai-card {
+    padding: 22px 20px;
+  }
+
+  .onegai-card h2 {
+    font-size: 22px;
+  }
+
+  .onegai-card.is-reserved {
+    padding-right: 58px;
+  }
+
+  .onegai-card.is-reserved::before {
+    right: 20px;
+    width: 12px;
+  }
+
+  .bow {
+    right: -18px;
+    top: 4px;
+    transform: scale(0.75);
+  }
+
+  .onegai-card.is-given {
+    padding-right: 20px;
+  }
+
+  .onegai-card.is-given h2 {
+    padding-right: 90px;
+  }
+
+  .stamp {
+    width: 84px;
+    height: 84px;
+    font-size: 15px;
+    top: 12px;
+    right: 12px;
+  }
+
+  .stamp strong {
+    font-size: 24px;
+  }
+
+  .subnav,
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .countdown {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+
+  .countdown-days strong {
+    font-size: 36px;
   }
 }

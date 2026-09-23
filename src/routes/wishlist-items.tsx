@@ -8,6 +8,7 @@ import {
   countWishlistItems,
   createWishlistItem,
   deleteWishlistItem,
+  findLatestPhoto,
   findWishlistItem,
   listWishlistItems,
   unreserveWishlistItem,
@@ -17,6 +18,7 @@ import { setFlash } from "../lib/flash";
 import { deniedRedirect, loadOwnChild } from "./children";
 import { renderPage } from "../views/layout";
 import { WishlistFormPage, WishlistFormValues, WishlistIndexPage } from "../views/wishlist";
+import { GrandparentWishlistPage } from "../views/grandparent";
 
 export const wishlistRoutes = new Hono<AppEnv>();
 
@@ -93,6 +95,30 @@ wishlistRoutes.get("/children/:id/wishlist_items", async (c) => {
     c,
     { title: `${child.name}さんのほしいものリスト`, user: c.var.user },
     <WishlistIndexPage child={child} items={items} />,
+  );
+});
+
+// 親が「おじいちゃん・おばあちゃんにどう見えるか」を確かめるプレビュー。
+// 祖父母の画面をそのまま使い、ボタンは fieldset disabled で押せなくする
+// （仮に押せても、祖父母用のPOSTは親ロールを弾く）
+wishlistRoutes.get("/children/:id/wishlist_items/preview", async (c) => {
+  const child = await loadOwnChild(c, Number(c.req.param("id")));
+  if (!child) return deniedRedirect(c);
+  const [items, photo] = await Promise.all([
+    listWishlistItems(c.env.DB, child.id),
+    findLatestPhoto(c.env.DB, child.id),
+  ]);
+  return renderPage(
+    c,
+    { title: `${child.name}さんのほしいもの（見え方の確認）`, user: c.var.user },
+    <GrandparentWishlistPage
+      children_={[child]}
+      child={child}
+      items={items}
+      viewerId={0}
+      photoId={photo?.id ?? null}
+      preview
+    />,
   );
 });
 

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>マイページ | まごころおくりもの</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@500&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- v2 モック:親のマイページ。サンプルの名前・品は架空 -->
+  <header class="site-header">
+    <div class="container">
+      <a href="#" class="brand">
+        <svg viewBox="0 0 40 40" aria-hidden="true">
+          <rect x="5" y="15" width="30" height="21" rx="3" fill="#c2452d"/>
+          <rect x="3" y="10" width="34" height="8" rx="2" fill="#9f3522"/>
+          <rect x="17.5" y="10" width="5" height="26" fill="#f7d98b"/>
+          <path d="M20 10c-4-7-12-6-9 0zM20 10c4-7 12-6 9 0z" fill="#f7d98b"/>
+        </svg>
+        まごころおくりもの
+      </a>
+      <nav class="site-nav">
+        <a href="#" class="active">マイページ</a>
+        <a href="#">購入通知<span class="nav-badge">1</span></a>
+        <button type="button" class="logout">ログアウト</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>山田さんのマイページ</h1>
+    <p class="page-lead">おじいちゃん・おばあちゃんの「贈りたい」を、ここで見守れます。</p>
+
+    <section class="child-panel">
+      <div class="child-panel-head">
+        <div class="child-hero sm" aria-hidden="true">そ</div>
+        <div>
+          <h2>そうたさん</h2>
+          <p>2015年10月9日生まれ(10歳)</p>
+          <span class="chip">🎂 お誕生日まで あと16日</span>
+        </div>
+      </div>
+
+      <div class="child-panel-body">
+        <h3 class="board-title">おくりもの状況</h3>
+        <div class="stats">
+          <div class="stat wish">
+            <p class="stat-label">🎈 まだ選ばれていない</p>
+            <p class="stat-num">1<small>件</small></p>
+          </div>
+          <div class="stat reserved">
+            <p class="stat-label">🎀 贈る予定</p>
+            <p class="stat-num">1<small>件</small></p>
+          </div>
+          <div class="stat given">
+            <p class="stat-label">✓ 贈られた</p>
+            <p class="stat-num">1<small>件</small></p>
+          </div>
+        </div>
+
+        <ul class="mini-list">
+          <li>
+            <span class="name">ウォーキングの靴</span>
+            <span class="pill pill-wish">まだ選ばれていない</span>
+          </li>
+          <li>
+            <span class="name">タブレット(スマホでも可)</span>
+            <span class="pill pill-reserved">🎀 山田(実家)さんが贈る予定</span>
+          </li>
+          <li>
+            <span class="name">宇宙の図鑑<span class="missing">ひとこと未記入</span></span>
+            <span class="pill pill-given">✓ 9月20日に贈られました</span>
+          </li>
+        </ul>
+
+        <div class="hint">
+          <span aria-hidden="true">💡</span>
+          <p>そうたさんの「ひとこと」(なぜほしいか)を書いておくと、おじいちゃん・おばあちゃんが選びやすくなります。</p>
+        </div>
+
+        <div class="panel-actions">
+          <a href="#" class="btn btn-primary btn-lg">🎈 ほしいものリスト</a>
+          <a href="#" class="btn btn-outline btn-lg">👀 おじいちゃんたちの見え方</a>
+        </div>
+        <div class="panel-links">
+          <a href="#">📷 写真(12枚)</a>
+          <a href="#">✉ 招待</a>
+          <a href="#">✎ そうたさんの情報を編集</a>
+        </div>
+      </div>
+    </section>
+
+    <h2>ありがとうのお知らせ</h2>
+    <div class="thanks-card">
+      <span class="icon" aria-hidden="true">💌</span>
+      <div>
+        <p><strong>山田(実家)さん</strong>が「宇宙の図鑑」を贈ってくれました</p>
+        <p class="msg">「お誕生日に届くように送りました。星が好きなんだってね」</p>
+        <p class="when">9月20日 19:42 ・ <a href="#">すべてのお知らせを見る</a></p>
+      </div>
+    </div>
+
+    <p style="margin-top:28px"><a href="#" class="btn btn-quiet">＋ お子さんを追加する</a></p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">まごころおくりもの — お孫さんへの おくりものを、いっしょに</div>
+  </footer>
+</body>
+</html>
