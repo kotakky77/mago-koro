@@ -5,8 +5,19 @@ import type { AppEnv } from "../app-env";
 import type { SessionUser } from "../lib/auth";
 import { countUnreadNotifications } from "../lib/db";
 import { Flash, takeFlash } from "../lib/flash";
+import { CSS_VERSION, JS_VERSION } from "../asset-version";
 
 const APP_NAME = "まごころおくりもの";
+
+// ロゴ（リボンのかかった贈り物）
+const BrandMark: FC = () => (
+  <svg viewBox="0 0 40 40" aria-hidden="true">
+    <rect x="5" y="15" width="30" height="21" rx="3" fill="#c2452d" />
+    <rect x="3" y="10" width="34" height="8" rx="2" fill="#9f3522" />
+    <rect x="17.5" y="10" width="5" height="26" fill="#f7d98b" />
+    <path d="M20 10c-4-7-12-6-9 0zM20 10c4-7 12-6 9 0z" fill="#f7d98b" />
+  </svg>
+);
 
 // ロール別ナビゲーション（祖父母向けは4項目以内・大きめのリンク）
 const Nav: FC<{ user: SessionUser | null; unread: number; currentPath: string }> = ({
@@ -60,7 +71,7 @@ const Nav: FC<{ user: SessionUser | null; unread: number; currentPath: string }>
         </>
       )}
       <form action="/logout" method="post">
-        <button type="submit" class="btn btn-outline">
+        <button type="submit" class="btn btn-quiet">
           ログアウト
         </button>
       </form>
@@ -82,13 +93,21 @@ const Layout: FC<{
       <title>{title}</title>
       <meta name="viewport" content="width=device-width,initial-scale=1" />
       <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-      <link rel="stylesheet" href="/app.css" />
+      {/* 見出し用の丸い和文フォント。読み込めなくてもシステムフォントで表示できる */}
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@500&display=swap"
+      />
+      <link rel="stylesheet" href={`/app.css?v=${CSS_VERSION}`} />
     </head>
     <body>
       <header class="site-header">
         <div class="container">
           <a href="/" class="brand">
-            🎁 {APP_NAME}
+            <BrandMark />
+            {APP_NAME}
           </a>
           <Nav user={user} unread={unread} currentPath={currentPath} />
         </div>
@@ -99,9 +118,9 @@ const Layout: FC<{
         {children}
       </main>
       <footer class="site-footer">
-        <div class="container">{APP_NAME} — 祖父母と孫をつなぐアプリ</div>
+        <div class="container">{APP_NAME} — お孫さんへの おくりものを、いっしょに</div>
       </footer>
-      <script src="/app.js" defer></script>
+      <script src={`/app.js?v=${JS_VERSION}`} defer></script>
     </body>
   </html>
 );

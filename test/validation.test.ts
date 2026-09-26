@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { validatePhotoFile } from "../src/routes/photos";
 import { parseWishlistForm } from "../src/routes/wishlist-items";
 import {
+  birthdayCountdown,
   birthdayNoticeTargets,
   formatMonthDay,
   jstYmd,
@@ -133,5 +134,41 @@ describe("誕生日お知らせメールの日付計算（lib/birthday.ts）", (
   it("月日を日本語にする", () => {
     expect(formatMonthDay("10-09")).toBe("10月9日");
     expect(formatMonthDay("01-01")).toBe("1月1日");
+  });
+});
+
+describe("お誕生日までのカウントダウン（lib/birthday.ts）", () => {
+  const at = (iso: string) => new Date(iso);
+
+  it("9/23（JST）から10/9まで あと16日・11歳", () => {
+    expect(birthdayCountdown("2015-10-09", at("2026-09-23T03:00:00Z"))).toEqual({
+      days: 16,
+      age: 11,
+      birthdayText: "10月9日",
+    });
+  });
+
+  it("JSTの日付で数える（UTC 15:00 は翌日扱い）", () => {
+    expect(birthdayCountdown("2015-10-09", at("2026-09-23T15:00:00Z")).days).toBe(15);
+  });
+
+  it("当日は0日", () => {
+    expect(birthdayCountdown("2015-10-09", at("2026-10-09T00:00:00Z")).days).toBe(0);
+  });
+
+  it("誕生日を過ぎたら来年の誕生日を数える", () => {
+    const c = birthdayCountdown("2015-10-09", at("2026-10-10T00:00:00Z"));
+    expect(c.days).toBe(364);
+    expect(c.age).toBe(12);
+  });
+
+  it("年を跨いでも数えられる", () => {
+    expect(birthdayCountdown("2020-01-13", at("2026-12-30T00:00:00Z")).days).toBe(14);
+  });
+
+  it("2月29日生まれは、平年は3月1日で数える", () => {
+    expect(birthdayCountdown("2020-02-29", at("2027-02-27T00:00:00Z")).days).toBe(2);
+    expect(birthdayCountdown("2020-02-29", at("2028-02-27T00:00:00Z")).days).toBe(2);
+    expect(birthdayCountdown("2020-02-29", at("2027-02-27T00:00:00Z")).birthdayText).toBe("2月29日");
   });
 });

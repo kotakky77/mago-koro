@@ -152,6 +152,14 @@ export async function listPhotos(db: D1Database, childId: number): Promise<Photo
   return results;
 }
 
+// 孫の代表写真（いちばん新しい1枚）。おねがい帳の見出しに丸く切り抜いて出す
+export async function findLatestPhoto(db: D1Database, childId: number): Promise<PhotoRow | null> {
+  return db
+    .prepare("SELECT * FROM photos WHERE child_id = ? ORDER BY created_at DESC, id DESC LIMIT 1")
+    .bind(childId)
+    .first<PhotoRow>();
+}
+
 export async function findPhoto(db: D1Database, id: number): Promise<PhotoRow | null> {
   return db.prepare("SELECT * FROM photos WHERE id = ?").bind(id).first<PhotoRow>();
 }
