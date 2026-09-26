@@ -34,11 +34,17 @@ docker compose run --rm dev npm test                                           #
 docker compose run --rm dev npm run typecheck                                  # tsc
 ```
 
-デプロイ（ホストのwrangler認証をマウント）:
+デプロイ（`.env` の `CLOUDFLARE_API_TOKEN` を使う。gitignore済み）:
 
 ```bash
-docker compose run --rm -v "$HOME/Library/Preferences/.wrangler:/root/.config/.wrangler" dev npx wrangler deploy
+docker compose run --rm dev npx wrangler whoami   # 認証確認
+docker compose run --rm dev npx wrangler deploy
 ```
+
+トークンは Cloudflare ダッシュボードの API トークン（テンプレート「Edit Cloudflare
+Workers」）で発行して `.env` に置く。**テンプレートに無い「アカウント → D1 → 編集」を必ず足す**
+（無いとリモートマイグレーションが `code: 10000` で落ちる）。コンテナ内 `wrangler login`（OAuth）は
+コールバックが 127.0.0.1 バインドで届かないため使えない（NOTES.md参照）。
 
 ## プロジェクト構造
 
